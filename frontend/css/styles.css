@@ -8,8 +8,8 @@
   --panel:  #14142e;
   --rim:    rgba(167,124,255,.14);
   --rim-hi: rgba(167,124,255,.28);
-  --max-w:  1280px;
-  --pad-x:  max(40px, calc((100vw - var(--max-w)) / 2));
+  --max-w:  1600px;
+  --pad-x:  clamp(40px, calc((100vw - var(--max-w)) / 2), 160px);
   --smoke:  #c8c4e8;
   --mist:   #9d99bb;
   --ghost:  rgba(255,255,255,.06);
