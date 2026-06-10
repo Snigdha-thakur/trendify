@@ -1,6 +1,0 @@
-{
-  "buildCommand": "cd trendify-site/frontend && npm install && npm run build",
-  "outputDirectory": "trendify-site/frontend/dist",
-  "cleanUrls": true,
-  "trailingSlash": false
-}
