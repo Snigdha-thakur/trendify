@@ -17,9 +17,10 @@
 
 <!-- NAV -->
 <nav id="nav">
-  <a href="#" class="logo">
-    <img src="assets/logo.png" alt="Trendify logo" class="site-logo"/>
-    <span class="visually-hidden">Trendify</span>
+  <a href="#" class="logo" aria-label="Trendify">
+    <img src="assets/logo.jpeg" alt="Trendify logo" class="site-logo" id="siteLogo"
+         onerror="this.style.display='none'; this.parentElement.querySelector('.logo-text').style.display='inline-block'"/>
+    <span class="logo-text">Trendify</span>
   </a>
   <ul class="nv">
     <li><a href="#platform">Platform</a></li>
