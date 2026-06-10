@@ -1,0 +1,143 @@
+from fastapi import APIRouter, Depends, HTTPException, Request
+from sqlalchemy.orm import Session
+from uuid import UUID
+from app.core.database import get_db
+from app.models.models import Transaction, DigitalProduct, User, WalletLog, ReferralEarning, GatewayLog
+from app.schemas.schemas import TransactionCreate, TransactionResponse
+from app.api.routes.users import get_current_user
+import httpx
+from app.core.config import settings
+from decimal import Decimal
+
+router = APIRouter(prefix="/api/payments", tags=["Payments"])
+
+COMMISSION_RATE = Decimal("0.10")  # 10% platform commission
+
+
+@router.post("/initiate", response_model=TransactionResponse)
+async def initiate_payment(
+    data: TransactionCreate,
+    db: Session = Depends(get_db),
+):
+    product = db.query(DigitalProduct).filter(DigitalProduct.id == data.product_id).first()
+    if not product or product.status != "Active":
+        raise HTTPException(status_code=404, detail="Product not found or inactive")
+
+    amount = Decimal(str(data.amount))
+    commission = (amount * COMMISSION_RATE).quantize(Decimal("0.01"))
+    creator_amount = amount - commission
+
+    txn = Transaction(
+        id=data.id,
+        creator_id=product.creator_id,
+        product_id=product.id,
+        buyer_email=data.buyer_email,
+        buyer_name=data.buyer_name,
+        buyer_phone=data.buyer_phone,
+        amount=amount,
+        status="Pending",
+        commission_amount=commission,
+        creator_amount=creator_amount,
+        cashfree_order_id=data.cashfree_order_id,
+        payment_link=data.payment_link,
+    )
+    db.add(txn)
+
+    db.add(GatewayLog(transaction_id=data.id, log_type="Request"))
+    db.commit()
+    db.refresh(txn)
+    return txn
+
+
+@router.post("/webhook/cashfree")
+async def cashfree_webhook(request: Request, db: Session = Depends(get_db)):
+    payload = await request.json()
+    order_id = payload.get("data", {}).get("order", {}).get("order_id") or payload.get("orderId")
+    payment_status = payload.get("data", {}).get("payment", {}).get("payment_status") or payload.get("txStatus")
+
+    if not order_id:
+        return {"status": "ignored"}
+
+    txn = db.query(Transaction).filter(
+        (Transaction.id == order_id) | (Transaction.cashfree_order_id == order_id)
+    ).first()
+
+    if not txn:
+        return {"status": "not_found"}
+
+    db.add(GatewayLog(transaction_id=txn.id, log_type="Webhook"))
+
+    if payment_status in ("SUCCESS", "PAID"):
+        txn.status = "Success"
+        _credit_wallets(txn, db)
+    elif payment_status in ("FAILED", "CANCELLED", "VOID"):
+        txn.status = "Failed"
+
+    db.commit()
+    return {"status": "ok"}
+
+
+@router.get("/transactions", response_model=list[TransactionResponse])
+def get_my_transactions(
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    return (
+        db.query(Transaction)
+        .filter(Transaction.creator_id == current_user.id)
+        .order_by(Transaction.created_at.desc())
+        .all()
+    )
+
+
+@router.get("/transactions/{txn_id}", response_model=TransactionResponse)
+def get_transaction(txn_id: str, db: Session = Depends(get_db)):
+    txn = db.query(Transaction).filter(Transaction.id == txn_id).first()
+    if not txn:
+        raise HTTPException(status_code=404, detail="Transaction not found")
+    return txn
+
+
+# ---------- internal helpers ----------
+
+def _credit_wallets(txn: Transaction, db: Session):
+    """Credit creator wallet and referral wallet on successful payment."""
+    creator = db.query(User).filter(User.id == txn.creator_id).first()
+    if not creator:
+        return
+
+    old_bal = creator.wallet_balance or Decimal(0)
+    creator.wallet_balance = old_bal + (txn.creator_amount or Decimal(0))
+    db.add(WalletLog(
+        user_id=creator.id,
+        transaction_id=txn.id,
+        wallet_type="Main Wallet",
+        type="Credit",
+        existing_balance=old_bal,
+        amount=txn.creator_amount,
+        new_balance=creator.wallet_balance,
+    ))
+
+    # Referral payout
+    if creator.referred_by:
+        referrer = db.query(User).filter(User.id == creator.referred_by).first()
+        if referrer:
+            ref_amount = (txn.commission_amount or Decimal(0)) * Decimal("0.30")
+            old_ref_bal = referrer.referral_wallet_balance or Decimal(0)
+            referrer.referral_wallet_balance = old_ref_bal + ref_amount
+            db.add(WalletLog(
+                user_id=referrer.id,
+                transaction_id=txn.id,
+                wallet_type="Referral Wallet",
+                type="Credit",
+                existing_balance=old_ref_bal,
+                amount=ref_amount,
+                new_balance=referrer.referral_wallet_balance,
+            ))
+            db.add(ReferralEarning(
+                transaction_id=txn.id,
+                referrer_id=referrer.id,
+                from_creator_id=creator.id,
+                amount=ref_amount,
+                percentage="30",
+            ))

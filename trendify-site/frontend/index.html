@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Trendify — Build Your Creator Empire</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,600;0,700;1,300;1,600;1,700&family=Syne:wght@400;700;800&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="css/styles.css"/>
+</head>
+<body>
+
+<canvas id="particles"></canvas>
+<div id="c"></div>
+<div class="cr" id="cr"></div>
+<div id="prog"></div>
+
+<!-- NAV -->
+<nav id="nav">
+  <a href="#" class="logo">Trendify</a>
+  <ul class="nv">
+    <li><a href="#platform">Platform</a></li>
+    <li><a href="#payments">Payments</a></li>
+    <li><a href="#ecosystem">Ecosystem</a></li>
+    <li><a href="#pricing">Pricing</a></li>
+  </ul>
+  <div class="na">
+    <a href="signin.html" class="btn-nav-ghost">Sign in</a>
+    <a href="signup.html" class="btn-nav">Start free</a>
+  </div>
+</nav>
+<section id="hero">
+  <!-- extra hero orb -->
+  <div class="hl hl4"></div>
+  <div class="hl hl1"></div><div class="hl hl2"></div><div class="hl hl3"></div>
+
+  <div class="hero-z">
+    <div class="hero-eyebrow" id="hew">
+      <span class="ey-bar"></span>
+      Creator Monetisation Platform
+      <span class="ey-bar" style="transform:scaleX(-1)"></span>
+    </div>
+
+    <h1 class="hero-h1" id="hh1">
+      <strong>Build</strong> your<br/><em>Creator</em><br/><strong>Empire.</strong>
+    </h1>
+
+    <div class="hero-split" id="hsplit">
+      <p class="hero-sub">Trendify gives India's creators the infrastructure to sell courses, host webinars, build communities, and collect payments — beautifully unified, built for the way you work.</p>
+      <div class="hs-div"></div>
+      <div class="hero-cta-col">
+        <a href="signup.html" class="btn-a" id="hcta1">Start building free →</a>
+        <a href="#" class="btn-b">Watch the demo</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero-stats" id="hstats">
+    <div class="hs-item"><span class="hs-val">₹100Cr+</span><span class="hs-lbl">Processed</span></div>
+    <div class="hs-item"><span class="hs-val">50,000+</span><span class="hs-lbl">Creators</span></div>
+    <div class="hs-item"><span class="hs-val">5 million</span><span class="hs-lbl">Learners</span></div>
+    <div class="hs-item"><span class="hs-val">4.9 / 5</span><span class="hs-lbl">Creator rating</span></div>
+  </div>
+
+  <!-- Dashboard -->
+  <div class="hero-visual" id="hvis">
+    <div class="hv-frame">
+      <div class="hv-bar">
+        <div class="hv-dot" style="background:#ff5f56"></div>
+        <div class="hv-dot" style="background:#febc2e"></div>
+        <div class="hv-dot" style="background:#27c93f"></div>
+        <span class="hv-url">trendify.app/dashboard</span>
+      </div>
+      <div class="hv-body">
+        <div class="hv-side">
+          <div class="hv-nav on"><div class="hv-ico" style="opacity:1"></div>Overview</div>
+          <div class="hv-nav"><div class="hv-ico"></div>Courses</div>
+          <div class="hv-nav"><div class="hv-ico"></div>Community</div>
+          <div class="hv-nav"><div class="hv-ico"></div>Webinars</div>
+          <div class="hv-nav"><div class="hv-ico"></div>Payments</div>
+          <div class="hv-nav"><div class="hv-ico"></div>Analytics</div>
+          <div style="margin-top:auto"><div class="hv-nav"><div class="hv-ico"></div>Settings</div></div>
+        </div>
+        <div class="hv-main">
+          <div class="hv-metric-row">
+            <div class="hv-metric">
+              <div class="hv-m-lbl">Total Revenue — Nov</div>
+              <div class="hv-m-val">₹4,82,350</div>
+              <div class="hv-m-chg">↑ 34% vs last month</div>
+            </div>
+            <div class="hv-metric">
+              <div class="hv-m-lbl">Active Members</div>
+              <div class="hv-m-val">2,841</div>
+              <div class="hv-m-chg">↑ 12% vs last month</div>
+            </div>
+            <div class="hv-metric">
+              <div class="hv-m-lbl">Conversion Rate</div>
+              <div class="hv-m-val">9.2%</div>
+              <div class="hv-m-chg">↑ 3.1pp vs last month</div>
+            </div>
+          </div>
+          <div class="hv-chart">
+            <div class="hv-chart-bars">
+              <div class="hv-bar-c" style="height:44%"></div>
+              <div class="hv-bar-c" style="height:60%"></div>
+              <div class="hv-bar-c" style="height:38%"></div>
+              <div class="hv-bar-c" style="height:72%"></div>
+              <div class="hv-bar-c" style="height:54%"></div>
+              <div class="hv-bar-c" style="height:80%"></div>
+              <div class="hv-bar-c pk" style="height:100%"></div>
+            </div>
+          </div>
+          <div class="hv-rows">
+            <div class="hv-row">
+              <span class="hv-row-l"><span class="hv-dot-sm" style="background:var(--violet)"></span>Python Masterclass</span>
+              <span class="hv-row-r">₹1,24,000</span>
+            </div>
+            <div class="hv-row">
+              <span class="hv-row-l"><span class="hv-dot-sm" style="background:var(--aqua)"></span>Creator Pro Club</span>
+              <span class="hv-row-r">₹2,12,000</span>
+            </div>
+            <div class="hv-row">
+              <span class="hv-row-l"><span class="hv-dot-sm" style="background:var(--gold)"></span>AI Workshop — Nov</span>
+              <span class="hv-row-r">₹86,500</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="belt">
+  <div class="belt-track">
+    <span class="bi"><span class="bd"></span>Courses</span>
+    <span class="bi"><span class="bd"></span>Webinars</span>
+    <span class="bi"><span class="bd"></span>Communities</span>
+    <span class="bi"><span class="bd"></span>UPI Payments</span>
+    <span class="bi"><span class="bd"></span>Digital Products</span>
+    <span class="bi"><span class="bd"></span>Memberships</span>
+    <span class="bi"><span class="bd"></span>Telegram</span>
+    <span class="bi"><span class="bd"></span>WhatsApp</span>
+    <span class="bi"><span class="bd"></span>Analytics</span>
+    <span class="bi"><span class="bd"></span>Instant Payouts</span>
+    <span class="bi"><span class="bd"></span>Affiliate Programs</span>
+    <span class="bi"><span class="bd"></span>AI Automation</span>
+    <span class="bi"><span class="bd"></span>Courses</span>
+    <span class="bi"><span class="bd"></span>Webinars</span>
+    <span class="bi"><span class="bd"></span>Communities</span>
+    <span class="bi"><span class="bd"></span>UPI Payments</span>
+    <span class="bi"><span class="bd"></span>Digital Products</span>
+    <span class="bi"><span class="bd"></span>Memberships</span>
+    <span class="bi"><span class="bd"></span>Telegram</span>
+    <span class="bi"><span class="bd"></span>WhatsApp</span>
+    <span class="bi"><span class="bd"></span>Analytics</span>
+    <span class="bi"><span class="bd"></span>Instant Payouts</span>
+    <span class="bi"><span class="bd"></span>Affiliate Programs</span>
+    <span class="bi"><span class="bd"></span>AI Automation</span>
+  </div>
+</div>
+
+<!-- ═══ ECONOMY ═══ -->
+<section id="economy">
+  <div class="eco-ghost">Creators.</div>
+  <div class="eco-wrap">
+    <div class="eco-l">
+      <div class="kicker" style="color:var(--violet)">The Creator Economy</div>
+      <h2 class="eco-h2">Creators<br/>are the <em>new</em><br/><strong>entrepreneurs.</strong></h2>
+      <div class="eco-body">
+        <p>A decade ago, building a creator business meant chasing algorithmic favour and praying for ad revenue. Today it means owning your audience, setting your prices, and building income that compounds.</p>
+        <p>India has 80 million content creators. Less than 1% have the infrastructure to turn that reach into a real business. That is the gap Trendify was built to close.</p>
+      </div>
+    </div>
+    <div class="eco-r">
+      <div class="eco-fig" id="ef1">
+        <div class="eco-fig-n">₹3,926Cr</div>
+        <div class="eco-fig-t">India's creator economy market valuation by 2030</div>
+      </div>
+      <div class="eco-fig" id="ef2">
+        <div class="eco-fig-n">80M+</div>
+        <div class="eco-fig-t">Indian content creators active today across platforms</div>
+      </div>
+      <div class="eco-fig" id="ef3">
+        <div class="eco-fig-n">20.5%</div>
+        <div class="eco-fig-t">Annual growth rate in creator monetisation globally</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ MANIFESTO ═══ -->
+<section id="manifesto">
+  <div class="mf-glow"></div>
+  <div class="mf-wrap">
+  <div id="mf-text">
+    <span class="mf-line mf-l1" id="ml1">The internet</span>
+    <span class="mf-line mf-l2" id="ml2"><em>gave everyone</em></span>
+    <span class="mf-line mf-l3" id="ml3">a voice.</span>
+    <span class="mf-line mf-l4" id="ml4">Trendify gives you a business.</span>
+  </div>
+  <p class="mf-sub" id="mfsub">
+    We built Trendify because we believe the creator economy belongs to creators — not platforms that take 30% of every transaction, force you to follow their rules, and own your audience data. Your work. Your audience. Your revenue.
+  </p>
+  </div>
+</section>
+
+<!-- ═══ PLATFORM ═══ -->
+<section id="platform">
+  <div class="plat-intro">
+    <div class="kicker" style="color:var(--aqua)">Why Trendify</div>
+    <h2 class="plat-intro-h">An <em>operating system</em><br/>for your creator business.</h2>
+    <p class="plat-intro-p">You are not a content creator. You are a business owner. Trendify is the infrastructure that treats you like one — replacing five different tools with one elegant, unified platform.</p>
+  </div>
+
+  <!-- Chapter 1 -->
+  <div class="chap" id="chap1">
+    <div class="chap-l">
+      <span class="chap-n">01 — Revenue</span>
+      <h3 class="chap-h">Every rupee,<br/><em>instantly yours.</em></h3>
+      <p class="chap-p">No 30-day holds. No opaque fee structures. Every Indian payment settles to your account within minutes. UPI, card, net banking — natively built in, with zero configuration.</p>
+    </div>
+    <div class="chap-r">
+      <div class="vis-wrap">
+        <div class="v-earn">
+          <div class="v-earn-top">
+            <div class="v-earn-lbl">Today's revenue</div>
+            <div class="v-earn-amt">₹4,82,350</div>
+            <div class="v-earn-chg">↑ 34% vs last month</div>
+          </div>
+          <div class="v-chart">
+            <div class="vc-bar" style="height:44%"></div><div class="vc-bar" style="height:60%"></div>
+            <div class="vc-bar" style="height:37%"></div><div class="vc-bar" style="height:72%"></div>
+            <div class="vc-bar" style="height:55%"></div><div class="vc-bar" style="height:80%"></div>
+            <div class="vc-bar pk" style="height:100%"></div>
+          </div>
+          <div class="v-streams">
+            <div class="v-stream"><span class="v-stream-l"><span class="v-sdot" style="background:var(--violet)"></span>Courses</span><span class="v-stream-r">₹1,24,000</span></div>
+            <div class="v-stream"><span class="v-stream-l"><span class="v-sdot" style="background:var(--aqua)"></span>Webinars</span><span class="v-stream-r">₹86,500</span></div>
+            <div class="v-stream"><span class="v-stream-l"><span class="v-sdot" style="background:var(--gold)"></span>Memberships</span><span class="v-stream-r">₹2,12,000</span></div>
+            <div class="v-stream"><span class="v-stream-l"><span class="v-sdot" style="background:var(--ember)"></span>Digital products</span><span class="v-stream-r">₹59,850</span></div>
+          </div>
+          <div class="v-settle"><span class="v-settle-l">⚡ Settled to your account</span><span class="v-settle-r">₹7,297 · Just now</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Chapter 2 -->
+  <div class="chap flip" id="chap2">
+    <div class="chap-l">
+      <span class="chap-n">02 — Payments</span>
+      <h3 class="chap-h">Built for India,<br/><em>open to the world.</em></h3>
+      <p class="chap-p">Accept UPI and Razorpay without code. Add Stripe and PayPal for international buyers. Trendify handles compliance, currency conversion, and tax documentation automatically.</p>
+    </div>
+    <div class="chap-r">
+      <div class="vis-wrap">
+        <div class="v-pay">
+          <div class="v-pay-grid">
+            <div class="v-pay-card glow"><div class="v-pc-name">UPI</div><div class="v-pc-desc">PhonePe, GPay, Paytm</div><span class="v-pc-tag t-in">India-native</span></div>
+            <div class="v-pay-card"><div class="v-pc-name">Razorpay</div><div class="v-pc-desc">Cards, EMI, net banking</div><span class="v-pc-tag t-in">India-native</span></div>
+            <div class="v-pay-card"><div class="v-pc-name">Stripe</div><div class="v-pc-desc">135+ countries</div><span class="v-pc-tag t-gl">Global</span></div>
+            <div class="v-pay-card"><div class="v-pc-name">PayPal</div><div class="v-pc-desc">International buyers</div><span class="v-pc-tag t-gl">Global</span></div>
+          </div>
+          <div class="v-flow">
+            <div class="vf-n"><strong>Buyer</strong>Any method</div>
+            <div class="vf-arr"></div>
+            <div class="vf-n"><strong>Trendify</strong>Encrypted</div>
+            <div class="vf-arr"></div>
+            <div class="vf-n" style="color:var(--green)"><strong>Your Bank</strong>Instant</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Chapter 3 -->
+  <div class="chap" id="chap3">
+    <div class="chap-l">
+      <span class="chap-n">03 — Community</span>
+      <h3 class="chap-h">Where your audience<br/><em>already lives.</em></h3>
+      <p class="chap-p">Indian creators build communities in Telegram and WhatsApp — not some obscure platform. Trendify integrates natively. Gate your groups by subscription. Auto-manage access. Zero manual work.</p>
+    </div>
+    <div class="chap-r">
+      <div class="vis-wrap">
+        <div class="v-comm">
+          <div class="v-comm-h"><span class="v-comm-t">Creator Pro Club</span><span class="v-comm-c">2,841 members</span></div>
+          <div class="v-comm-list">
+            <div class="v-cm"><div class="v-av" style="background:rgba(123,94,167,.18);color:var(--violet)">AK</div><div><div class="v-cn">Aarav Kumar</div><div class="v-cv">via Telegram · Active</div></div><span class="v-cs" style="color:var(--green)">●</span></div>
+            <div class="v-cm"><div class="v-av" style="background:rgba(0,229,200,.1);color:var(--aqua)">PS</div><div><div class="v-cn">Priya Sharma</div><div class="v-cv">via WhatsApp · Active</div></div><span class="v-cs" style="color:var(--green)">●</span></div>
+            <div class="v-cm"><div class="v-av" style="background:rgba(212,168,67,.1);color:var(--gold)">RV</div><div><div class="v-cn">Rohan Verma</div><div class="v-cv">via Telegram · Trial</div></div><span class="v-cs" style="color:var(--mist)">○</span></div>
+          </div>
+          <div class="v-rule">⚡ Auto-remove expired members: <strong style="color:#fff">ON</strong></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ PAYMENTS ═══ -->
+<section id="payments">
+  <div class="pay-atmo"></div>
+  <div class="pay-inner">
+    <div class="pay-copy">
+      <div class="kicker" style="color:var(--aqua)">Payment Infrastructure</div>
+      <h2 class="pay-h">Payments that move<br/>at <em>creator speed.</em></h2>
+      <p class="pay-body">From a ₹49 digital download to a ₹2,00,000 coaching programme. Every transaction encrypted, instant, built for India first. No 30-day waits. No surprise deductions.</p>
+      <div class="pay-stats">
+        <div class="pay-stat"><span class="pay-stat-val">0%</span>Platform transaction fee on Pro & Business</div>
+        <div class="pay-stat"><span class="pay-stat-val">&lt;4 min</span>Average settlement time to your bank</div>
+        <div class="pay-stat"><span class="pay-stat-val">135+</span>Countries accepted via Stripe & PayPal</div>
+        <div class="pay-stat"><span class="pay-stat-val">99.97%</span>Payment gateway uptime SLA</div>
+      </div>
+    </div>
+    <div class="pay-panel">
+      <div class="pp-top">
+        <div class="pp-dots"><div class="pp-d" style="background:#ff5f56"></div><div class="pp-d" style="background:#febc2e"></div><div class="pp-d" style="background:#27c93f"></div></div>
+        <span class="pp-url">trendify.app/payments</span>
+      </div>
+      <div class="pp-body">
+        <div class="pp-lbl"><span class="live-d"></span>Live transactions</div>
+        <div class="tx-list" id="txlist">
+          <div class="tx"><div><div class="tx-n">Kunal Mehta</div><div class="tx-p">Advanced React Course</div></div><div><div class="tx-v">+₹3,499</div><div class="tx-t">just now</div></div></div>
+          <div class="tx"><div><div class="tx-n">Sneha Patel</div><div class="tx-p">Photography Masterclass</div></div><div><div class="tx-v">+₹1,999</div><div class="tx-t">3 min ago</div></div></div>
+          <div class="tx"><div><div class="tx-n">Arjun Singh</div><div class="tx-p">Creator Pro Membership</div></div><div><div class="tx-v">+₹799</div><div class="tx-t">6 min ago</div></div></div>
+          <div class="tx"><div><div class="tx-n">Meera Rao</div><div class="tx-p">AI Productivity Workshop</div></div><div><div class="tx-v">+₹1,200</div><div class="tx-t">9 min ago</div></div></div>
+        </div>
+      </div>
+      <div class="pp-foot"><span class="ppf-l">↑ Total processed today</span><span class="ppf-v">₹48,22,350</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ ECOSYSTEM ═══ -->
+<section id="ecosystem">
+  <div class="ec-ghost">All.</div>
+  <div class="ec-inner">
+    <div class="ec-header">
+      <div>
+        <div class="kicker" style="color:var(--violet)">All-in-One</div>
+        <h2 class="ec-h">Every tool.<br/><em>One</em><br/><strong>platform.</strong></h2>
+      </div>
+      <p class="ec-desc">Stop paying for five tools and logging into six dashboards. Trendify unifies your entire creator business into one elegant system — so you can focus on creating, not managing software.</p>
+    </div>
+    <div class="ec-rows">
+      <div class="ec-row" id="ecr1">
+        <div class="ec-num">01</div>
+        <div class="ec-title">Course Builder<span class="ec-tag">Courses</span></div>
+        <div class="ec-desc-cell">Studio-grade course creation with video hosting, quizzes, certificates, and drip scheduling. Unlimited content. Beautiful player. Students love it.</div>
+      </div>
+      <div class="ec-row" id="ecr2">
+        <div class="ec-num">02</div>
+        <div class="ec-title">Webinar Studio<span class="ec-tag">Events</span></div>
+        <div class="ec-desc-cell">Live events, recordings, replay sales, and ticketed access — on one link. Before, during, and after — managed in one place.</div>
+      </div>
+      <div class="ec-row" id="ecr3">
+        <div class="ec-num">03</div>
+        <div class="ec-title">Community Platform<span class="ec-tag">Community</span></div>
+        <div class="ec-desc-cell">Native Telegram and WhatsApp integration. Members pay, they're added. They cancel, they're removed. No manual work. Ever.</div>
+      </div>
+      <div class="ec-row" id="ecr4">
+        <div class="ec-num">04</div>
+        <div class="ec-title">Memberships & Subscriptions<span class="ec-tag">Recurring</span></div>
+        <div class="ec-desc-cell">Monthly, quarterly, annual. Smart dunning. Automatic renewal. Churn prevention baked in. Recurring revenue that grows while you sleep.</div>
+      </div>
+      <div class="ec-row" id="ecr5">
+        <div class="ec-num">05</div>
+        <div class="ec-title">Digital Downloads<span class="ec-tag">Products</span></div>
+        <div class="ec-desc-cell">Templates, ebooks, presets, files — instant delivery with copy protection. Sell once, deliver automatically, forever.</div>
+      </div>
+      <div class="ec-row" id="ecr6">
+        <div class="ec-num">06</div>
+        <div class="ec-title">AI Automation Suite<span class="ec-tag">AI & Automation</span></div>
+        <div class="ec-desc-cell">Affiliate programs, automated email sequences, and audience workflows that generate revenue while you create. Set once. Run forever.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ VOICES ═══ -->
+<section id="voices">
+  <div class="v-atmo"></div>
+  <div class="voices-inner">
+    <div class="kicker" style="color:var(--violet)">Creator Stories</div>
+    <h2 class="voices-h">Real numbers.<br/><em>Real creators.</em></h2>
+    <div class="v-grid">
+      <div class="v-row">
+        <div class="v-cell" id="vc1">
+          <div>
+            <div class="v-rev">₹12.4L</div>
+            <div class="v-rev-sub">Revenue in first 6 months</div>
+          </div>
+          <p class="v-quote">"I was using five different tools and spending ₹40,000 a month on subscriptions just to run my business. Trendify replaced everything. Revenue tripled in six months, costs dropped 90%."</p>
+          <div class="v-who">
+            <div class="v-av" style="background:rgba(123,94,167,.2);color:var(--violet)">KR</div>
+            <div><div class="v-name">Kartik Rao</div><div class="v-handle">UI/UX Educator · Mumbai</div></div>
+          </div>
+        </div>
+        <div class="v-cell" id="vc2">
+          <div>
+            <div class="v-rev">₹8.1L</div>
+            <div class="v-rev-sub">From webinars alone</div>
+          </div>
+          <p class="v-quote">"The Telegram integration is unreal. I gate my community, it auto-adds paying members and removes cancelled ones. I haven't touched member management in four months."</p>
+          <div class="v-who">
+            <div class="v-av" style="background:rgba(0,229,200,.1);color:var(--aqua)">NJ</div>
+            <div><div class="v-name">Nisha Joshi</div><div class="v-handle">Fitness Creator · Bangalore</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="v-row">
+        <div class="v-pullquote" id="vpq">
+          <p class="v-pq-text">"Our checkout conversion went from 2% to 9% the day we moved. Indian buyers actually trust the payment flow."</p>
+          <span class="v-pq-attr">Aditya Desai · Finance Creator · Delhi · 4,200+ active members</span>
+        </div>
+        <div class="v-cell" id="vc3" style="border-right:none">
+          <div>
+            <div class="v-rev">4,200+</div>
+            <div class="v-rev-sub">Active paying members</div>
+          </div>
+          <p class="v-quote">"We switched from Kajabi — $400 a month with no UPI. Our conversion rate went from 2% to 9% the day we moved. The difference is that Indian buyers actually trust the payment flow."</p>
+          <div class="v-who">
+            <div class="v-av" style="background:rgba(212,168,67,.12);color:var(--gold)">AD</div>
+            <div><div class="v-name">Aditya Desai</div><div class="v-handle">Finance Creator · Delhi</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ PRICING ═══ -->
+<section id="pricing">
+  <div class="pr-atmo"></div>
+  <div class="pr-inner">
+    <div class="pr-header">
+      <div>
+        <div class="kicker" style="color:var(--violet)">Pricing</div>
+        <h2 class="pr-h">Priced for<br/><em>builders.</em></h2>
+      </div>
+      <p class="pr-note">No percentage cuts on your revenue. No hidden fees. No artificial limits on how much you can earn. A flat monthly rate for the infrastructure that scales with your ambition.</p>
+    </div>
+    <div class="pr-grid">
+      <div class="pr-col" id="pcol1">
+        <div class="pr-tier">Starter</div>
+        <div class="pr-amt"><sup>₹</sup>999</div>
+        <div class="pr-per">per month · billed annually</div>
+        <div class="pr-div"></div>
+        <ul class="pr-features">
+          <li class="pr-feature"><div class="pr-ck"></div>3 courses & 3 digital products</li>
+          <li class="pr-feature"><div class="pr-ck"></div>1 community</li>
+          <li class="pr-feature"><div class="pr-ck"></div>UPI + Razorpay payments</li>
+          <li class="pr-feature"><div class="pr-ck"></div>Link-in-bio storefront</li>
+          <li class="pr-feature"><div class="pr-ck"></div>Basic analytics</li>
+          <li class="pr-feature"><div class="pr-ck"></div>2% transaction fee</li>
+        </ul>
+        <button class="pr-btn">Get started →</button>
+      </div>
+      <div class="pr-col ft" id="pcol2">
+        <span class="ft-badge">Most popular</span>
+        <div class="pr-tier">Pro</div>
+        <div class="pr-amt"><sup>₹</sup>2,499</div>
+        <div class="pr-per">per month · billed annually</div>
+        <div class="pr-div"></div>
+        <ul class="pr-features">
+          <li class="pr-feature"><div class="pr-ck"></div>Unlimited courses & products</li>
+          <li class="pr-feature"><div class="pr-ck"></div>Unlimited communities</li>
+          <li class="pr-feature"><div class="pr-ck"></div>Telegram & WhatsApp integration</li>
+          <li class="pr-feature"><div class="pr-ck"></div>Webinar hosting</li>
+          <li class="pr-feature"><div class="pr-ck"></div>Advanced analytics</li>
+          <li class="pr-feature"><div class="pr-ck"></div>Stripe + PayPal (international)</li>
+          <li class="pr-feature"><div class="pr-ck"></div>0% transaction fee</li>
+        </ul>
+        <button class="pr-btn ft-btn" onclick="location.href='signup.html'">Start free trial →</button>
+      </div>
+      <div class="pr-col" id="pcol3">
+        <div class="pr-tier">Business</div>
+        <div class="pr-amt"><sup>₹</sup>5,999</div>
+        <div class="pr-per">per month · billed annually</div>
+        <div class="pr-div"></div>
+        <ul class="pr-features">
+          <li class="pr-feature"><div class="pr-ck"></div>Everything in Pro</li>
+          <li class="pr-feature"><div class="pr-ck"></div>White-label branding</li>
+          <li class="pr-feature"><div class="pr-ck"></div>AI automation suite</li>
+          <li class="pr-feature"><div class="pr-ck"></div>Affiliate programme engine</li>
+          <li class="pr-feature"><div class="pr-ck"></div>Dedicated support</li>
+          <li class="pr-feature"><div class="pr-ck"></div>Custom domain</li>
+          <li class="pr-feature"><div class="pr-ck"></div>0% transaction fee</li>
+        </ul>
+        <button class="pr-btn">Contact sales →</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ FINALE ═══ -->
+<section id="finale">
+  <div class="fin-a1"></div><div class="fin-a2"></div>
+  <div class="fin-inner">
+    <div class="fin-l">
+      <div class="kicker" style="color:var(--violet)">Your moment is now</div>
+      <h2 class="fin-h" id="finh">The future<br/>belongs<br/>to <em><span class="fg">creators.</span></em></h2>
+    </div>
+    <div class="fin-r">
+      <p class="fin-sub">Stop stitching tools together. Stop losing revenue to platforms that don't understand how India buys. Start building the creator business you actually imagined — on infrastructure designed for you.</p>
+      <div class="fin-btns">
+        <a href="signup.html" class="btn-a">Start building free →</a>
+        <a href="#" class="btn-b">Book a 30-minute demo</a>
+      </div>
+    </div>
+  </div>
+  <div class="fin-bottom">
+    <span class="fin-tag">Built for the creator generation.</span>
+    <span class="fin-logo">Trendify</span>
+  </div>
+</section>
+
+<footer>
+  <div class="ft-grid">
+    <div>
+      <span class="ft-logo">Trendify</span>
+      <p class="ft-copy">The all-in-one platform for Indian creators to build, sell, and scale — with infrastructure that finally matches their ambition.</p>
+      <div class="ft-soc">
+        <a href="#" class="ft-s">𝕏</a>
+        <a href="#" class="ft-s">in</a>
+        <a href="#" class="ft-s">▶</a>
+        <a href="#" class="ft-s">ig</a>
+      </div>
+    </div>
+    <div><div class="ft-col-h">Product</div><ul class="ft-links"><li><a href="#">Courses</a></li><li><a href="#">Webinars</a></li><li><a href="#">Communities</a></li><li><a href="#">Payments</a></li><li><a href="#">Analytics</a></li></ul></div>
+    <div><div class="ft-col-h">Company</div><ul class="ft-links"><li><a href="#">About</a></li><li><a href="#">Blog</a></li><li><a href="#">Careers</a></li><li><a href="#">Press</a></li><li><a href="#">Contact</a></li></ul></div>
+    <div><div class="ft-col-h">Legal</div><ul class="ft-links"><li><a href="#">Privacy</a></li><li><a href="#">Terms</a></li><li><a href="#">Refunds</a></li><li><a href="#">Cookies</a></li></ul></div>
+  </div>
+  <div class="ft-bot">
+    <span>© 2025 Trendify Technologies Pvt. Ltd.</span>
+    <span>India's Creator Platform</span>
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>

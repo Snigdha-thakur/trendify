@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Create Account — Trendify</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,600;1,300;1,600&family=Syne:wght@400;700;800&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="css/styles.css"/>
+<style>
+  .su-page{
+    min-height:100svh;display:flex;align-items:center;justify-content:center;
+    padding:100px var(--pad-x) 60px;position:relative;overflow:hidden;
+  }
+
+  .su-orb1{
+    position:absolute;width:900px;height:900px;border-radius:50%;pointer-events:none;
+    background:radial-gradient(circle,rgba(0,229,200,.12) 0%,transparent 65%);
+    top:-300px;right:-200px;filter:blur(70px);
+    animation:hb2 16s ease-in-out infinite alternate;
+  }
+  .su-orb2{
+    position:absolute;width:700px;height:700px;border-radius:50%;pointer-events:none;
+    background:radial-gradient(circle,rgba(123,94,167,.16) 0%,transparent 65%);
+    bottom:-200px;left:-150px;filter:blur(60px);
+    animation:hb1 14s ease-in-out infinite alternate;
+  }
+
+  .su-card{
+    position:relative;z-index:2;
+    width:100%;max-width:500px;
+    background:var(--panel);
+    border:1px solid rgba(167,124,255,.18);
+    border-radius:16px;
+    padding:52px 48px;
+    box-shadow:0 0 0 1px rgba(167,124,255,.06),0 60px 120px rgba(0,0,0,.7),0 0 80px rgba(123,94,167,.12);
+  }
+  .su-card::before{
+    content:'';position:absolute;top:0;left:0;right:0;height:1px;border-radius:16px 16px 0 0;
+    background:linear-gradient(90deg,transparent,var(--aqua),var(--violet),transparent);
+  }
+
+  .su-logo{
+    font-family:var(--f-sans);font-size:20px;font-weight:800;letter-spacing:.01em;
+    background:linear-gradient(135deg,#fff 20%,var(--violet));
+    -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+    text-decoration:none;display:block;margin-bottom:36px;
+  }
+
+  .su-heading{
+    font-family:var(--f-serif);font-weight:300;font-size:36px;
+    line-height:.95;letter-spacing:-.02em;color:#fff;margin-bottom:8px;
+  }
+  .su-heading em{ font-style:italic; }
+  .su-sub{ font-size:13px;color:var(--smoke);margin-bottom:36px;line-height:1.6; }
+  .su-sub a{ color:var(--violet);text-decoration:none;transition:color .2s; }
+  .su-sub a:hover{ color:#fff; }
+
+  .su-form{ display:flex;flex-direction:column;gap:16px; }
+
+  .su-field{ display:flex;flex-direction:column;gap:7px; }
+  .su-label{
+    font-family:var(--f-mono);font-size:9px;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--smoke);
+  }
+  .su-input{
+    background:rgba(255,255,255,.04);
+    border:1px solid rgba(167,124,255,.18);
+    border-radius:6px;padding:13px 16px;
+    font-family:var(--f-sans);font-size:14px;color:#fff;
+    outline:none;transition:border-color .25s,box-shadow .25s;
+    cursor:text;width:100%;
+  }
+  .su-input::placeholder{ color:rgba(200,196,232,.4); }
+  .su-input:focus{
+    border-color:rgba(167,124,255,.5);
+    box-shadow:0 0 0 3px rgba(123,94,167,.12);
+  }
+  .su-input.error{ border-color:var(--ember); }
+
+  /* phone field with prefix */
+  .su-phone-wrap{ display:flex;gap:0; }
+  .su-phone-prefix{
+    background:rgba(255,255,255,.06);
+    border:1px solid rgba(167,124,255,.18);border-right:none;
+    border-radius:6px 0 0 6px;padding:13px 14px;
+    font-family:var(--f-mono);font-size:13px;color:var(--smoke);
+    white-space:nowrap;
+  }
+  .su-phone-wrap .su-input{ border-radius:0 6px 6px 0; }
+
+  /* password strength */
+  .su-strength{ display:flex;gap:4px;margin-top:6px; }
+  .su-str-bar{ flex:1;height:3px;border-radius:2px;background:rgba(255,255,255,.08);transition:background .3s; }
+  .su-str-bar.w{ background:var(--ember); }
+  .su-str-bar.m{ background:var(--gold); }
+  .su-str-bar.s{ background:var(--green); }
+  .su-str-label{ font-family:var(--f-mono);font-size:9px;letter-spacing:.1em;color:var(--mist);margin-top:4px; }
+
+  .su-terms{
+    display:flex;align-items:flex-start;gap:10px;
+    font-size:12px;color:var(--smoke);line-height:1.5;
+  }
+  .su-check{
+    width:14px;height:14px;border-radius:3px;flex-shrink:0;margin-top:1px;
+    border:1px solid rgba(167,124,255,.3);accent-color:var(--violet);cursor:pointer;
+  }
+  .su-terms a{ color:var(--violet);text-decoration:none; }
+  .su-terms a:hover{ color:#fff; }
+
+  .su-btn{
+    width:100%;padding:15px;border-radius:6px;
+    font-family:var(--f-sans);font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+    color:#fff;background:var(--iris);border:1px solid transparent;
+    cursor:pointer;transition:background .25s,box-shadow .25s,transform .2s;
+    box-shadow:0 0 36px rgba(123,94,167,.4);position:relative;overflow:hidden;
+  }
+  .su-btn::before{
+    content:'';position:absolute;inset:0;
+    background:linear-gradient(135deg,rgba(255,255,255,.08),transparent);
+    opacity:0;transition:opacity .25s;
+  }
+  .su-btn:hover{ background:var(--violet);box-shadow:0 0 60px rgba(167,124,255,.55);transform:translateY(-1px); }
+  .su-btn:hover::before{ opacity:1; }
+
+  .su-divider{
+    display:flex;align-items:center;gap:14px;
+    font-family:var(--f-mono);font-size:9px;letter-spacing:.12em;color:var(--mist);
+    text-transform:uppercase;
+  }
+  .su-divider::before,.su-divider::after{ content:'';flex:1;height:1px;background:var(--rim); }
+
+  .su-social-btn{
+    display:flex;align-items:center;justify-content:center;gap:10px;
+    padding:12px;border-radius:6px;
+    border:1px solid rgba(167,124,255,.18);background:rgba(255,255,255,.03);
+    font-family:var(--f-sans);font-size:12px;font-weight:700;letter-spacing:.04em;
+    color:var(--smoke);text-decoration:none;cursor:pointer;
+    transition:border-color .25s,color .25s,background .25s;
+  }
+  .su-social-btn:hover{ border-color:rgba(167,124,255,.4);color:#fff;background:rgba(255,255,255,.06); }
+  .su-social-icon{ width:16px;height:16px;flex-shrink:0; }
+
+  .su-signin{
+    text-align:center;margin-top:24px;
+    font-size:12px;color:var(--smoke);
+  }
+  .su-signin a{ color:var(--violet);text-decoration:none;font-weight:700;transition:color .2s; }
+  .su-signin a:hover{ color:#fff; }
+
+  /* trial badge */
+  .su-badge{
+    display:inline-flex;align-items:center;gap:8px;
+    font-family:var(--f-mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--green);border:1px solid rgba(34,212,122,.2);
+    background:rgba(34,212,122,.06);padding:5px 12px;border-radius:20px;
+    margin-bottom:20px;
+  }
+  .su-badge-dot{ width:5px;height:5px;border-radius:50%;background:var(--green);animation:ld 1.8s ease-in-out infinite; }
+
+  @media(max-width:520px){
+    .su-card{ padding:40px 24px; }
+    .su-heading{ font-size:28px; }
+    .su-row2{ grid-template-columns:1fr; }
+  }
+</style>
+</head>
+<body>
+
+<canvas id="particles"></canvas>
+<div id="c"></div>
+<div class="cr" id="cr"></div>
+<div id="prog"></div>
+
+<!-- NAV -->
+<nav id="nav">
+  <a href="index.html" class="logo">Trendify</a>
+  <ul class="nv">
+    <li><a href="index.html#platform">Platform</a></li>
+    <li><a href="index.html#payments">Payments</a></li>
+    <li><a href="index.html#pricing">Pricing</a></li>
+  </ul>
+  <div class="na">
+    <a href="signin.html" class="btn-nav-ghost">Sign in</a>
+    <a href="signup.html" class="btn-nav">Start free</a>
+  </div>
+</nav>
+
+<!-- SIGNUP PAGE -->
+<main class="su-page">
+  <div class="su-orb1"></div>
+  <div class="su-orb2"></div>
+
+  <div class="su-card">
+    <a href="index.html" class="su-logo">Trendify</a>
+
+    <div class="su-badge"><span class="su-badge-dot"></span> 14-day free trial · No credit card needed</div>
+
+    <h1 class="su-heading">Create your<br/><em>account.</em></h1>
+    <p class="su-sub">Already have one? <a href="signin.html">Sign in →</a></p>
+
+    <form class="su-form" id="su-form">
+
+      <div class="su-field">
+        <label class="su-label" for="fullname">Full name</label>
+        <input class="su-input" id="fullname" type="text" placeholder="Your full name" autocomplete="name"/>
+      </div>
+
+      <div class="su-field">
+        <label class="su-label" for="su-email">Email address</label>
+        <input class="su-input" id="su-email" type="email" placeholder="Your email address" autocomplete="email"/>
+      </div>
+
+      <div class="su-field">
+        <label class="su-label" for="phone">Phone number</label>
+        <div class="su-phone-wrap">
+          <span class="su-phone-prefix">🇮🇳 +91</span>
+          <input class="su-input" id="phone" type="tel" placeholder="10-digit mobile number" autocomplete="tel" maxlength="10"/>
+        </div>
+      </div>
+
+      <div class="su-field">
+        <label class="su-label">Account type</label>
+        <div style="display:flex;gap:10px;margin-top:5px">
+          <label class="su-terms" style="margin:0;font-size:12px;display:flex;align-items:center;gap:6px">
+            <input class="su-check" type="radio" name="role" value="user" checked/>
+            Regular user
+          </label>
+          <label class="su-terms" style="margin:0;font-size:12px;display:flex;align-items:center;gap:6px">
+            <input class="su-check" type="radio" name="role" value="creator"/>
+            Content creator
+          </label>
+        </div>
+        <div style="font-size:11px;color:var(--mist);margin-top:4px;font-family:var(--f-mono);letter-spacing:.05em">
+          Creators can sell digital products and earn money on Trendify.
+        </div>
+      </div>
+
+      <div class="su-field">
+        <label class="su-label" for="su-password">Password</label>
+        <input class="su-input" id="su-password" type="password" placeholder="Min. 8 characters" autocomplete="new-password"/>
+        <div class="su-strength">
+          <div class="su-str-bar" id="sb1"></div>
+          <div class="su-str-bar" id="sb2"></div>
+          <div class="su-str-bar" id="sb3"></div>
+          <div class="su-str-bar" id="sb4"></div>
+        </div>
+        <span class="su-str-label" id="str-label"></span>
+      </div>
+
+      <label class="su-terms">
+        <input class="su-check" type="checkbox" id="su-terms"/>
+        I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>
+      </label>
+
+      <button class="su-btn" type="submit">Create account →</button>
+
+      <div class="su-divider">or sign up with</div>
+
+      <a href="#" class="su-social-btn">
+        <svg class="su-social-icon" viewBox="0 0 24 24" fill="none">
+          <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+          <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+          <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/>
+          <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+        </svg>
+        Continue with Google
+      </a>
+
+    </form>
+
+    <p class="su-signin">Already have an account? <a href="signin.html">Sign in</a></p>
+  </div>
+</main>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="js/main.js"></script>
+<script src="js/auth-api.js"></script>
+<script>
+  gsap.from('.su-card', {opacity:0, y:32, duration:.8, ease:'power3.out', delay:.2});
+  gsap.from('.su-heading, .su-sub, .su-badge', {opacity:0, y:16, duration:.6, ease:'power2.out', stagger:.1, delay:.3});
+
+  // Don't auto-redirect - let users sign up
+  // if (TrendifyAuth.isLoggedIn()) window.location.href = 'dashboard.html';
+
+  // Password strength meter
+  const pwInput = document.getElementById('su-password');
+  const bars = [document.getElementById('sb1'), document.getElementById('sb2'), document.getElementById('sb3'), document.getElementById('sb4')];
+  const strLabel = document.getElementById('str-label');
+
+  pwInput.addEventListener('input', () => {
+    const v = pwInput.value;
+    let score = 0;
+    if(v.length >= 8) score++;
+    if(/[A-Z]/.test(v)) score++;
+    if(/[0-9]/.test(v)) score++;
+    if(/[^A-Za-z0-9]/.test(v)) score++;
+
+    const cls = score <= 1 ? 'w' : score === 2 ? 'm' : 's';
+    const labels = ['', 'Weak', 'Fair', 'Good', 'Strong'];
+    bars.forEach((b, i) => { b.className = 'su-str-bar' + (i < score ? ' ' + cls : ''); });
+    strLabel.textContent = v.length ? labels[score] : '';
+    strLabel.style.color = score <= 1 ? 'var(--ember)' : score === 2 ? 'var(--gold)' : 'var(--green)';
+  });
+
+  // Form submit
+  document.getElementById('su-form').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const fullname = document.getElementById('fullname').value.trim();
+    const email = document.getElementById('su-email').value.trim();
+    const phone = document.getElementById('phone').value.trim();
+    const password = document.getElementById('su-password').value;
+    const terms = document.getElementById('su-terms').checked;
+    const btn = this.querySelector('.su-btn');
+
+    if (!fullname || !email || !phone || !password) {
+      btn.textContent = 'Please fill all fields';
+      btn.style.background = 'var(--ember)';
+      setTimeout(() => { btn.textContent = 'Create account →'; btn.style.background = ''; }, 2000);
+      return;
+    }
+    if (phone.length < 10) {
+      btn.textContent = 'Enter valid phone number';
+      btn.style.background = 'var(--ember)';
+      setTimeout(() => { btn.textContent = 'Create account →'; btn.style.background = ''; }, 2000);
+      return;
+    }
+    if (password.length < 8) {
+      btn.textContent = 'Password too short';
+      btn.style.background = 'var(--ember)';
+      setTimeout(() => { btn.textContent = 'Create account →'; btn.style.background = ''; }, 2000);
+      return;
+    }
+    if (!terms) {
+      btn.textContent = 'Accept terms to continue';
+      btn.style.background = 'var(--ember)';
+      setTimeout(() => { btn.textContent = 'Create account →'; btn.style.background = ''; }, 2000);
+      return;
+    }
+
+    btn.textContent = 'Creating account…';
+    btn.disabled = true;
+
+    try {
+      const role = document.querySelector('input[name="role"]:checked')?.value || 'user';
+      const user = await TrendifyAuth.register(email, password, fullname, phone, role);
+      // If email confirmation is off, auto-login; otherwise prompt
+      if (user && user.access_token) {
+        btn.textContent = '✓ Account created!';
+        btn.style.background = 'var(--green)';
+        setTimeout(() => { TrendifyAuth.redirectByRole(TrendifyAuth.getUser()); }, 700);
+      } else {
+        btn.textContent = '✓ Check your email to confirm';
+        btn.style.background = 'var(--green)';
+      }
+    } catch (err) {
+      btn.textContent = err.message || 'Registration failed';
+      btn.style.background = 'var(--ember)';
+      btn.disabled = false;
+      setTimeout(() => { btn.textContent = 'Create account →'; btn.style.background = ''; }, 3000);
+    }
+  });
+</script>
+</body>
+</html>
