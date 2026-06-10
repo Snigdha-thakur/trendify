@@ -142,7 +142,7 @@ nav.s{background:rgba(3,3,7,.85);backdrop-filter:blur(32px) saturate(180%);borde
 #hero{
   min-height:100svh;display:flex;flex-direction:column;
   align-items:center;justify-content:center;
-  padding:140px var(--pad-x) 0;text-align:center;
+  padding:clamp(56px,12vh,120px) var(--pad-x) 0;text-align:center;
   position:relative;overflow:hidden;
   background:linear-gradient(180deg,rgba(10,8,32,.95) 0%,rgba(4,4,15,.9) 100%);
 }
@@ -191,7 +191,7 @@ nav.s{background:rgba(3,3,7,.85);backdrop-filter:blur(32px) saturate(180%);borde
 
 .hero-eyebrow{
   font-family:var(--f-mono);font-size:10px;letter-spacing:.22em;text-transform:uppercase;
-  color:var(--mist);margin-bottom:52px;
+  color:var(--mist);margin-bottom:28px;
   display:inline-flex;align-items:center;gap:14px;
 }
 .ey-bar{width:28px;height:1px;background:linear-gradient(90deg,transparent,var(--violet))}
