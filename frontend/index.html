@@ -10,6 +10,18 @@
 </head>
 <body>
 
+<script>
+  (function(){
+    try{
+      var isTouch = ('ontouchstart' in window) || navigator.maxTouchPoints > 0 || navigator.msMaxTouchPoints > 0;
+      if(isTouch){
+        document.documentElement.classList.add('touch-device');
+        if(document.body) document.body.classList.add('touch-device');
+      }
+    }catch(e){}
+  })();
+</script>
+
 <canvas id="particles"></canvas>
 <div id="c"></div>
 <div class="cr" id="cr"></div>

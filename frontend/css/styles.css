@@ -40,6 +40,45 @@ body{
   background-attachment:fixed;
   animation:grid-pan 60s linear infinite;
 }
+/* Make images responsive */
+img{max-width:100%;height:auto;display:block}
+
+/* Reduce/disable heavy animations on touch devices to improve performance */
+.touch-device .hl, .touch-device #particles, .touch-device #prog, .touch-device .belt-track{display:none !important}
+.touch-device *{animation: none !important; transition: none !important}
+
+/* Responsive adjustments */
+@media (max-width:1024px){
+  nav{padding:0 20px;height:64px}
+  .site-logo{height:40px}
+  .logo-text{font-size:18px}
+}
+
+@media (max-width:768px){
+  nav{height:56px}
+  .nv{display:none}
+  .na{gap:8px}
+  .hero-h1{font-size:clamp(48px,10vw,120px)}
+  .hero-eyebrow{margin-bottom:20px}
+  .hero-z{padding-left:var(--pad-x);padding-right:var(--pad-x)}
+  .hl{display:none}
+}
+
+@media (max-width:425px){
+  .site-logo{height:36px}
+  .logo-text{font-size:16px}
+  .hero-h1{font-size:clamp(36px,10vw,72px)}
+  .hero-sub{font-size:14px}
+  .hero-split{display:block;grid-template-columns:1fr}
+  .hero-z{padding:0 20px}
+}
+
+@media (max-width:375px){
+  .hero-h1{font-size:clamp(32px,11vw,64px)}
+}
+
+/* Prevent any accidental horizontal overflow */
+html,body{max-width:100%;overflow-x:hidden}
 body.touch-device{cursor:auto !important;}
 body.touch-device #c,body.touch-device .cr{display:none !important;opacity:0 !important;}
 @keyframes grid-pan{0%{background-position:0 0}100%{background-position:40px 40px}}
