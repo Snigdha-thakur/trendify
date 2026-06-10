@@ -1,5 +1,5 @@
 {
-  "buildCommand": "cd trendify-site/frontend && npm install && npm run build",
-  "outputDirectory": "trendify-site/frontend/dist",
-  "installCommand": "cd trendify-site/frontend && npm install"
+  "installCommand": "npm --prefix trendify-site/frontend install",
+  "buildCommand": "npm --prefix trendify-site/frontend run build",
+  "outputDirectory": "trendify-site/frontend/dist"
 }
