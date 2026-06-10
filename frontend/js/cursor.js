@@ -6,9 +6,19 @@
   var c = document.getElementById('c');
   var cr = document.getElementById('cr');
   var b = document.body;
-  
-  if (!c || !cr) return;
-  
+
+  if (!c) {
+    c = document.createElement('div');
+    c.id = 'c';
+    document.body.appendChild(c);
+  }
+  if (!cr) {
+    cr = document.createElement('div');
+    cr.id = 'cr';
+    cr.className = 'cr';
+    document.body.appendChild(cr);
+  }
+
   // Follow mouse movement
   document.addEventListener('mousemove', function(e) {
     c.style.left = e.clientX + 'px';
