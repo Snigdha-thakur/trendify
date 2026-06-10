@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Dashboard — Creator Platform</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,600;1,300;1,600&family=Syne:wght@400;700;800&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="../css/styles.css"/>
+<link rel="stylesheet" href="creator.css"/>
+</head>
+<body>
+<div id="c"></div>
+<div class="cr" id="cr"></div>
+<nav id="nav" class="s creator-nav">
+  <a href="../index.html" class="logo">Trendify</a>
+  <div class="na">
+    <a href="#" class="btn-nav" id="backToAdmin" style="display:none">← Back to Admin</a>
+    <a href="../signin.html" class="btn-nav-ghost">Sign out</a>
+  </div>
+</nav>
+<div class="admin-shell">
+  <aside class="admin-sidebar" id="adminSidebar">
+    <div class="sb-section">
+      <span class="sb-label">Platform</span>
+      <a class="sb-link" href="my-orders.html"><svg class="sb-icon" viewBox="0 0 16 16" fill="currentColor"><rect x="2" y="3" width="12" height="10" rx="1" fill="none" stroke="currentColor" stroke-width="1.2"/><path d="M5 7h6M5 10h4"/></svg>My Orders</a>
+      <a class="sb-link" href="digital-training.html"><svg class="sb-icon" viewBox="0 0 16 16" fill="currentColor"><rect x="1" y="2" width="14" height="10" rx="1" fill="none" stroke="currentColor" stroke-width="1.2"/><path d="M6 6l4 2-4 2z"/></svg>Digital Training Services</a>
+      <a class="sb-link" href="digital-tools.html"><svg class="sb-icon" viewBox="0 0 16 16" fill="currentColor"><path d="M2 6l6-4 6 4v6a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V6z" fill="none" stroke="currentColor" stroke-width="1.2"/><path d="M6 12V8h4v4"/></svg>Digital Tools</a>
+      <a class="sb-link" href="hosting-services.html"><svg class="sb-icon" viewBox="0 0 16 16" fill="currentColor"><rect x="2" y="3" width="12" height="3" rx="1" fill="none" stroke="currentColor" stroke-width="1.2"/><rect x="2" y="7" width="12" height="3" rx="1" fill="none" stroke="currentColor" stroke-width="1.2"/><rect x="2" y="11" width="12" height="3" rx="1" fill="none" stroke="currentColor" stroke-width="1.2"/></svg>Hosting Services</a>
+      <a class="sb-link" href="website-design.html"><svg class="sb-icon" viewBox="0 0 16 16" fill="currentColor"><rect x="1" y="2" width="14" height="11" rx="1" fill="none" stroke="currentColor" stroke-width="1.2"/><path d="M1 5h14"/><circle cx="3.5" cy="3.5" r=".8"/><circle cx="5.5" cy="3.5" r=".8"/></svg>Website Design Services</a>
+      <a class="sb-link" href="landing-page.html"><svg class="sb-icon" viewBox="0 0 16 16" fill="currentColor"><rect x="2" y="2" width="12" height="12" rx="1" fill="none" stroke="currentColor" stroke-width="1.2"/><path d="M5 6h6M5 9h4"/></svg>Landing Page Services</a>
+    </div>
+    <div class="sb-bottom">
+      <div class="sb-user" id="sbUser" onclick="toggleUserMenu()">
+        <div class="sb-av">CR</div>
+        <div><div class="sb-name">Creator</div><div class="sb-plan">creator@example.com</div></div>
+        <svg style="margin-left:auto;opacity:.5;flex-shrink:0" width="12" height="12" viewBox="0 0 16 16" fill="currentColor"><path d="M4 6l4 4 4-4"/></svg>
+      </div>
+      <div class="user-popup" id="userPopup">
+        <div class="user-popup-head"><div class="sb-av">CR</div><div><div class="sb-name">Creator</div><div class="sb-plan">creator@example.com</div></div></div>
+        <div class="user-popup-divider"></div>
+        <a class="user-popup-item" href="../signin.html"><svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M6 2H3a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3M10 11l3-3-3-3M13 8H6"/></svg>Log out</a>
+      </div>
+    </div>
+  </aside>
+  <main class="admin-main">
+    <div class="admin-breadcrumb">
+      <button class="sb-toggle-btn" onclick="toggleSidebar()"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><rect x="1" y="2" width="14" height="2" rx="1"/><rect x="1" y="7" width="14" height="2" rx="1"/><rect x="1" y="12" width="14" height="2" rx="1"/></svg></button>
+      <span class="bc-parent">Dashboard</span>
+      <button class="theme-toggle-btn" onclick="toggleTheme()">☾</button>
+    </div>
+    <div class="admin-page-body">
+      <div class="welcome-banner">
+        <h1 class="welcome-title">Welcome to Your Creator Dashboard</h1>
+        <p class="welcome-desc">Access your orders, manage your digital services, and grow your creator business.</p>
+      </div>
+    </div>
+  </main>
+</div>
+<script src="../js/auth-api.js"></script>
+<script src="../js/cursor.js"></script>
+<script>
+(function() {
+  var user = TrendifyAuth.requireAuth('../signin.html');
+  if (!user) return;
+  if (user.role !== 'creator' && user.role !== 'admin') {
+    alert('Access denied. Creator account required.');
+    window.location.href = '../signin.html';
+    return;
+  }
+  if (user.role === 'admin') document.getElementById('backToAdmin').style.display = 'inline-block';
+  var ini = (user.name || 'C').split(' ').map(function(w) { return w[0]; }).join('').toUpperCase().slice(0, 2);
+  document.querySelectorAll('.sb-av').forEach(function(el) { el.textContent = ini; });
+  document.querySelectorAll('.sb-name').forEach(function(el) { el.textContent = user.name || 'Creator'; });
+  document.querySelectorAll('.sb-plan').forEach(function(el) { el.textContent = user.email || ''; });
+})();
+document.querySelectorAll('a[href="../signin.html"]').forEach(function(el) {
+  el.addEventListener('click', async function(e) { e.preventDefault(); await TrendifyAuth.logout(); window.location.href = '../signin.html'; });
+});
+document.getElementById('backToAdmin')?.addEventListener('click', function(e) {
+  e.preventDefault();
+  window.location.href = '../admin/overview.html';
+});
+function toggleSidebar() { document.getElementById('adminSidebar').classList.toggle('collapsed'); }
+function toggleTheme() { document.body.classList.toggle('light-theme'); }
+function toggleUserMenu() { event.stopPropagation(); document.getElementById('userPopup').classList.toggle('open'); }
+document.addEventListener('click', function(e) {
+  var popup = document.getElementById('userPopup'), user = document.getElementById('sbUser');
+  if (popup && !popup.contains(e.target) && !user.contains(e.target)) popup.classList.remove('open');
+});
+</script>
+</body>
+</html>
