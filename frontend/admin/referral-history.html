@@ -106,9 +106,9 @@
   </main>
 </div>
 
-<script src="../js/auth-api.js"></script>
-<script src="admin-api.js"></script>
-<script src="referral-history.js"></script>
+<script type="module" src="../js/auth-api.js"></script>
+<script type="module" src="admin-api.js"></script>
+<script type="module" src="referral-history.js"></script>
 <script>
   (function() {
     var user = TrendifyAuth.requireAuth('../signin.html');
@@ -124,6 +124,7 @@
 </script>
 <div id="c"></div>
 <div id="cr" class="cr"></div>
-<script src="../js/cursor.js"></script>
+<script type="module" src="../js/cursor.js"></script>
 </body>
 </html>
+
