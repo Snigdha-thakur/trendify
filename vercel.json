@@ -1,7 +1,7 @@
 {
-  "buildCommand": "npm --prefix trendify-site/frontend run build",
-  "outputDirectory": "trendify-site/frontend/dist",
-  "installCommand": "npm --prefix trendify-site/frontend install",
+  "buildCommand": "npm --prefix frontend run build",
+  "outputDirectory": "frontend/dist",
+  "installCommand": "npm --prefix frontend install",
   "cleanUrls": true,
   "trailingSlash": false
 }
