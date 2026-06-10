@@ -3,6 +3,16 @@
  * Purple glowing dot with ring that expands on hover
  */
 (function() {
+  var isTouch = ('ontouchstart' in window) || navigator.maxTouchPoints > 0 || window.matchMedia('(pointer: coarse)').matches;
+  if (isTouch) {
+    document.body.classList.add('touch-device');
+    var existingC = document.getElementById('c');
+    var existingCr = document.getElementById('cr');
+    if (existingC) existingC.remove();
+    if (existingCr) existingCr.remove();
+    return;
+  }
+
   var c = document.getElementById('c');
   var cr = document.getElementById('cr');
   var b = document.body;

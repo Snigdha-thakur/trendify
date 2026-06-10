@@ -40,6 +40,8 @@ body{
   background-attachment:fixed;
   animation:grid-pan 60s linear infinite;
 }
+body.touch-device{cursor:auto !important;}
+body.touch-device #c,body.touch-device .cr{display:none !important;opacity:0 !important;}
 @keyframes grid-pan{0%{background-position:0 0}100%{background-position:40px 40px}}
 
 /* ── CURSOR ── */

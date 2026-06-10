@@ -1,179 +1,39 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>Terms &amp; Conditions — Trendify</title>
-<link rel="preconnect" href="https://fonts.googleapis.com"/>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,600;1,300;1,600&family=Syne:wght@400;700;800&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet"/>
-<link rel="stylesheet" href="css/styles.css"/>
-<style>
-  body{cursor:none}
-  .legal-hero{
-    padding:60px var(--pad-x) 40px;
-    border-bottom:1px solid var(--rim);
-    background:linear-gradient(180deg,rgba(10,8,32,.95) 0%,rgba(4,4,15,.9) 100%);
-    position:relative;overflow:hidden;
-  }
-  .legal-hero::before{
-    content:'';position:absolute;inset:0;pointer-events:none;
-    background-image:linear-gradient(rgba(167,124,255,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(167,124,255,.04) 1px,transparent 1px);
-    background-size:80px 80px;
-    mask-image:radial-gradient(ellipse 80% 80% at 50% 50%,black 30%,transparent 100%);
-  }
-  .legal-hero-orb{
-    position:absolute;width:900px;height:900px;border-radius:50%;pointer-events:none;
-    background:radial-gradient(circle,rgba(0,229,200,.12) 0%,transparent 65%);
-    top:-400px;left:-200px;filter:blur(70px);
-  }
-  .legal-hero-inner{max-width:var(--max-w);margin:0 auto;position:relative;z-index:1}
-  .legal-label{
-    font-family:var(--f-mono);font-size:9px;letter-spacing:.22em;text-transform:uppercase;
-    color:var(--aqua);display:inline-flex;align-items:center;gap:12px;margin-bottom:32px;
-  }
-  .legal-label::before{content:'';width:20px;height:1px;background:var(--aqua)}
-  .legal-h1{
-    font-family:var(--f-serif);font-size:clamp(52px,8vw,110px);
-    font-weight:300;line-height:.88;letter-spacing:-.03em;margin-bottom:32px;
-  }
-  .legal-h1 em{font-style:italic}
-  .legal-meta{
-    display:flex;gap:32px;align-items:center;
-    font-family:var(--f-mono);font-size:11px;color:var(--smoke);letter-spacing:.06em;
-  }
-  .legal-meta-dot{width:3px;height:3px;border-radius:50%;background:var(--rim-hi)}
+from pathlib import Path
 
-  .legal-body{
-    max-width:var(--max-w);margin:0 auto;padding:72px max(40px,var(--pad-x));
-  }
-  .legal-panel{
-    background:rgba(7,7,17,.95);
-    border:1px solid rgba(167,124,255,.15);
-    border-radius:28px;
-    padding:40px 44px;
-    box-shadow:0 24px 80px rgba(0,0,0,.24);
-  }
-  .legal-subtitle{
-    max-width:760px;margin:22px 0 0;font-size:1rem;color:rgba(242,240,255,.78);line-height:1.85;
-  }
-  .legal-note{
-    display:flex;flex-direction:column;gap:14px;padding:22px 24px;border-left:4px solid var(--aqua);
-    background:rgba(0,229,200,.1);border-radius:18px;margin-bottom:32px;color:rgba(242,240,255,.95);
-  }
-  .legal-note-title{font-family:var(--f-mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--aqua);}
-  .legal-note-copy{margin:0;font-size:.95rem;color:rgba(242,240,255,.82);}
-  .legal-body p{
-    white-space: normal;
-    font-size:1rem;color:rgba(242,240,255,.82);margin:0 0 18px;
-  }
-  .legal-body p:last-child{margin-bottom:0;}
-  .legal-content { line-height: 1.8; }
-  .legal-section-title { font-size: 2rem; font-weight: 600; margin: 0 0 32px; color: #fff; border-bottom: 2px solid rgba(0,229,200,.2); padding-bottom: 16px; }
-  .legal-intro { font-size: 1.1rem; margin-bottom: 28px; color: rgba(242,240,255,.9); line-height: 1.8; }
-  .legal-clause { margin: 28px 0; padding: 24px; border-left: 3px solid rgba(0,229,200,.3); background: rgba(0,229,200,.03); border-radius: 6px; }
-  .legal-clause-num { font-weight: 700; color: var(--aqua); margin-right: 12px; font-size: 1rem; }
-  .legal-clause-content { margin-left: 0; }
-  .legal-clause-content h4 { font-size: 1.2rem; font-weight: 600; margin: 16px 0 12px; color: #fff; }
-  .legal-clause-content p { margin: 12px 0; color: rgba(242,240,255,.85); line-height: 1.8; }
-  .legal-list { margin: 16px 0; padding-left: 24px; }
-  .legal-list li { margin: 10px 0; color: rgba(242,240,255,.85); line-height: 1.7; }
-  .legal-list li strong { color: #fff; font-weight: 600; }
-  .legal-definitions { margin: 16px 0; padding-left: 24px; list-style: none; }
-  .legal-definitions li { margin: 14px 0; color: rgba(242,240,255,.85); line-height: 1.7; padding-left: 0; }
-  .legal-definitions strong { color: #fff; font-weight: 600; }
-  .legal-contact { margin: 16px 0; padding-left: 24px; list-style: none; }
-  .legal-contact li { margin: 8px 0; color: rgba(242,240,255,.85); line-height: 1.6; }
-  .legal-body a{color:var(--aqua);text-decoration:none;border-bottom:1px solid rgba(0,229,200,.3);}
-  .legal-body a:hover{border-color:var(--aqua);}
-  .legal-toc{
-    position:sticky;top:100px;
-    border:1px solid var(--rim);border-radius:8px;overflow:hidden;
-  }
-  .toc-head{
-    padding:16px 20px;border-bottom:1px solid var(--rim);
-    font-family:var(--f-mono);font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--smoke);
-    background:var(--lift);
-  }
-  .toc-links{display:flex;flex-direction:column;max-height:70vh;overflow-y:auto}
-  .toc-link{
-    padding:10px 20px;font-size:12px;color:var(--smoke);text-decoration:none;
-    border-bottom:1px solid var(--rim);font-family:var(--f-sans);
-    transition:color .2s,background .2s,padding-left .2s;
-  }
-  .toc-link:last-child{border-bottom:none}
-  .toc-link:hover{color:#fff;background:rgba(0,229,200,.05);padding-left:26px}
-
-  .legal-content{min-width:0}
-  .legal-section{padding:52px 0;border-top:1px solid var(--rim)}
-  .legal-section:first-child{border-top:none;padding-top:0}
-  .ls-num{font-family:var(--f-mono);font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--aqua);margin-bottom:16px;display:block}
-  .ls-h{
-    font-family:var(--f-serif);font-size:clamp(28px,3.5vw,42px);
-    font-weight:300;line-height:1.05;letter-spacing:-.02em;color:#fff;margin-bottom:28px;
-  }
-  .ls-h em{font-style:italic}
-  .ls-body{font-size:15px;color:var(--smoke);line-height:1.9}
-  .ls-body p+p{margin-top:20px}
-  .ls-body ul{margin:20px 0;display:flex;flex-direction:column;gap:12px}
-  .ls-body li{display:flex;gap:12px;align-items:flex-start;font-size:14px;color:var(--smoke);line-height:1.7}
-  .ls-body li::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--aqua);flex-shrink:0;margin-top:9px}
-  .ls-body strong{color:var(--white);font-weight:700}
-  .ls-body a{color:var(--aqua);text-decoration:none;border-bottom:1px solid rgba(0,229,200,.3);transition:border-color .2s}
-  .ls-body a:hover{border-color:var(--aqua)}
-
-  .contact-card{
-    margin-top:32px;background:var(--lift);border:1px solid var(--rim);border-radius:10px;padding:28px 32px;
-  }
-  .cc-title{font-family:var(--f-mono);font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--smoke);margin-bottom:16px}
-  .cc-detail{font-size:13px;color:var(--smoke);line-height:1.8}
-  .cc-detail a{color:var(--aqua);text-decoration:none}
-
-  @media(max-width:900px){
-    .legal-hero{padding:120px 20px 60px}
-    .legal-h1{font-size:clamp(40px,12vw,72px)}
-    .legal-meta{flex-wrap:wrap;gap:12px}
-    .legal-body{grid-template-columns:1fr;gap:32px;padding:48px 20px}
-    .legal-toc{position:static}
-    .toc-links{max-height:none}
-    .legal-section{padding:36px 0}
-    .ls-h{font-size:clamp(24px,7vw,36px)}
-    .def-row{grid-template-columns:1fr}
-    .def-term{border-right:none;border-bottom:1px solid var(--rim)}
-    .contact-card{padding:20px}
-  }
-  @media(max-width:480px){
-    .legal-hero{padding:100px 16px 48px}
-    .legal-body{padding:36px 16px}
-    .legal-meta{gap:8px;font-size:10px}
-    .legal-meta-dot{display:none}
-  }
-</style>
-</head>
-<body>
-<div id="c"></div>
-<div class="cr" id="cr"></div>
-
-<nav id="nav" class="s">
-  <a href="index.html" class="logo">Trendify</a>
-  <ul class="nv">
-    <li><a href="index.html#platform">Platform</a></li>
-    <li><a href="index.html#payments">Payments</a></li>
-    <li><a href="index.html#ecosystem">Ecosystem</a></li>
-    <li><a href="index.html#pricing">Pricing</a></li>
-  </ul>
-  <div class="na">
-    <a href="signin.html" class="btn-nav-ghost">Sign in</a>
-    <a href="signup.html" class="btn-nav">Start free</a>
-  </div>
-</nav>
-
-<div class="legal-hero">
-  <div class="legal-hero-orb"></div>
-  <div class="legal-hero-inner">
+# Map exact text to professional HTML sections while preserving every word
+pages = {
+    'refunds.html': '''<div class="legal-body">
+  <div class="legal-panel">
+    <div class="legal-content">
+      <h2 class="legal-section-title">Refund and Cancellation Policy</h2>
+      <p class="legal-intro">At TRENDIFY TECHNOLOGIES , we are committed to providing high-quality products and services to our customers. Please note the following policy regarding refunds and cancellations:</p>
+      
+      <div class="legal-subsection">
+        <h3 class="legal-subsection-title">Refund Policy</h3>
+        <ul class="legal-list">
+          <li><strong>No Refunds:</strong> Once a purchase is made, it is considered final. We do not offer refunds for any product or service under any circumstances.</li>
+          <li>This policy applies to all transactions completed on our platform.</li>
+        </ul>
+      </div>
+      
+      <div class="legal-subsection">
+        <h3 class="legal-subsection-title">Cancellation Policy</h3>
+        <ul class="legal-list">
+          <li><strong>No Cancellations:</strong> Orders or subscriptions cannot be canceled once they have been processed or confirmed.</li>
+          <li>We encourage you to review your purchase carefully before completing the transaction.</li>
+        </ul>
+      </div>
+      
+      <div class="legal-subsection">
+        <h3 class="legal-subsection-title">Why No Refunds or Cancellations?</h3>
+        <p>Our products and services are digital in nature, and access is granted immediately upon purchase. This ensures the delivery of value but makes it impossible to reverse the transaction.</p>
+        <p>This policy helps us maintain fairness and consistency across all customer interactions</p>
+      </div>
+    </div>
   </div>
 </div>
-
-<div class="legal-body">
+''',
+    'terms.html': '''<div class="legal-body">
   <div class="legal-panel">
     <div class="legal-content">
       <h2 class="legal-section-title">Terms and Conditions</h2>
@@ -323,6 +183,11 @@
       </div>
 
       <div class="legal-clause">
+        <span class="legal-clause-num">13.</span>
+        <div class="legal-clause-content"></div>
+      </div>
+
+      <div class="legal-clause">
         <span class="legal-clause-num">14.</span>
         <div class="legal-clause-content">
           <h4>Indemnification</h4>
@@ -336,6 +201,11 @@
             <li>Upon request, Trendify may provide Your Content copy, subject to reasonable expenses.</li>
           </ul>
         </div>
+      </div>
+
+      <div class="legal-clause">
+        <span class="legal-clause-num">15.</span>
+        <div class="legal-clause-content"></div>
       </div>
 
       <div class="legal-clause">
@@ -418,6 +288,11 @@
       </div>
 
       <div class="legal-clause">
+        <span class="legal-clause-num">22.</span>
+        <div class="legal-clause-content"></div>
+      </div>
+
+      <div class="legal-clause">
         <span class="legal-clause-num">23.</span>
         <div class="legal-clause-content">
           <h4>Governing Law and Jurisdiction</h4>
@@ -462,29 +337,24 @@
     </div>
   </div>
 </div>
-<footer>
-  <div class="ft-grid">
-    <div>
-      <a href="index.html" class="ft-logo">Trendify</a>
-      <p class="ft-copy">The all-in-one platform for Indian creators to build, sell, and scale — with infrastructure that finally matches their ambition.</p>
-      <div class="ft-soc">
-        <a href="#" class="ft-s">𝕏</a>
-        <a href="#" class="ft-s">in</a>
-        <a href="#" class="ft-s">▶</a>
-        <a href="#" class="ft-s">ig</a>
-      </div>
-    </div>
-    <div><div class="ft-col-h">Company</div><ul class="ft-links"><li><a href="#">About</a></li><li><a href="#">Blog</a></li><li><a href="#">Careers</a></li><li><a href="#">Press</a></li><li><a href="#">Contact</a></li></ul></div>
-    <div><div class="ft-col-h">Legal</div><ul class="ft-links"><li><a href="privacy.html">Privacy</a></li><li><a href="terms.html">Terms</a></li><li><a href="refunds.html">Refunds</a></li></ul></div>
-  </div>
-  <div class="ft-bot">
-    <span>© 2025 Trendify Technologies Pvt. Ltd.</span>
-    <span>India's Creator Platform</span>
-  </div>
-</footer>
+'''
+}
 
-<script type="module" src="js/cursor.js"></script>
-<script type="module" src="js/main.js"></script>
-</body>
-</html>
-
+# Write initial versions
+for filename, html in pages.items():
+    if filename == 'terms.html':
+        path = Path(filename)
+        text = path.read_text(encoding='utf-8')
+        body_start = text.index('<div class="legal-body">', text.index('<body>'))
+        footer_start = text.rindex('<footer>')
+        new_text = text[:body_start] + html + text[footer_start:]
+        path.write_text(new_text, encoding='utf-8')
+        print(f'Updated {filename}')
+    elif filename == 'refunds.html':
+        path = Path(filename)
+        text = path.read_text(encoding='utf-8')
+        body_start = text.index('<div class="legal-body">', text.index('<body>'))
+        footer_start = text.rindex('<footer>')
+        new_text = text[:body_start] + html + text[footer_start:]
+        path.write_text(new_text, encoding='utf-8')
+        print(f'Updated {filename}')

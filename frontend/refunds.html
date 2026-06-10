@@ -10,7 +10,7 @@
 <style>
   body{cursor:none}
   .legal-hero{
-    padding:160px var(--pad-x) 80px;
+    padding:60px var(--pad-x) 40px;
     border-bottom:1px solid var(--rim);
     background:linear-gradient(180deg,rgba(10,8,32,.95) 0%,rgba(4,4,15,.9) 100%);
     position:relative;overflow:hidden;
@@ -49,9 +49,39 @@
   .legal-meta-dot{width:3px;height:3px;border-radius:50%;background:var(--rim-hi)}
 
   .legal-body{
-    max-width:var(--max-w);margin:0 auto;padding:80px var(--pad-x);
-    display:grid;grid-template-columns:240px 1fr;gap:80px;align-items:start;
+    max-width:var(--max-w);margin:0 auto;padding:72px max(40px,var(--pad-x));
   }
+  .legal-panel{
+    background:rgba(7,7,17,.95);
+    border:1px solid rgba(212,168,67,.15);
+    border-radius:28px;
+    padding:40px 44px;
+    box-shadow:0 24px 80px rgba(0,0,0,.24);
+  }
+  .legal-subtitle{
+    max-width:760px;margin:22px 0 0;font-size:1rem;color:rgba(242,240,255,.78);line-height:1.85;
+  }
+  .legal-note{
+    display:flex;flex-direction:column;gap:14px;padding:22px 24px;border-left:4px solid var(--gold);
+    background:rgba(212,168,67,.08);border-radius:18px;margin-bottom:32px;color:rgba(242,240,255,.95);
+  }
+  .legal-note-title{font-family:var(--f-mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);}
+  .legal-note-copy{margin:0;font-size:.95rem;color:rgba(242,240,255,.82);}
+  .legal-body p{
+    white-space: normal;
+    font-size:1rem;color:rgba(242,240,255,.82);margin:0 0 18px;
+  }
+  .legal-body p:last-child{margin-bottom:0;}
+  .legal-content { line-height: 1.8; }
+  .legal-section-title { font-size: 2rem; font-weight: 600; margin: 0 0 32px; color: #fff; border-bottom: 2px solid rgba(212,168,67,.2); padding-bottom: 16px; }
+  .legal-intro { font-size: 1.1rem; margin-bottom: 28px; color: rgba(242,240,255,.9); line-height: 1.8; }
+  .legal-subsection { margin: 32px 0; padding: 24px; background: rgba(212,168,67,.04); border-left: 3px solid rgba(212,168,67,.3); border-radius: 8px; }
+  .legal-subsection-title { font-size: 1.4rem; font-weight: 600; margin: 0 0 16px; color: #fff; }
+  .legal-list { margin: 16px 0; padding-left: 24px; }
+  .legal-list li { margin: 12px 0; color: rgba(242,240,255,.85); line-height: 1.7; }
+  .legal-list li strong { color: #fff; font-weight: 600; }
+  .legal-body a{color:var(--gold);text-decoration:none;border-bottom:1px solid rgba(212,168,67,.3);}
+  .legal-body a:hover{border-color:var(--gold);}
   .legal-toc{
     position:sticky;top:100px;
     border:1px solid var(--rim);border-radius:8px;overflow:hidden;
@@ -135,66 +165,39 @@
   <div class="legal-hero-orb"></div>
   <div class="legal-hero-orb2"></div>
   <div class="legal-hero-inner">
-    <div class="legal-label">Legal</div>
-    <h1 class="legal-h1">Refund &amp;<br/><em>Cancellation Policy</em></h1>
-    <div class="legal-meta">
-      <span>Trendify Technologies</span>
-      <span class="legal-meta-dot"></span>
-      <span>Effective: 2025</span>
-    </div>
   </div>
 </div>
 
 <div class="legal-body">
-  <nav class="legal-toc">
-    <div class="toc-head">Contents</div>
-    <div class="toc-links">
-      <a href="#s1" class="toc-link">Refund Policy</a>
-      <a href="#s2" class="toc-link">Cancellation Policy</a>
-      <a href="#s3" class="toc-link">Why No Refunds or Cancellations?</a>
-    </div>
-  </nav>
-
-  <div class="legal-content">
-
-    <div class="ls-body" style="margin-bottom:52px;padding-bottom:52px;border-bottom:1px solid var(--rim)">
-      <p>At TRENDIFY TECHNOLOGIES , we are committed to providing high-quality products and services to our customers. Please note the following policy regarding refunds and cancellations:</p>
-    </div>
-
-    <div class="legal-section" id="s1">
-      <span class="ls-num">Refund Policy</span>
-      <h2 class="ls-h"><em>Refund Policy</em></h2>
-      <div class="ls-body">
-        <ul>
-          <li>No Refunds: Once a purchase is made, it is considered final. We do not offer refunds for any product or service under any circumstances.</li>
+  <div class="legal-panel">
+    <div class="legal-content">
+      <h2 class="legal-section-title">Refund and Cancellation Policy</h2>
+      <p class="legal-intro">At TRENDIFY TECHNOLOGIES , we are committed to providing high-quality products and services to our customers. Please note the following policy regarding refunds and cancellations:</p>
+      
+      <div class="legal-subsection">
+        <h3 class="legal-subsection-title">Refund Policy</h3>
+        <ul class="legal-list">
+          <li><strong>No Refunds:</strong> Once a purchase is made, it is considered final. We do not offer refunds for any product or service under any circumstances.</li>
           <li>This policy applies to all transactions completed on our platform.</li>
         </ul>
       </div>
-    </div>
-
-    <div class="legal-section" id="s2">
-      <span class="ls-num">Cancellation Policy</span>
-      <h2 class="ls-h"><em>Cancellation Policy</em></h2>
-      <div class="ls-body">
-        <ul>
-          <li>No Cancellations: Orders or subscriptions cannot be canceled once they have been processed or confirmed.</li>
+      
+      <div class="legal-subsection">
+        <h3 class="legal-subsection-title">Cancellation Policy</h3>
+        <ul class="legal-list">
+          <li><strong>No Cancellations:</strong> Orders or subscriptions cannot be canceled once they have been processed or confirmed.</li>
           <li>We encourage you to review your purchase carefully before completing the transaction.</li>
         </ul>
       </div>
-    </div>
-
-    <div class="legal-section" id="s3">
-      <span class="ls-num">Why No Refunds or Cancellations?</span>
-      <h2 class="ls-h">Why No Refunds or<br/><em>Cancellations?</em></h2>
-      <div class="ls-body">
+      
+      <div class="legal-subsection">
+        <h3 class="legal-subsection-title">Why No Refunds or Cancellations?</h3>
         <p>Our products and services are digital in nature, and access is granted immediately upon purchase. This ensures the delivery of value but makes it impossible to reverse the transaction.</p>
-        <p>This policy helps us maintain fairness and consistency across all customer interactions.</p>
+        <p>This policy helps us maintain fairness and consistency across all customer interactions</p>
       </div>
     </div>
-
   </div>
 </div>
-
 <footer>
   <div class="ft-grid">
     <div>
