@@ -5,6 +5,7 @@ from app.core.security import create_access_token, verify_password, get_password
 from app.models.models import User
 from app.schemas.schemas import UserLogin, UserRegister, TokenResponse, TokenRequest, UserLoginResponse, UserProfile
 import secrets, string
+import traceback
 
 router = APIRouter(prefix="/api/auth", tags=["Auth"])
 
@@ -16,30 +17,37 @@ def _gen_referral_code(name: str) -> str:
 
 @router.post("/login", response_model=UserLoginResponse)
 def login(data: UserLogin, db: Session = Depends(get_db)):
-    user = db.query(User).filter(User.email == data.email).first()
-    if not user:
-        raise HTTPException(status_code=401, detail="Invalid email or password")
-    if user.status == "inactive":
-        raise HTTPException(status_code=403, detail="Account is inactive")
-    if not user.password_hash or not verify_password(data.password, user.password_hash):
-        raise HTTPException(status_code=401, detail="Invalid email or password")
+    try:
+        user = db.query(User).filter(User.email == data.email).first()
+        if not user:
+            raise HTTPException(status_code=401, detail="Invalid email or password")
+        if user.status == "inactive":
+            raise HTTPException(status_code=403, detail="Account is inactive")
+        if not user.password_hash or not verify_password(data.password, user.password_hash):
+            raise HTTPException(status_code=401, detail="Invalid email or password")
 
-    token = create_access_token({"sub": str(user.id), "role": user.role})
-    return UserLoginResponse(
-        access_token=token,
-        token_type="bearer",
-        user=UserProfile(
-            id=str(user.id),
-            name=user.name,
-            email=user.email,
-            phone=user.phone or "",
-            role=user.role,
-            status=user.status,
-            wallet_balance=float(user.wallet_balance or 0),
-            referral_wallet_balance=float(user.referral_wallet_balance or 0),
-            referral_code=user.referral_code or "",
+        token = create_access_token({"sub": str(user.id), "role": user.role})
+        return UserLoginResponse(
+            access_token=token,
+            token_type="bearer",
+            user=UserProfile(
+                id=str(user.id),
+                name=user.name,
+                email=user.email,
+                phone=user.phone or "",
+                role=user.role,
+                status=user.status,
+                wallet_balance=float(user.wallet_balance or 0),
+                referral_wallet_balance=float(user.referral_wallet_balance or 0),
+                referral_code=user.referral_code or "",
+            )
         )
-    )
+    except HTTPException:
+        raise
+    except Exception as e:
+        print(f"LOGIN ERROR: {str(e)}")
+        print(traceback.format_exc())
+        raise HTTPException(status_code=500, detail=f"Login failed: {str(e)}")
 
 
 @router.post("/refresh", response_model=TokenResponse)

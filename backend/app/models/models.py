@@ -76,7 +76,7 @@ class Transaction(Base):
 
     id = Column(Text, primary_key=True)
     creator_id = Column(UUID(as_uuid=True), ForeignKey("public.users.id"))
-    product_id = Column(UUID(as_uuid=True), ForeignKey("public.digital_products.id"))
+    product_id = Column(UUID(as_uuid=True), ForeignKey("public.digital_products.id", use_alter=True, name="fk_transaction_product"))
     buyer_email = Column(Text)
     amount = Column(Numeric, nullable=False)
     status = Column(Text, nullable=False)

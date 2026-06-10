@@ -2,7 +2,7 @@
  * Trendify Admin API — calls backend endpoints
  */
 (function () {
-  const API_URL = 'http://localhost:8001/api/admin';
+  const API_URL = 'http://localhost:8000/api/admin';
 
   function getToken() {
     return localStorage.getItem('trendify_backend_token');
@@ -45,7 +45,12 @@
     getUsers: () => query('/users?skip=0&limit=1000'),
     updateUserStatus: (id, status) => put(`/users/${id}`, { status }),
 
-    getTransactions: () => query('/transactions?skip=0&limit=1000'),
+    getTransactions: (days) => {
+      const base = '/transactions?skip=0&limit=1000';
+      if (!days || days === 'all') return query(base);
+      const since = new Date(Date.now() - parseInt(days) * 86400000).toISOString();
+      return query(base + '&since=' + since);
+    },
     getPayments: () => query('/transactions?skip=0&limit=1000'),
     getCreatorPayouts: () => query('/creator-payouts?skip=0&limit=1000'),
     getPayouts: () => query('/payouts?skip=0&limit=1000'),

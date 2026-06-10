@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Terms &amp; Conditions — Trendify</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,600;1,300;1,600&family=Syne:wght@400;700;800&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="css/styles.css"/>
+<style>
+  body{cursor:none}
+  .legal-hero{
+    padding:160px var(--pad-x) 80px;
+    border-bottom:1px solid var(--rim);
+    background:linear-gradient(180deg,rgba(10,8,32,.95) 0%,rgba(4,4,15,.9) 100%);
+    position:relative;overflow:hidden;
+  }
+  .legal-hero::before{
+    content:'';position:absolute;inset:0;pointer-events:none;
+    background-image:linear-gradient(rgba(167,124,255,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(167,124,255,.04) 1px,transparent 1px);
+    background-size:80px 80px;
+    mask-image:radial-gradient(ellipse 80% 80% at 50% 50%,black 30%,transparent 100%);
+  }
+  .legal-hero-orb{
+    position:absolute;width:900px;height:900px;border-radius:50%;pointer-events:none;
+    background:radial-gradient(circle,rgba(0,229,200,.12) 0%,transparent 65%);
+    top:-400px;left:-200px;filter:blur(70px);
+  }
+  .legal-hero-inner{max-width:var(--max-w);margin:0 auto;position:relative;z-index:1}
+  .legal-label{
+    font-family:var(--f-mono);font-size:9px;letter-spacing:.22em;text-transform:uppercase;
+    color:var(--aqua);display:inline-flex;align-items:center;gap:12px;margin-bottom:32px;
+  }
+  .legal-label::before{content:'';width:20px;height:1px;background:var(--aqua)}
+  .legal-h1{
+    font-family:var(--f-serif);font-size:clamp(52px,8vw,110px);
+    font-weight:300;line-height:.88;letter-spacing:-.03em;margin-bottom:32px;
+  }
+  .legal-h1 em{font-style:italic}
+  .legal-meta{
+    display:flex;gap:32px;align-items:center;
+    font-family:var(--f-mono);font-size:11px;color:var(--smoke);letter-spacing:.06em;
+  }
+  .legal-meta-dot{width:3px;height:3px;border-radius:50%;background:var(--rim-hi)}
+
+  .legal-body{
+    max-width:var(--max-w);margin:0 auto;padding:80px var(--pad-x);
+    display:grid;grid-template-columns:240px 1fr;gap:80px;align-items:start;
+  }
+  .legal-toc{
+    position:sticky;top:100px;
+    border:1px solid var(--rim);border-radius:8px;overflow:hidden;
+  }
+  .toc-head{
+    padding:16px 20px;border-bottom:1px solid var(--rim);
+    font-family:var(--f-mono);font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--smoke);
+    background:var(--lift);
+  }
+  .toc-links{display:flex;flex-direction:column;max-height:70vh;overflow-y:auto}
+  .toc-link{
+    padding:10px 20px;font-size:12px;color:var(--smoke);text-decoration:none;
+    border-bottom:1px solid var(--rim);font-family:var(--f-sans);
+    transition:color .2s,background .2s,padding-left .2s;
+  }
+  .toc-link:last-child{border-bottom:none}
+  .toc-link:hover{color:#fff;background:rgba(0,229,200,.05);padding-left:26px}
+
+  .legal-content{min-width:0}
+  .legal-section{padding:52px 0;border-top:1px solid var(--rim)}
+  .legal-section:first-child{border-top:none;padding-top:0}
+  .ls-num{font-family:var(--f-mono);font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--aqua);margin-bottom:16px;display:block}
+  .ls-h{
+    font-family:var(--f-serif);font-size:clamp(28px,3.5vw,42px);
+    font-weight:300;line-height:1.05;letter-spacing:-.02em;color:#fff;margin-bottom:28px;
+  }
+  .ls-h em{font-style:italic}
+  .ls-body{font-size:15px;color:var(--smoke);line-height:1.9}
+  .ls-body p+p{margin-top:20px}
+  .ls-body ul{margin:20px 0;display:flex;flex-direction:column;gap:12px}
+  .ls-body li{display:flex;gap:12px;align-items:flex-start;font-size:14px;color:var(--smoke);line-height:1.7}
+  .ls-body li::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--aqua);flex-shrink:0;margin-top:9px}
+  .ls-body strong{color:var(--white);font-weight:700}
+  .ls-body a{color:var(--aqua);text-decoration:none;border-bottom:1px solid rgba(0,229,200,.3);transition:border-color .2s}
+  .ls-body a:hover{border-color:var(--aqua)}
+
+  .contact-card{
+    margin-top:32px;background:var(--lift);border:1px solid var(--rim);border-radius:10px;padding:28px 32px;
+  }
+  .cc-title{font-family:var(--f-mono);font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--smoke);margin-bottom:16px}
+  .cc-detail{font-size:13px;color:var(--smoke);line-height:1.8}
+  .cc-detail a{color:var(--aqua);text-decoration:none}
+
+  @media(max-width:900px){
+    .legal-hero{padding:120px 20px 60px}
+    .legal-h1{font-size:clamp(40px,12vw,72px)}
+    .legal-meta{flex-wrap:wrap;gap:12px}
+    .legal-body{grid-template-columns:1fr;gap:32px;padding:48px 20px}
+    .legal-toc{position:static}
+    .toc-links{max-height:none}
+    .legal-section{padding:36px 0}
+    .ls-h{font-size:clamp(24px,7vw,36px)}
+    .def-row{grid-template-columns:1fr}
+    .def-term{border-right:none;border-bottom:1px solid var(--rim)}
+    .contact-card{padding:20px}
+  }
+  @media(max-width:480px){
+    .legal-hero{padding:100px 16px 48px}
+    .legal-body{padding:36px 16px}
+    .legal-meta{gap:8px;font-size:10px}
+    .legal-meta-dot{display:none}
+  }
+</style>
+</head>
+<body>
+<div id="c"></div>
+<div class="cr" id="cr"></div>
+
+<nav id="nav" class="s">
+  <a href="index.html" class="logo">Trendify</a>
+  <ul class="nv">
+    <li><a href="index.html#platform">Platform</a></li>
+    <li><a href="index.html#payments">Payments</a></li>
+    <li><a href="index.html#ecosystem">Ecosystem</a></li>
+    <li><a href="index.html#pricing">Pricing</a></li>
+  </ul>
+  <div class="na">
+    <a href="signin.html" class="btn-nav-ghost">Sign in</a>
+    <a href="signup.html" class="btn-nav">Start free</a>
+  </div>
+</nav>
+
+<div class="legal-hero">
+  <div class="legal-hero-orb"></div>
+  <div class="legal-hero-inner">
+    <div class="legal-label">Legal</div>
+    <h1 class="legal-h1">Terms and<br/><em>Conditions</em></h1>
+    <div class="legal-meta">
+      <span>Trendify Technologies</span>
+      <span class="legal-meta-dot"></span>
+      <span>Effective: 2025</span>
+    </div>
+  </div>
+</div>
+
+<div class="legal-body">
+  <nav class="legal-toc">
+    <div class="toc-head">Contents</div>
+    <div class="toc-links">
+      <a href="#s1" class="toc-link">1. Introduction</a>
+      <a href="#s2" class="toc-link">2. Electronic Record</a>
+      <a href="#s3" class="toc-link">3. Review of T&amp;Cs</a>
+      <a href="#s4" class="toc-link">4. Acceptance of T&amp;Cs</a>
+      <a href="#s5" class="toc-link">5. Objection</a>
+      <a href="#s6" class="toc-link">6. Contact Consent</a>
+      <a href="#s7" class="toc-link">7. Definitions</a>
+      <a href="#s8" class="toc-link">8. Eligibility</a>
+      <a href="#s9" class="toc-link">9. Services and User Guidelines</a>
+      <a href="#s10" class="toc-link">10. Creation of Account</a>
+      <a href="#s11" class="toc-link">11. Fees and Payment Terms</a>
+      <a href="#s12" class="toc-link">12. Warranties</a>
+      <a href="#s13" class="toc-link">13. Indemnification</a>
+      <a href="#s14" class="toc-link">14. Intellectual Property Rights</a>
+      <a href="#s15" class="toc-link">15. Waiver</a>
+      <a href="#s16" class="toc-link">16. Limitation of Liability</a>
+      <a href="#s17" class="toc-link">17. Disclaimer</a>
+      <a href="#s18" class="toc-link">18. Confidentiality</a>
+      <a href="#s19" class="toc-link">19. Reservations of Changes</a>
+      <a href="#s20" class="toc-link">20. Termination</a>
+      <a href="#s21" class="toc-link">21. Final Provisions</a>
+      <a href="#s22" class="toc-link">22. Governing Law and Jurisdiction</a>
+      <a href="#s23" class="toc-link">23. Force Majeure</a>
+      <a href="#s24" class="toc-link">24. Grievance Redressal Mechanism</a>
+      <a href="#s25" class="toc-link">25. Contact Information</a>
+    </div>
+  </nav>
+
+  <div class="legal-content">
+
+    <div class="legal-section" id="s1">
+      <span class="ls-num">1.</span>
+      <h2 class="ls-h"><em>Introduction</em></h2>
+      <div class="ls-body">
+        <p>These Terms and Conditions ("T&amp;C") govern the use of services provided by Trendify Technologies (hereinafter referred to as "the Company", "We", "Us", or "Our"), with its registered office at Koliatha,Basudevpur,Mahanga,Cuttack. The T&amp;C apply to (i) "You", "Your", "Yourself", or "User"; and (ii) "End-User" (collectively referred to as "they", "them", or "their") who access or avail the Services offered through Our "Website", "Trendify", or "Platform" (collectively referring to the website https://trendifytechnologies.com, its linked pages, or application services, including mobile applications or mobile site services).</p>
+      </div>
+    </div>
+
+    <div class="legal-section" id="s2">
+      <span class="ls-num">2.</span>
+      <h2 class="ls-h"><em>Electronic Record</em></h2>
+      <div class="ls-body">
+        <p>This document is an electronic record under the Indian Contract Act, 1872, and the Information Technology Act, 2000, along with applicable rules and regulations (including amendments or re-enactments thereof), and does not require physical, electronic, or digital signatures.</p>
+      </div>
+    </div>
+
+    <div class="legal-section" id="s3">
+      <span class="ls-num">3.</span>
+      <h2 class="ls-h">Review of<br/><em>T&amp;Cs</em></h2>
+      <div class="ls-body">
+        <p>Please carefully review these T&amp;Cs before using Trendify's services or accessing any material or information on the Platform. By accessing or using the Platform, Users and End-Users signify that they have read, understood, and agree to be legally bound by these T&amp;Cs, including additional terms, conditions, and policies referenced herein or available via hyperlink on the Website.</p>
+      </div>
+    </div>
+
+    <div class="legal-section" id="s4">
+      <span class="ls-num">4.</span>
+      <h2 class="ls-h">Acceptance of<br/><em>T&amp;Cs</em></h2>
+      <div class="ls-body">
+        <p>Your use of the Services (as defined below) constitutes acceptance of these T&amp;Cs from the point of usage. Trendify reserves the right to update or modify the Services periodically without prior notice. If You do not accept these T&amp;Cs, You may not use the Services. Users and End-Users are advised to periodically review the most current version of these T&amp;Cs on the Website. Continued use of the Platform after any updates signifies acceptance of the modified terms.</p>
+      </div>
+    </div>
+
+    <div class="legal-section" id="s5">
+      <span class="ls-num">5.</span>
+      <h2 class="ls-h"><em>Objection</em></h2>
+      <div class="ls-body">
+        <p>If You object to these T&amp;Cs or any subsequent modifications, Your sole recourse is to cease using the Platform immediately. Additional terms may apply for specific services availed from time to time.</p>
+      </div>
+    </div>
+
+    <div class="legal-section" id="s6">
+      <span class="ls-num">6.</span>
+      <h2 class="ls-h">Contact<br/><em>Consent</em></h2>
+      <div class="ls-body">
+        <p>By providing Your contact details, You consent to be contacted by Us or Our representatives via any provided contact number, email, or address.</p>
+      </div>
+    </div>
+
+    <div class="legal-section" id="s7">
+      <span class="ls-num">7.</span>
+      <h2 class="ls-h"><em>Definitions</em></h2>
+      <div class="ls-body">
+        <p>By submitting Personal Information to the Company or consenting to its use for rendering Services, You express interest in availing Trendify's Services in accordance with these T&amp;Cs. Trendify is not an educational institution, marketplace, or content provider, and Users are neither Our employees nor agents.</p>
+        <ul>
+          <li>Definitions — Capitalized terms used in these T&amp;Cs shall have the meanings assigned below or as specified elsewhere in these T&amp;Cs. Terms not defined herein shall have meanings as commonly understood under Applicable Law.</li>
+          <li>Applicable Law: Any statute, law, regulation, ordinance, rule, judgment, order, decree, approval, directive, guideline, policy, requirement, restriction, decision, determination, or interpretation by any applicable Authority, as amended.</li>
+          <li>Authority: Includes the Government of India, state governments, or any administrative, regulatory, statutory, tax-related, judicial, or quasi-judicial authority in India, including ministries, courts, tribunals, departments, boards, officers, or foreign governmental, statutory, or regulatory authorities, where applicable.</li>
+          <li>Confidential Information: All information disclosed or acquired during the subscription term, including User and End-User lists, names, addresses, business models, processes, concepts, product descriptions, specifications, fees, and prices. Exclusions include information: (i) already known without a non-disclosure agreement; (ii) received from a third party not bound by confidentiality; (iii) publicly known; (iv) independently developed; (v) authorized for publication; or (vi) required to be disclosed by court or governmental order, provided the affected party is notified promptly.</li>
+          <li>Content: Software, data, text, audio, video, images, coaching offerings, or personal data uploaded, collected, posted, stored, displayed, distributed, or transmitted in connection with Your Account on the Platform.</li>
+          <li>End-User: Any person accessing Content on a User's Landing Page via any device.</li>
+          <li>Landing Page: A unique webpage created through Trendify's software, dedicated to You, where Your services, courses, programs, and Content are curated for End-Users.</li>
+          <li>Party/Parties: Trendify, Users, and End-Users.</li>
+          <li>Person: Any natural person, company, partnership, proprietorship, trust, union, association, society, cooperative, government, or entity treated as a person under Applicable Law.</li>
+          <li>Platform Fee: Fees, maintenance charges, or convenience fees payable by You for using Our Platform to host Your Content for sale to End-Users.</li>
+          <li>Service Fee: Fees payable by You for availing Our Services through subscription models, as described on the Website and billed per Company policy.</li>
+          <li>Services: All services, functionalities, and tools offered by Trendify through the Platform, as outlined in clause 3 below.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="legal-section" id="s8">
+      <span class="ls-num">8.</span>
+      <h2 class="ls-h"><em>Eligibility</em></h2>
+      <div class="ls-body">
+        <ul>
+          <li>If You are an individual, You must be at least 18 years old. If representing an organization (e.g., company, partnership, or proprietorship) duly organized under Applicable Law, You must be authorized to act on its behalf and meet additional eligibility requirements set by the Company.</li>
+          <li>You represent and warrant that You are competent to enter into a legally binding agreement under Applicable Law. If acting for an organization, You confirm Your authority to bind it to these T&amp;Cs. If accessing Services for a minor, You confirm Your legal competence to provide consent on their behalf.</li>
+          <li>Persons incompetent to contract under the Indian Contract Act, 1872 (e.g., un-discharged insolvents) are not eligible to use the Platform.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="legal-section" id="s9">
+      <span class="ls-num">9.</span>
+      <h2 class="ls-h">Services and<br/><em>User Guidelines</em></h2>
+      <div class="ls-body">
+        <p>Trendify provides Services to enable Users to:</p>
+        <ul>
+          <li>Create, design, upload, publish, and sell Content through their Landing Page or third-party applications.</li>
+          <li>Build and manage a Landing Page subject to these T&amp;Cs and Company policies.</li>
+          <li>Use ancillary tools for managing Content, including messaging and discussion forums with End-Users, which may be enabled or disabled via Your dashboard.</li>
+          <li>Integrate with third-party applications (e.g., Telegram, WhatsApp) to upload, publish, and manage Content.</li>
+        </ul>
+        <p>Trendify offers a Software-as-a-Service (SaaS) solution to create, share, and distribute Content and generate links/sub-domains to third-party platforms. Services are provided "as is" and "as available," with reasonable efforts to ensure 24/7 availability. Trendify is not responsible for downtime caused by:</p>
+        <ul>
+          <li>Force majeure events.</li>
+          <li>Third-party issues (e.g., payment gateways, hosting providers).</li>
+          <li>User actions or inactions.</li>
+          <li>Planned maintenance.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="legal-section" id="s10">
+      <span class="ls-num">10.</span>
+      <h2 class="ls-h">Creation of<br/><em>Account</em></h2>
+      <div class="ls-body">
+        <ul>
+          <li>You may browse certain Platform sections without an Account but must create one to access Services, providing information as required under the Privacy Policy.</li>
+          <li>Registration is free, and only eligible persons (per clause 2) may register, with one Account per person.</li>
+          <li>You must choose a unique, non-infringing username and URL that is not immoral, deceptive, or obscene.</li>
+          <li>You are responsible for maintaining accurate, current, and complete Account information and safeguarding login credentials. Notify Trendify immediately of unauthorized Account use or security breaches.</li>
+          <li>You are solely responsible for Your Landing Page's operation, Content, pricing, and interactions with End-Users. Trendify is not liable for disputes, claims, or damages arising from Your Landing Page or business dealings.</li>
+          <li>Services are provided on a non-exclusive, non-transferable, non-sublicensable, limited license basis for personal use. Trendify may provide Services to competitors and is not liable for Content managed via third-party applications.</li>
+          <li>Trendify reserves the right to refuse Service, suspend, or terminate Accounts for violations of Applicable Law, these T&amp;Cs, or third-party rights, without prior notice.</li>
+          <li>You are responsible for ensuring adequate technical requirements (e.g., bandwidth, latency). You must not engage in activities that violate Applicable Law, infringe rights, or are threatening, abusive, or deceptive.</li>
+          <li>Trendify may disclose Account information to authorities as required by Applicable Law.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="legal-section" id="s11">
+      <span class="ls-num">11.</span>
+      <h2 class="ls-h">Fees and<br/><em>Payment Terms</em></h2>
+      <div class="ls-body">
+        <ul>
+          <li>Service Fees and Platform Fees are determined by Company policy and may be billed periodically.</li>
+          <li>Fees are governed by Trendify's Refund &amp; Cancellation Policy, available on the Website.</li>
+          <li>Trendify collects fees from End-Users only on Your behalf for Your Content.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="legal-section" id="s12">
+      <span class="ls-num">12.</span>
+      <h2 class="ls-h"><em>Warranties</em></h2>
+      <div class="ls-body">
+        <p>You represent and warrant that:</p>
+        <ul>
+          <li>You own or have necessary licenses for Your Content and its publication.</li>
+          <li>You will not misrepresent Yourself as regulated by sectoral authorities (e.g., SEBI, RBI) unless duly registered.</li>
+          <li>Your Content does not infringe intellectual property or other rights, contain harmful or hateful material, or violate Applicable Law.</li>
+          <li>You grant Trendify a limited license to make Your Content available on the Platform.</li>
+          <li>You are solely responsible for claims related to Your Content.</li>
+          <li>Trendify makes no warranty that Services will meet Your requirements or be uninterrupted, secure, or error-free.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="legal-section" id="s13">
+      <span class="ls-num">13.</span>
+      <h2 class="ls-h"><em>Indemnification</em></h2>
+      <div class="ls-body">
+        <p>Users and End-Users agree to indemnify and hold Trendify, its affiliates, officers, directors, employees, and agents harmless from claims, damages, or costs arising from misuse of the Platform, violation of these T&amp;Cs, or infringement of third-party rights. Trendify may assume defense of indemnifiable claims, and You agree to cooperate.</p>
+      </div>
+    </div>
+
+    <div class="legal-section" id="s14">
+      <span class="ls-num">14.</span>
+      <h2 class="ls-h">Intellectual Property<br/><em>Rights Policy</em></h2>
+      <div class="ls-body">
+        <ul>
+          <li>All Platform content (e.g., headers, images, trademarks) is owned by Trendify or its partners and protected by copyright laws.</li>
+          <li>Users and End-Users may not duplicate, distribute, or exploit Platform content without permission.</li>
+          <li>Your intellectual property remains Yours, but You grant Trendify a perpetual, royalty-free, non-exclusive license to use it for Service provision.</li>
+          <li>You must ensure End-Users grant You similar licenses for their Content, which You then sublicense to Trendify.</li>
+          <li>Upon request, Trendify may provide Your Content copy, subject to reasonable expenses.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="legal-section" id="s15">
+      <span class="ls-num">15.</span>
+      <h2 class="ls-h"><em>Waiver</em></h2>
+      <div class="ls-body">
+        <p>Trendify's failure to enforce any T&amp;C provision does not waive its right to enforce it later. Any waiver of a breach does not waive future breaches.</p>
+      </div>
+    </div>
+
+    <div class="legal-section" id="s16">
+      <span class="ls-num">16.</span>
+      <h2 class="ls-h">Limitation of<br/><em>Liability</em></h2>
+      <div class="ls-body">
+        <ul>
+          <li>Trendify does not guarantee continuous or error-free Platform availability and is not liable for downtime due to maintenance, security issues, or events beyond Our control.</li>
+          <li>Trendify is not liable for direct, indirect, punitive, or consequential damages arising from Service use, interruptions, or unauthorized access.</li>
+          <li>Liability for breaches of essential obligations is limited to foreseeable damages, up to the total Service Fee collected.</li>
+          <li>Trendify is not liable for data loss due to internet failures, cyberattacks, or viruses, except in cases of product liability or physical injury.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="legal-section" id="s17">
+      <span class="ls-num">17.</span>
+      <h2 class="ls-h"><em>Disclaimer</em></h2>
+      <div class="ls-body">
+        <ul>
+          <li>Users are responsible for researching Services and ensuring Content complies with Applicable Law.</li>
+          <li>Trendify is not liable for Your Content or unlawful activities conducted through the Platform.</li>
+          <li>Platform materials may contain errors, and Trendify does not warrant their accuracy or completeness.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="legal-section" id="s18">
+      <span class="ls-num">18.</span>
+      <h2 class="ls-h"><em>Confidentiality</em></h2>
+      <div class="ls-body">
+        <ul>
+          <li>Parties shall not disclose Confidential Information without written consent, using it only for agreed purposes.</li>
+          <li>Reasonable measures must be taken to protect Confidential Information, and misuse must be reported.</li>
+          <li>Trendify is not liable for disclosures due to Your negligence in safe computing.</li>
+          <li>Confidentiality obligations survive for 12 months post-termination.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="legal-section" id="s19">
+      <span class="ls-num">19.</span>
+      <h2 class="ls-h">Reservations of<br/><em>Changes</em></h2>
+      <div class="ls-body">
+        <ul>
+          <li>Trendify may update T&amp;Cs without notice. Continued use constitutes acceptance.</li>
+          <li>Trendify may modify Services to comply with Applicable Law, address security issues, or benefit Users, with reasonable efforts to inform You of adverse changes.</li>
+          <li>You must install updates to receive Account support.</li>
+          <li>Service Fees/Platform Fees may change, with communication to Users.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="legal-section" id="s20">
+      <span class="ls-num">20.</span>
+      <h2 class="ls-h"><em>Termination</em></h2>
+      <div class="ls-body">
+        <ul>
+          <li>Either Party may terminate these T&amp;Cs, effective upon closing all transactions and, for Users, Account deletion.</li>
+          <li>Termination ends Your rights to use Services, and You must destroy downloaded materials.</li>
+          <li>Pre-termination obligations remain unaffected.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="legal-section" id="s21">
+      <span class="ls-num">21.</span>
+      <h2 class="ls-h">Final<br/><em>Provisions</em></h2>
+      <div class="ls-body">
+        <ul>
+          <li>Users may not assign T&amp;Cs without Trendify's consent. Trendify may assign T&amp;Cs to affiliates or third parties without notice.</li>
+          <li>No partnership, agency, or joint venture is created between Trendify and Users.</li>
+          <li>Trendify may use Your name/logo for marketing per good business practices.</li>
+          <li>In conflicts with other agreements, these T&amp;Cs prevail.</li>
+          <li>Invalid provisions will be replaced to maintain legal and commercial effect, with remaining provisions unaffected.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="legal-section" id="s22">
+      <span class="ls-num">22.</span>
+      <h2 class="ls-h">Governing Law and<br/><em>Jurisdiction</em></h2>
+      <div class="ls-body">
+        <p>These T&amp;Cs are governed by Indian law. Disputes shall be subject to the exclusive jurisdiction of courts in Odisha, India.</p>
+      </div>
+    </div>
+
+    <div class="legal-section" id="s23">
+      <span class="ls-num">23.</span>
+      <h2 class="ls-h">Force<br/><em>Majeure</em></h2>
+      <div class="ls-body">
+        <p>Trendify is not liable for delays or failures due to events beyond Our control, including natural disasters, strikes, or cyberattacks.</p>
+      </div>
+    </div>
+
+    <div class="legal-section" id="s24">
+      <span class="ls-num">24.</span>
+      <h2 class="ls-h">Grievance Redressal<br/><em>Mechanism</em></h2>
+      <div class="ls-body">
+        <p>For grievances, contact the Grievance Officer:</p>
+        <div class="contact-card">
+          <div class="cc-title">Grievance Officer</div>
+          <div class="cc-detail">
+            Email: Trendifytechnologies@gmail.com<br/>
+            Address: Koliatha,Basudevpur,Mahanga,Cuttack.
+          </div>
+        </div>
+        <p style="margin-top:20px">Per the Consumer Protection Act, 2019, and E-Commerce Rules, 2020, contact the Nodal Officer:</p>
+        <div class="contact-card">
+          <div class="cc-title">Nodal Officer</div>
+          <div class="cc-detail">
+            Name: Soumya Barddhan Panda<br/>
+            Designation: FOUNDER &amp; CEO<br/>
+            Email: Trendifytechnologies@gmail.com
+          </div>
+        </div>
+        <p style="margin-top:20px">Complaints will be acknowledged within 48 hours and resolved within 30 days.</p>
+      </div>
+    </div>
+
+    <div class="legal-section" id="s25">
+      <span class="ls-num">25.</span>
+      <h2 class="ls-h">Contact<br/><em>Information</em></h2>
+      <div class="ls-body">
+        <p>For questions about these T&amp;Cs, contact Us at Trendifytechnologies@gmail.com.</p>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<footer>
+  <div class="ft-grid">
+    <div>
+      <a href="index.html" class="ft-logo">Trendify</a>
+      <p class="ft-copy">The all-in-one platform for Indian creators to build, sell, and scale — with infrastructure that finally matches their ambition.</p>
+      <div class="ft-soc">
+        <a href="#" class="ft-s">𝕏</a>
+        <a href="#" class="ft-s">in</a>
+        <a href="#" class="ft-s">▶</a>
+        <a href="#" class="ft-s">ig</a>
+      </div>
+    </div>
+    <div><div class="ft-col-h">Company</div><ul class="ft-links"><li><a href="#">About</a></li><li><a href="#">Blog</a></li><li><a href="#">Careers</a></li><li><a href="#">Press</a></li><li><a href="#">Contact</a></li></ul></div>
+    <div><div class="ft-col-h">Legal</div><ul class="ft-links"><li><a href="privacy.html">Privacy</a></li><li><a href="terms.html">Terms</a></li><li><a href="refunds.html">Refunds</a></li></ul></div>
+  </div>
+  <div class="ft-bot">
+    <span>© 2025 Trendify Technologies Pvt. Ltd.</span>
+    <span>India's Creator Platform</span>
+  </div>
+</footer>
+
+<script src="js/cursor.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>

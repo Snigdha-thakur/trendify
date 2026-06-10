@@ -124,12 +124,18 @@ def update_product_status(
 # --- Transactions ---
 @router.get("/transactions", response_model=list[TransactionResponse])
 def list_transactions(
-    skip: int = 0, limit: int = 20, status: str = None,
+    skip: int = 0, limit: int = 20, status: str = None, since: str = None,
     db: Session = Depends(get_db), _: User = Depends(require_admin),
 ):
+    from datetime import datetime
     q = db.query(Transaction)
     if status:
         q = q.filter(Transaction.status == status)
+    if since:
+        try:
+            q = q.filter(Transaction.created_at >= datetime.fromisoformat(since.replace('Z', '+00:00')))
+        except ValueError:
+            pass
     return q.order_by(Transaction.created_at.desc()).offset(skip).limit(limit).all()
 
 
