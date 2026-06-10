@@ -33,7 +33,10 @@ export default defineConfig({
         'creator-digital-training': './creator/digital-training.html',
         'creator-hosting': './creator/hosting-services.html',
         'creator-website': './creator/website-design.html',
-        'creator-orders': './creator/my-orders.html'
+        'creator-orders': './creator/my-orders.html',
+        'privacy': './privacy.html',
+        'terms': './terms.html',
+        'refunds': './refunds.html'
       }
     }
   },
