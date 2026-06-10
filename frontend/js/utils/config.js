@@ -1,5 +1,5 @@
 export const API_CONFIG = {
-  baseURL: 'http://localhost:8001',
+  baseURL: 'http://localhost:8000',
   frontendURL: 'http://localhost:3000',
 };
 
