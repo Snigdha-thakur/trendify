@@ -2,10 +2,11 @@
  * Trendify Admin API — calls backend endpoints
  */
 (function () {
-  const API_URL = 'http://localhost:8000/api/admin';
+  const API_URL = (typeof __API_URL__ !== 'undefined' ? __API_URL__ : 'https://trendify-pxkx.onrender.com') + '/api/admin';
+  const TOKEN_KEY = 'trendify_access_token';
 
   function getToken() {
-    return localStorage.getItem('trendify_backend_token');
+    return localStorage.getItem(TOKEN_KEY);
   }
 
   async function query(endpoint) {
@@ -16,7 +17,7 @@
         headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' }
       });
       if (res.status === 401 || res.status === 403) {
-        localStorage.removeItem('trendify_backend_token');
+        localStorage.removeItem(TOKEN_KEY);
         window.location.href = '../signin.html';
         return [];
       }
