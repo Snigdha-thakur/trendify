@@ -1,7 +1,14 @@
-import { defineConfig } from 'vite';
+import { defineConfig, loadEnv } from 'vite';
 
-export default defineConfig({
+export default defineConfig(({ mode }) => {
+  const env = loadEnv(mode, process.cwd(), '');
+  const apiURL = env.VITE_API_URL || 'https://trendify-pxkx.onrender.com';
+
+  return {
   root: '.',
+  define: {
+    __API_URL__: JSON.stringify(apiURL),
+  },
   build: {
     outDir: 'dist',
     emptyOutDir: true,
@@ -44,4 +51,5 @@ export default defineConfig({
     port: 3000,
     open: true
   }
+  };
 });
