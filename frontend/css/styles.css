@@ -45,7 +45,7 @@ img{max-width:100%;height:auto;display:block}
 
 /* Reduce/disable heavy animations on touch devices to improve performance */
 .touch-device .hl, .touch-device #particles, .touch-device #prog, .touch-device .belt-track{display:none !important}
-.touch-device *{animation: none !important; transition: none !important}
+.touch-device *:not(.logo):not(.logo-text):not(.site-logo){animation: none !important; transition: none !important}
 
 /* Responsive adjustments */
 @media (max-width:1024px){
@@ -155,7 +155,7 @@ nav{
 nav.s{background:rgba(3,3,7,.85);backdrop-filter:blur(32px) saturate(180%);border-bottom:1px solid rgba(167,124,255,.12);box-shadow:0 1px 40px rgba(0,0,0,.4)}
 .logo{
   position:relative;
-  display:flex;align-items:center;gap:12px;text-decoration:none;
+  display:flex;align-items:center;gap:8px;text-decoration:none;
   flex-shrink:0;
   opacity:1;
   transform:translateY(0) scale(1);
@@ -188,7 +188,7 @@ body:not(.touch-device) .logo{
   background:linear-gradient(90deg,#fff 15%,var(--violet) 40%,var(--aqua) 80%);
   background-size:200% 100%;
   -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-  text-decoration:none;display:inline-block;vertical-align:middle;margin-left:6px;
+  text-decoration:none;display:inline-block;vertical-align:middle;margin-left:4px;
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:320px;
   text-shadow:0 0 16px rgba(255,255,255,.08),0 0 24px rgba(123,94,167,.08);
   transition:transform .28s ease,filter .28s ease,opacity .28s ease;
