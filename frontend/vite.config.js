@@ -12,6 +12,7 @@ export default defineConfig(({ mode }) => {
   build: {
     outDir: 'dist',
     emptyOutDir: true,
+    minify: false,
     rollupOptions: {
       input: {
         main: './index.html',

@@ -7,11 +7,13 @@
   // Auth guard — must be first, before anything loads
   (function() {
     var token = localStorage.getItem('trendify_access_token');
-    if (!token) { window.location.replace('../signin.html'); return; }
-    try {
-      var user = JSON.parse(localStorage.getItem('trendify_user'));
-      if (!user || user.role !== 'admin') { window.location.replace('../signin.html'); }
-    } catch(e) { window.location.replace('../signin.html'); }
+    var user = null;
+    try { user = JSON.parse(localStorage.getItem('trendify_user')); } catch(e) {}
+    console.log('[AUTH GUARD] token:', token, 'user:', user);
+    if (!token || !user || user.role !== 'admin') {
+      console.log('[AUTH GUARD] redirecting to signin');
+      window.location.replace('../signin.html');
+    }
   })();
 </script>
 <title>Overview — Admin Dashboard</title>
