@@ -21,8 +21,8 @@ class Settings(BaseSettings):
     CASHFREE_SECRET_KEY: Optional[str] = None
     CASHFREE_ENV: str = "TEST"  # TEST or PROD
 
-    FRONTEND_URL: str = "http://localhost:3000"
-    BACKEND_URL: str = "http://localhost:8000"
+    FRONTEND_URL: str = "https://trendifytechnology.vercel.app"
+    BACKEND_URL: str = "https://trendify-pxkx.onrender.com"
 
     class Config:
         env_file = ".env.local"
