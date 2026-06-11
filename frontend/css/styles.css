@@ -175,6 +175,26 @@ nav.s{background:rgba(3,3,7,.85);backdrop-filter:blur(32px) saturate(180%);borde
 .btn-nav:hover{border-color:var(--violet);color:#fff}
 .btn-nav:hover::before{opacity:.5}
 
+/* Ensure fixed nav doesn't overlap page content on small screens
+   and reduce CTA padding to avoid horizontal overflow */
+body{padding-top:72px}
+
+@media (max-width:1024px){
+  body{padding-top:64px}
+}
+
+@media (max-width:768px){
+  body{padding-top:56px}
+  .btn-nav{padding:8px 16px;font-size:11px}
+  .btn-nav-ghost{padding:6px 12px;font-size:11px}
+  .na{gap:6px}
+}
+
+@media (max-width:425px){
+  .btn-nav{padding:8px 12px;font-size:11px}
+  .site-logo{height:36px}
+}
+
 /* ═══════════════════════════════════════
    HERO  — full cinema
 ═══════════════════════════════════════ */
