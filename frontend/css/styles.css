@@ -224,7 +224,15 @@ nav.s{background:rgba(3,3,7,.85);backdrop-filter:blur(32px) saturate(180%);borde
 
 /* Respect reduced motion and touch devices */
 @media (prefers-reduced-motion:reduce), .touch-device{
-  .site-logo,.logo-text{animation:none !important;transition:none !important}
+  .logo,
+  .site-logo,
+  .logo-text{
+    animation:none !important;
+    transition:none !important;
+    opacity:1 !important;
+    transform:translateY(0) scale(1) !important;
+  }
+  .logo::before{opacity:0 !important;transform:scale(1) !important}
 }
 .nv{display:flex;gap:44px;list-style:none}
 .nv a{font-family:var(--f-sans);font-size:12px;font-weight:400;letter-spacing:.06em;color:var(--smoke);text-decoration:none;text-transform:uppercase;transition:color .25s;position:relative}
