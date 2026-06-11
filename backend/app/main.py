@@ -7,12 +7,7 @@ app = FastAPI(title=settings.API_TITLE, version=settings.API_VERSION)
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:3000",
-        "http://localhost:5173",
-        "http://127.0.0.1:3000",
-        str(settings.FRONTEND_URL),
-    ],
+    allow_origin_regex=r"https://(trendify.*\.vercel\.app|localhost:\d+|127\.0\.0\.1:\d+)",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
