@@ -42,3 +42,7 @@ Thumbs.db
 
 # Vercel
 .vercel
+
+# Local pip download test artifacts
+.pip_test/
+.pip_test2/
