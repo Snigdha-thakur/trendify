@@ -154,7 +154,7 @@ nav{
 }
 nav.s{background:rgba(3,3,7,.85);backdrop-filter:blur(32px) saturate(180%);border-bottom:1px solid rgba(167,124,255,.12);box-shadow:0 1px 40px rgba(0,0,0,.4)}
 .logo{
-  display:flex;align-items:center;gap:12px;text-decoration:none
+  display:flex;align-items:center;gap:12px;text-decoration:none;
   flex-shrink:0;
 }
 /* site logo image */
