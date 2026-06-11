@@ -2,7 +2,7 @@
  * Trendify Auth — calls backend directly, no Supabase dependency
  */
 (function () {
-  const API = 'http://localhost:8000/api/auth';
+  const API = 'https://trendify-pxkx.onrender.com/api/auth';
   const USER_KEY = 'trendify_user';
   const TOKEN_KEY = 'trendify_backend_token';
 

@@ -1,6 +1,6 @@
 export const API_CONFIG = {
-  baseURL: 'http://localhost:8000',
-  frontendURL: 'http://localhost:3000',
+  baseURL: 'https://trendify-pxkx.onrender.com',
+  frontendURL: 'https://trendifytechnology.vercel.app',
 };
 
 export const API_ENDPOINTS = {
