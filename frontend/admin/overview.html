@@ -247,26 +247,30 @@
   </main>
 </div>
 
+<script>
+  // Auth guard — runs synchronously before any modules
+  (function() {
+    var token = localStorage.getItem('trendify_access_token');
+    if (!token) { window.location.href = '../signin.html'; return; }
+    var user = null;
+    try { user = JSON.parse(localStorage.getItem('trendify_user')); } catch(e) {}
+    if (!user || user.role !== 'admin') { window.location.href = '../signin.html'; return; }
+    var ini = (user.name || 'A').split(' ').map(function(w){return w[0];}).join('').toUpperCase().slice(0,2);
+    document.querySelectorAll('.sb-av').forEach(function(el){ el.textContent = ini; });
+    document.querySelectorAll('.sb-name').forEach(function(el){ el.textContent = user.name || 'Admin'; });
+    document.querySelectorAll('.sb-plan').forEach(function(el){ el.textContent = user.email || ''; });
+  })();
+</script>
 <script type="module" src="../js/auth-api.js"></script>
 <script type="module" src="../js/cursor.js"></script>
 <script type="module" src="admin-api.js"></script>
 <script type="module" src="overview.js"></script>
-<script type="module">
-  // Auth guard — admin only
-  const user = TrendifyAuth.requireAuth('../signin.html');
-  if (user) {
-    if (user.role !== 'admin') { window.location.href = '../signin.html'; }
-    else {
-      const initials = (user.name || 'A').split(' ').map(w => w[0]).join('').toUpperCase().slice(0,2);
-      document.querySelectorAll('.sb-av').forEach(el => el.textContent = initials);
-      document.querySelectorAll('.sb-name').forEach(el => el.textContent = user.name || 'Admin');
-      document.querySelectorAll('.sb-plan').forEach(el => el.textContent = user.email || '');
-    }
-  }
-  document.querySelectorAll('a[href="../signin.html"]').forEach(el => {
-    el.addEventListener('click', async function(e) {
+<script>
+  document.querySelectorAll('a[href="../signin.html"]').forEach(function(el) {
+    el.addEventListener('click', function(e) {
       e.preventDefault();
-      await TrendifyAuth.logout();
+      localStorage.removeItem('trendify_access_token');
+      localStorage.removeItem('trendify_user');
       window.location.href = '../signin.html';
     });
   });
