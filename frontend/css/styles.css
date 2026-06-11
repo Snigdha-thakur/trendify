@@ -168,6 +168,29 @@ nav.s{background:rgba(3,3,7,.85);backdrop-filter:blur(32px) saturate(180%);borde
   text-decoration:none;display:inline-block;vertical-align:middle;margin-left:6px;
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:320px;
 }
+
+/* Logo / text animations */
+.site-logo{transition:transform .35s ease,filter .35s ease;will-change:transform,filter;animation:logo-float 6s ease-in-out infinite}
+.logo:hover .site-logo{transform:scale(1.04) rotate(-2deg)}
+.logo-text{background-size:200% 100%;animation:text-shimmer 6s linear infinite}
+.logo::after{content:'';display:block;width:8px;height:8px;border-radius:50%;background:var(--aqua);box-shadow:0 0 24px rgba(0,229,200,.12);margin-left:8px;opacity:0;transition:opacity .25s}
+.logo:hover::after{opacity:1}
+
+@keyframes logo-float{
+  0%{transform:translateY(0) rotate(0)}
+  50%{transform:translateY(-4px) rotate(-3deg)}
+  100%{transform:translateY(0) rotate(0)}
+}
+@keyframes text-shimmer{
+  0%{background-position:0% 50%}
+  50%{background-position:100% 50%}
+  100%{background-position:0% 50%}
+}
+
+/* Respect reduced motion and touch devices */
+@media (prefers-reduced-motion:reduce), .touch-device{
+  .site-logo,.logo-text{animation:none !important;transition:none !important}
+}
 .nv{display:flex;gap:44px;list-style:none}
 .nv a{font-family:var(--f-sans);font-size:12px;font-weight:400;letter-spacing:.06em;color:var(--smoke);text-decoration:none;text-transform:uppercase;transition:color .25s;position:relative}
 .nv a::after{content:'';position:absolute;bottom:-4px;left:0;width:0;height:1px;background:var(--violet);transition:width .3s ease}
