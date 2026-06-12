@@ -1,6 +1,6 @@
 export const API_CONFIG = {
-  baseURL: 'https://trendify-pxkx.onrender.com',
-  frontendURL: 'https://trendifytechnology.vercel.app',
+  baseURL: import.meta.env.VITE_API_URL || 'https://trendify-pxkx.onrender.com',
+  frontendURL: import.meta.env.VITE_FRONTEND_URL || 'https://trendifytechnology.vercel.app',
 };
 
 export const API_ENDPOINTS = {
