@@ -55,7 +55,16 @@ body.h #cr{width:44px;height:44px}
   height: calc(100svh - 72px);
   overflow-y: auto;
   transition: width .25s;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(167,124,255,.25) transparent;
 }
+.admin-sidebar::-webkit-scrollbar { width: 4px; }
+.admin-sidebar::-webkit-scrollbar-track { background: transparent; }
+.admin-sidebar::-webkit-scrollbar-thumb {
+  background: rgba(167,124,255,.25);
+  border-radius: 99px;
+}
+.admin-sidebar::-webkit-scrollbar-thumb:hover { background: rgba(167,124,255,.5); }
 .admin-sidebar.collapsed { width: 0; overflow: hidden; padding: 0; }
 
 .sb-section { margin-bottom: 4px; }
@@ -192,7 +201,16 @@ body.h #cr{width:44px;height:44px}
   background: var(--void);
   padding: 0;
   overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(167,124,255,.2) transparent;
 }
+.admin-main::-webkit-scrollbar { width: 4px; }
+.admin-main::-webkit-scrollbar-track { background: transparent; }
+.admin-main::-webkit-scrollbar-thumb {
+  background: rgba(167,124,255,.2);
+  border-radius: 99px;
+}
+.admin-main::-webkit-scrollbar-thumb:hover { background: rgba(167,124,255,.45); }
 
 /* ── BREADCRUMB ── */
 .admin-breadcrumb {
