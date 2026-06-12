@@ -116,14 +116,18 @@
 <script type="module" src="admin-api.js"></script>
 <script type="module" src="wallet-balance.js"></script>
 <script>
-  (function() {
+  async function initPage() {
+    let attempts = 0;
+    while (!window.TrendifyAuth && attempts < 50) { await new Promise(r => setTimeout(r, 10)); attempts++; }
+    if (!window.TrendifyAuth) { window.location.href = '../signin.html'; return; }
     var user = TrendifyAuth.requireAuth('../signin.html');
     if (!user) return;
     var ini = (user.name || 'A').split(' ').map(function(w) { return w[0]; }).join('').toUpperCase().slice(0, 2);
     document.querySelectorAll('.sb-av').forEach(function(el) { el.textContent = ini; });
     document.querySelectorAll('.sb-name').forEach(function(el) { el.textContent = user.name || 'Admin'; });
     document.querySelectorAll('.sb-plan').forEach(function(el) { el.textContent = user.email || ''; });
-  })();
+  }
+  initPage();
   document.querySelectorAll('a[href="../signin.html"]').forEach(function(el) {
     el.addEventListener('click', async function(e) { e.preventDefault(); await TrendifyAuth.logout(); window.location.href = '../signin.html'; });
   });

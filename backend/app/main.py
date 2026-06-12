@@ -8,8 +8,14 @@ app = FastAPI(title=settings.API_TITLE, version=settings.API_VERSION)
 app.add_middleware(
     CORSMiddleware,
     # Allow the configured frontend URL, common deploy hosts and localhost for development.
-    allow_origins=[settings.FRONTEND_URL, "http://localhost:5173", "http://127.0.0.1:5173"],
-    allow_origin_regex=r"https://.*\.vercel\.app|https://.*\.onrender\.com|http://localhost(:\d+)?|http://127\.0\.0\.1(:\d+)?",
+    allow_origins=[
+        settings.FRONTEND_URL, 
+        "http://localhost:3001",
+        "http://localhost:5173", 
+        "http://127.0.0.1:3001",
+        "http://127.0.0.1:5173"
+    ],
+    allow_origin_regex=r"https://.*\.vercel\.app$|https://.*\.onrender\.com$|http://localhost:\d+$|http://127\.0\.0\.1:\d+$",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

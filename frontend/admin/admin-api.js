@@ -2,7 +2,15 @@
  * Trendify Admin API — calls backend endpoints
  */
 (function () {
-  const API_URL = (typeof __API_URL__ !== 'undefined' ? __API_URL__ : 'https://trendify-pxkx.onrender.com') + '/api/admin';
+  // Automatically detect local development
+  let baseAPI = 'https://trendify-pxkx.onrender.com';
+  if (typeof __API_URL__ !== 'undefined' && __API_URL__) {
+    baseAPI = __API_URL__;
+  } else if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+    // Default to local backend for development
+    baseAPI = 'http://localhost:8000';
+  }
+  const API_URL = baseAPI + '/api/admin';
   const TOKEN_KEY = 'trendify_access_token';
 
   function getToken() {

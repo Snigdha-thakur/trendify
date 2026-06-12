@@ -1,5 +1,11 @@
+// Auto-detect API URL based on environment
+let baseURL = import.meta.env.VITE_API_URL || 'https://trendify-pxkx.onrender.com';
+if (typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')) {
+  baseURL = 'http://localhost:8000';
+}
+
 export const API_CONFIG = {
-  baseURL: import.meta.env.VITE_API_URL || 'https://trendify-pxkx.onrender.com',
+  baseURL: baseURL,
   frontendURL: import.meta.env.VITE_FRONTEND_URL || 'https://trendifytechnology.vercel.app',
 };
 

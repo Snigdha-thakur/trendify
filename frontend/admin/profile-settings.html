@@ -205,7 +205,10 @@
 <script type="module" src="../js/auth-api.js"></script>
 <script>
 // Auth guard
-(function() {
+async function initAuthGuard() {
+  let attempts = 0;
+  while (!window.TrendifyAuth && attempts < 50) { await new Promise(r => setTimeout(r, 10)); attempts++; }
+  if (!window.TrendifyAuth) { window.location.href = '../signin.html'; return; }
   const user = TrendifyAuth.requireAuth('../signin.html');
   if (!user) return;
   if (user.role !== 'admin') { window.location.href = '../signin.html'; return; }
@@ -213,7 +216,8 @@
   document.querySelectorAll('.sb-av').forEach(el => el.textContent = initials);
   document.querySelectorAll('.sb-name').forEach(el => el.textContent = user.name || 'Admin');
   document.querySelectorAll('.sb-plan').forEach(el => el.textContent = user.email || '');
-})();
+}
+initAuthGuard();
 
 // Load real user data from backend API
 async function loadProfile() {
