@@ -38,7 +38,7 @@ deactivate () {
 # unset irrelevant variables
 deactivate nondestructive
 
-VIRTUAL_ENV="c:\Users\snigd\OneDrive\Desktop\trendify-site (1)\trendify-site\backend\venv"
+VIRTUAL_ENV="C:\Users\snigd\OneDrive\Desktop\trendify-site (1)\trendify-site\backend\venv"
 export VIRTUAL_ENV
 
 _OLD_VIRTUAL_PATH="$PATH"
