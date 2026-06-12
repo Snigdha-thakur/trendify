@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Header
 from sqlalchemy.orm import Session
 from app.core.database import get_db
 from app.core.security import create_access_token, verify_password, get_password_hash, decode_token
@@ -6,18 +6,26 @@ from app.models.models import User
 from app.schemas.schemas import UserLogin, UserRegister, TokenResponse, TokenRequest, UserLoginResponse, UserProfile, UserUpdate
 import secrets, string
 import traceback
-from fastapi.security import HTTPBearer, HTTPAuthCredentials
 
 router = APIRouter(prefix="/api/auth", tags=["Auth"])
-security = HTTPBearer()
 
 
-def get_current_user(credentials: HTTPAuthCredentials = Depends(security), db: Session = Depends(get_db)) -> User:
-    """Get current user from JWT token"""
-    token = credentials.credentials
+def get_current_user(authorization: str = Header(None), db: Session = Depends(get_db)) -> User:
+    """Get current user from JWT token in Authorization header"""
+    if not authorization:
+        raise HTTPException(status_code=401, detail="Missing authorization header")
+    
+    try:
+        scheme, token = authorization.split(" ")
+        if scheme.lower() != "bearer":
+            raise HTTPException(status_code=401, detail="Invalid authorization scheme")
+    except ValueError:
+        raise HTTPException(status_code=401, detail="Invalid authorization header")
+    
     payload = decode_token(token)
     if not payload or "sub" not in payload:
         raise HTTPException(status_code=401, detail="Invalid token")
+    
     user = db.query(User).filter(User.id == payload["sub"]).first()
     if not user:
         raise HTTPException(status_code=401, detail="User not found")
