@@ -130,3 +130,12 @@ document.addEventListener('click', function(e) {
 
 loadStats();
 loadTransactions('all');
+
+window.toggleSidebar = toggleSidebar;
+window.toggleTheme = toggleTheme;
+window.toggleUserMenu = toggleUserMenu;
+window.filterTable = filterTable;
+window.renderTable = renderTable;
+window.goPage = goPage;
+window.applyDateFilter = applyDateFilter;
+window.copyText = copyText;

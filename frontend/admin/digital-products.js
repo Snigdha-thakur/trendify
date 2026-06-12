@@ -110,3 +110,12 @@ document.addEventListener('click', function(e) {
 });
 
 loadData();
+
+window.toggleSidebar = toggleSidebar;
+window.toggleTheme = toggleTheme;
+window.toggleUserMenu = toggleUserMenu;
+window.filterTable = filterTable;
+window.renderTable = renderTable;
+window.goPage = goPage;
+window.copyText = copyText;
+window.toggleWhitelabel = toggleWhitelabel;

@@ -59,3 +59,12 @@ function toggleTheme(){document.body.classList.toggle('light-theme');}
 function toggleUserMenu(){event.stopPropagation();document.getElementById('userPopup').classList.toggle('open');}
 document.addEventListener('click',function(e){if(e.target.closest('.user-popup-item'))return;const p=document.getElementById('userPopup'),u=document.getElementById('sbUser');if(p&&!p.contains(e.target)&&!u.contains(e.target))p.classList.remove('open');});
 loadData();
+
+window.toggleSidebar = toggleSidebar;
+window.toggleTheme = toggleTheme;
+window.toggleUserMenu = toggleUserMenu;
+window.filterTable = filterTable;
+window.renderTable = renderTable;
+window.goPage = goPage;
+window.copyText = copyText;
+window.toggleActive = toggleActive;

@@ -99,3 +99,13 @@ document.addEventListener('click', function(e) {
 });
 
 AdminAPI.init().then(() => loadData());
+
+window.toggleSidebar = toggleSidebar;
+window.toggleTheme = toggleTheme;
+window.toggleUserMenu = toggleUserMenu;
+window.filterTable = filterTable;
+window.renderTable = renderTable;
+window.goPage = goPage;
+window.toggleSelectAll = toggleSelectAll;
+window.toggleRow = toggleRow;
+window.payAll = payAll;

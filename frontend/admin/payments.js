@@ -90,3 +90,12 @@ style.textContent = '@keyframes spin { to { transform: rotate(360deg); } }';
 document.head.appendChild(style);
 
 AdminAPI.init().then(() => loadPayments());
+
+window.toggleSidebar = toggleSidebar;
+window.toggleTheme = toggleTheme;
+window.toggleUserMenu = toggleUserMenu;
+window.filterTable = filterTable;
+window.renderTable = renderTable;
+window.goPage = goPage;
+window.copyText = copyText;
+window.refreshStatus = refreshStatus;
