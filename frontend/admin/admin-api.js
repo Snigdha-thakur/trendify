@@ -3,12 +3,20 @@
  */
 (function () {
   // Automatically detect local development
+  function normalizeApiUrl(url) {
+    if (!url) return '/api';
+    let normalized = String(url).trim().replace(/\/+$|\s+$/g, '');
+    if (!normalized) return '/api';
+    if (!normalized.endsWith('/api')) normalized += '/api';
+    return normalized;
+  }
+
   let baseAPI = '/api';
   if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
     // Default to local backend for development
     baseAPI = 'http://localhost:8000/api';
   } else if (typeof __API_URL__ !== 'undefined' && __API_URL__) {
-    baseAPI = __API_URL__;
+    baseAPI = normalizeApiUrl(__API_URL__);
   }
   const API_URL = baseAPI + '/admin';
   const TOKEN_KEY = 'trendify_access_token';

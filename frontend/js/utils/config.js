@@ -1,7 +1,15 @@
 // Auto-detect API URL based on environment
-let baseURL = import.meta.env.VITE_API_URL || '/api';
+function normalizeApiUrl(url) {
+  if (!url) return '/api';
+  let normalized = String(url).trim().replace(/\/+$|\s+$/g, '');
+  if (!normalized) return '/api';
+  if (!normalized.endsWith('/api')) normalized += '/api';
+  return normalized;
+}
+
+let baseURL = normalizeApiUrl(import.meta.env.VITE_API_URL);
 if (typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')) {
-  baseURL = 'http://localhost:8000';
+  baseURL = 'http://localhost:8000/api';
 }
 
 export const API_CONFIG = {

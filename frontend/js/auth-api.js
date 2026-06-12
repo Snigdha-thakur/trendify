@@ -1,13 +1,21 @@
 /**
  * Trendify Auth — calls backend directly, no Supabase dependency
  */
+function normalizeApiUrl(url) {
+  if (!url) return '/api';
+  let normalized = String(url).trim().replace(/\/+$|\s+$/g, '');
+  if (!normalized) return '/api';
+  if (!normalized.endsWith('/api')) normalized += '/api';
+  return normalized;
+}
+
 // Automatically detect local development
 let baseAPI = '/api';
 if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
   // Default to local backend for development
   baseAPI = 'http://localhost:8000/api';
 } else if (typeof __API_URL__ !== 'undefined' && __API_URL__) {
-  baseAPI = __API_URL__;
+  baseAPI = normalizeApiUrl(__API_URL__);
 }
 const API = baseAPI + '/auth';
 const USER_KEY = 'trendify_user';
