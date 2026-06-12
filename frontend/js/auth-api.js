@@ -2,14 +2,14 @@
  * Trendify Auth — calls backend directly, no Supabase dependency
  */
 // Automatically detect local development
-let baseAPI = 'https://trendify-pxkx.onrender.com';
-if (typeof __API_URL__ !== 'undefined' && __API_URL__) {
-  baseAPI = __API_URL__;
-} else if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+let baseAPI = '/api';
+if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
   // Default to local backend for development
-  baseAPI = 'http://localhost:8000';
+  baseAPI = 'http://localhost:8000/api';
+} else if (typeof __API_URL__ !== 'undefined' && __API_URL__) {
+  baseAPI = __API_URL__;
 }
-const API = baseAPI + '/api/auth';
+const API = baseAPI + '/auth';
 const USER_KEY = 'trendify_user';
 const TOKEN_KEY = 'trendify_access_token';
 

@@ -235,7 +235,10 @@ async function loadProfile() {
       await new Promise(resolve => document.addEventListener('DOMContentLoaded', resolve));
     }
 
-    const apiUrl = (typeof __API_URL__ !== 'undefined' ? __API_URL__ : 'https://trendify-pxkx.onrender.com') + '/api/auth/me';
+    const apiBase = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+      ? 'http://localhost:8000/api'
+      : (typeof __API_URL__ !== 'undefined' ? __API_URL__ : '/api');
+    const apiUrl = apiBase + '/auth/me';
     console.log('📡 Fetching from:', apiUrl);
 
     const res = await fetch(apiUrl, {
@@ -387,7 +390,10 @@ async function updateProfile() {
   btn.disabled = true;
   try {
     const token = TrendifyAuth.getToken();
-    const res = await fetch((typeof __API_URL__ !== 'undefined' ? __API_URL__ : 'https://trendify-pxkx.onrender.com') + '/api/auth/me', {
+    const apiBase = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+      ? 'http://localhost:8000/api'
+      : (typeof __API_URL__ !== 'undefined' ? __API_URL__ : '/api');
+    const res = await fetch(apiBase + '/auth/me', {
       method: 'PATCH',
       headers: { 
         'Authorization': 'Bearer ' + token, 
@@ -450,7 +456,10 @@ async function updateAdminSettings() {
   
   try {
     const token = TrendifyAuth.getToken();
-    const res = await fetch((typeof __API_URL__ !== 'undefined' ? __API_URL__ : 'https://trendify-pxkx.onrender.com') + '/api/auth/me', {
+    const apiBase = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+      ? 'http://localhost:8000/api'
+      : (typeof __API_URL__ !== 'undefined' ? __API_URL__ : '/api');
+    const res = await fetch(apiBase + '/auth/me', {
       method: 'PATCH',
       headers: { 
         'Authorization': 'Bearer ' + token, 

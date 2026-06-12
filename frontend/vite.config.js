@@ -2,7 +2,7 @@ import { defineConfig, loadEnv } from 'vite';
 
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '');
-  const apiURL = env.VITE_API_URL || 'https://trendify-pxkx.onrender.com';
+  const apiURL = env.VITE_API_URL || '/api';
 
   return {
   root: '.',
