@@ -1,7 +1,8 @@
 /* ── ADMIN LAYOUT OVERRIDES ── */
 html, body { cursor: none; }
-/* Keep custom cursor elements visible */
-#c, #cr { display: block !important; opacity: 1 !important; }
+body { background-image: none; animation: none; }
+/* Hide custom cursor elements in the admin view */
+#c, #cr { display: none !important; opacity: 0 !important; }
 #particles { display: none; }
 #prog { display: none; }
 
@@ -14,21 +15,24 @@ input[type="text"], input[type="email"], input[type="password"], input[type="tel
 }
 
 /* Custom cursor styles */
-#c,.cr{position:fixed;display:block !important;border-radius:50%;pointer-events:none;z-index:2147483647;transform:translate(-50%,-50%);opacity:1 !important;}
-#c{width:12px;height:12px;background:rgba(166,124,255,0.95);box-shadow:0 0 24px rgba(166,124,255,0.75);transition:width .2s,height .2s,opacity .2s}
-#cr{z-index:2147483646;width:48px;height:48px;border:2px solid rgba(167,124,255,.7);transition:width .3s,height .3s,opacity .2s}
-body.h #c{width:22px;height:22px}
-body.h #cr{width:70px;height:70px}
+#c,.cr{position:fixed;display:block !important;border-radius:50%;pointer-events:none;z-index:2147483647;transform:translate(-50%,-50%);opacity:1 !important;left:-100px;top:-100px;}
+#c{width:8px;height:8px;background:rgba(166,124,255,0.95);box-shadow:0 0 16px rgba(166,124,255,0.75);transition:width .2s,height .2s,opacity .2s}
+#cr{z-index:2147483646;width:28px;height:28px;border:1.5px solid rgba(167,124,255,.7);transition:width .3s,height .3s,opacity .2s}
+body.h #c{width:14px;height:14px}
+body.h #cr{width:44px;height:44px}
 
 /* Fix nav for admin */
 .admin-nav {
   position: sticky !important;
   top: 0;
+  left: 0;
+  right: 0;
   z-index: 900;
   background: rgba(3,3,7,.97) !important;
   border-bottom: 1px solid rgba(167,124,255,.12);
   backdrop-filter: blur(32px);
   padding: 0 28px !important;
+  height: 72px;
 }
 
 /* ── SHELL ── */
@@ -710,6 +714,93 @@ body.light-theme .admin-breadcrumb { background: var(--void); }
 }
 .dp-toggle input:checked + .dp-toggle-slider { background: var(--violet); border-color: var(--violet); }
 .dp-toggle input:checked + .dp-toggle-slider::before { transform: translateX(16px); background: #fff; }
+
+/* ── ADD USER MODAL ── */
+.au-modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.6);
+  backdrop-filter: blur(6px);
+  z-index: 999;
+  align-items: center;
+  justify-content: center;
+}
+.au-modal-overlay.open { display: flex; }
+.au-modal {
+  background: var(--panel);
+  border: 1px solid rgba(167,124,255,.18);
+  border-radius: 12px;
+  width: 90%;
+  max-width: 480px;
+  padding: 32px;
+  box-shadow: 0 20px 60px rgba(0,0,0,.4);
+}
+.au-field { display: flex; flex-direction: column; gap: 6px; }
+.au-label { font-family: var(--f-sans); font-size: 13px; font-weight: 600; color: var(--white); }
+.au-input-wrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--void);
+  border: 1px solid rgba(167,124,255,.15);
+  border-radius: 6px;
+  padding: 10px 14px;
+  transition: border-color .2s;
+}
+.au-input-wrap:focus-within { border-color: rgba(167,124,255,.45); }
+.au-input {
+  background: none;
+  border: none;
+  outline: none;
+  font-family: var(--f-sans);
+  font-size: 13px;
+  color: var(--white);
+  width: 100%;
+}
+.au-input::placeholder { color: var(--mist); }
+.au-select {
+  background: var(--void);
+  border: 1px solid rgba(167,124,255,.15);
+  border-radius: 6px;
+  padding: 10px 32px 10px 14px;
+  font-family: var(--f-sans);
+  font-size: 13px;
+  color: var(--white);
+  outline: none;
+  appearance: none;
+  width: 100%;
+  cursor: pointer;
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%239d99bb' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");
+}
+.au-select:focus { border-color: rgba(167,124,255,.45); }
+.au-error { font-family: var(--f-sans); font-size: 12px; color: var(--ember); min-height: 16px; }
+.au-submit-btn {
+  background: var(--panel);
+  border: 1px solid rgba(167,124,255,.3);
+  color: var(--white);
+  font-family: var(--f-sans);
+  font-size: 13px;
+  font-weight: 700;
+  padding: 10px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background .15s;
+}
+.au-submit-btn:hover { background: rgba(123,94,167,.2); }
+.au-cancel-btn {
+  background: #c0392b;
+  border: none;
+  color: #fff;
+  font-family: var(--f-sans);
+  font-size: 13px;
+  font-weight: 700;
+  padding: 10px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+}
 
 /* ── ADD WEBHOOK BUTTON ── */
 .add-webhook-btn {

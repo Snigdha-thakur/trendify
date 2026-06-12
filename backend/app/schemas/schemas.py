@@ -12,6 +12,7 @@ class UserRegister(BaseModel):
     password: str
     referral_code: Optional[str] = None
     role: Optional[str] = 'user'
+    status: Optional[str] = 'active'
 
 
 class UserLogin(BaseModel):

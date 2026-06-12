@@ -45,6 +45,29 @@
 
     getUsers: () => query('/users?skip=0&limit=1000'),
     updateUserStatus: (id, status) => put(`/users/${id}`, { status }),
+    updateUser: (id, data) => put(`/users/${id}`, data),
+    deleteUser: async (id) => {
+      const token = getToken();
+      if (!token) throw new Error('No auth token');
+      const res = await fetch(`${API_URL}/users/${id}`, {
+        method: 'DELETE',
+        headers: { 'Authorization': `Bearer ${token}` },
+      });
+      if (!res.ok) { const t = await res.text(); throw new Error(t); }
+      return res.json();
+    },
+    updateUserWallet: (id, amount, type) => put(`/users/${id}/wallet`, { amount, type }),
+    createUser: async (data) => {
+      const token = getToken();
+      if (!token) throw new Error('No auth token');
+      const res = await fetch(`${API_URL}/users`, {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+      if (!res.ok) { const t = await res.text(); throw new Error(t); }
+      return res.json();
+    },
 
     getTransactions: (days) => {
       const base = '/transactions?skip=0&limit=1000';

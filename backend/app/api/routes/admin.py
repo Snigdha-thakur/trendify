@@ -10,7 +10,7 @@ from app.models.models import (
     PayoutWebhook, GatewayLog,
 )
 from app.schemas.schemas import (
-    UserResponse, UserUpdate, KYCResponse, ProductResponse,
+    UserResponse, UserUpdate, UserRegister, KYCResponse, ProductResponse,
     TransactionResponse, PayoutResponse, CreatorPayoutResponse,
     ReferralEarningResponse, WalletLogResponse, GatewayLogResponse,
     PayoutWebhookResponse,
@@ -48,6 +48,62 @@ def list_users(
     db: Session = Depends(get_db), _: User = Depends(require_admin),
 ):
     return db.query(User).order_by(User.created_at.desc()).offset(skip).limit(limit).all()
+
+
+@router.post("/users", response_model=UserResponse)
+def create_user(
+    data: UserRegister,
+    db: Session = Depends(get_db), _: User = Depends(require_admin),
+):
+    if db.query(User).filter(User.email == data.email).first():
+        raise HTTPException(status_code=400, detail="Email already registered")
+    import uuid, random, string
+    ref_code = ''.join(random.choices(string.ascii_uppercase + string.digits, k=8))
+    new_user = User(
+        id=uuid.uuid4(),
+        name=data.name,
+        email=data.email,
+        phone=data.phone,
+        password_hash=get_password_hash(data.password),
+        role=data.role or 'user',
+        status=data.status or 'active',
+        referral_code=ref_code,
+    )
+    db.add(new_user)
+    db.commit()
+    db.refresh(new_user)
+    return new_user
+
+
+@router.delete("/users/{user_id}")
+def delete_user(
+    user_id: UUID,
+    db: Session = Depends(get_db), _: User = Depends(require_admin),
+):
+    user = db.query(User).filter(User.id == user_id).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    db.delete(user)
+    db.commit()
+    return {"message": "User deleted"}
+
+
+@router.put("/users/{user_id}/wallet", response_model=UserResponse)
+def update_user_wallet(
+    user_id: UUID, data: dict,
+    db: Session = Depends(get_db), _: User = Depends(require_admin),
+):
+    user = db.query(User).filter(User.id == user_id).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    amount = Decimal(str(data.get('amount', 0)))
+    if data.get('type') == 'debit':
+        user.wallet_balance = max(Decimal('0'), (user.wallet_balance or Decimal('0')) - amount)
+    else:
+        user.wallet_balance = (user.wallet_balance or Decimal('0')) + amount
+    db.commit()
+    db.refresh(user)
+    return user
 
 
 @router.put("/users/{user_id}", response_model=UserResponse)

@@ -14,7 +14,10 @@
 <div id="c"></div>
 <div class="cr" id="cr"></div>
 <nav id="nav" class="s admin-nav">
-  <a href="../index.html" class="logo">Trendify</a>
+  <a href="../index.html" class="logo" aria-label="Trendify">
+    <img src="../assets/logo.jpeg" alt="Trendify logo" class="site-logo" onerror="this.style.display='none'; this.parentElement.querySelector('.logo-text').style.display='inline-block'"/>
+    <span class="logo-text">Trendify</span>
+  </a>
   <div class="na">
     <span style="font-family:var(--f-mono);font-size:10px;color:var(--smoke);letter-spacing:.08em;">Admin Panel</span>
     <a href="../signin.html" class="btn-nav-ghost">Sign out</a>
@@ -105,6 +108,7 @@
         </table>
         <div class="admin-empty" id="emptyState" style="display:none">No results found.</div>
       </div>
+      <div class="admin-pagination" id="pagination"></div>
 
       <!-- Context menu -->
       <div class="um-ctx-menu" id="ctxMenu">
@@ -112,81 +116,197 @@
           <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M11 2l3 3-8 8H3v-3L11 2z"/></svg>
           Edit User
         </button>
-        <button class="um-ctx-item" onclick="ctxAction('loginAsCreator')">
+        <button class="um-ctx-item" id="ctxLoginBtn" onclick="ctxAction('login')">
           <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><circle cx="8" cy="5" r="3"/><path d="M2 14c0-3.3 2.7-6 6-6s6 2.7 6 6H2z"/></svg>
           Login as Creator
         </button>
-        <button class="um-ctx-item" onclick="ctxAction('status')">
+        <button class="um-ctx-item" id="ctxStatusBtn" onclick="ctxAction('status')">
           <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M3 8l3 3 7-7"/></svg>
           Change Status
         </button>
+        <button class="um-ctx-item" onclick="ctxAction('wallet')">
+          <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="1" y="4" width="14" height="9" rx="1"/><path d="M1 7h14"/><circle cx="11.5" cy="10" r="1"/></svg>
+          Update Wallet
+        </button>
       </div>
 
-      <!-- Details Modal -->
-      <div id="detailsModal" class="modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(6px);z-index:999;align-items:center;justify-content:center">
-        <div style="background:var(--panel);border:1px solid rgba(167,124,255,.18);border-radius:12px;width:90%;max-width:600px;max-height:90vh;overflow-y:auto;padding:32px;box-shadow:0 20px 60px rgba(0,0,0,.3)">
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px">
-            <h2 style="font-family:var(--f-serif);font-size:24px;font-weight:600;color:#fff;margin:0">User Details</h2>
-            <button onclick="closeDetailsModal()" style="background:none;border:none;font-size:24px;cursor:pointer;color:var(--smoke);transition:color .2s" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='var(--smoke)'">×</button>
+      <!-- Update Wallet Modal -->
+      <div class="au-modal-overlay" id="walletModal" style="display:none">
+        <div class="au-modal" style="max-width:360px">
+          <div style="margin-bottom:20px">
+            <h2 style="font-family:var(--f-sans);font-size:18px;font-weight:700;color:var(--white);margin:0 0 4px">Update Wallet</h2>
+            <p id="walletModalSub" style="font-family:var(--f-sans);font-size:13px;color:var(--smoke);margin:0"></p>
           </div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px">
-            <div style="display:flex;flex-direction:column;gap:6px">
-              <label style="font-family:var(--f-mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--smoke)">User ID</label>
-              <input id="detailsId" readonly style="background:rgba(255,255,255,.03);border:1px solid rgba(167,124,255,.12);border-radius:6px;padding:10px;font-family:var(--f-mono);font-size:11px;color:var(--smoke);cursor:not-allowed" />
-            </div>
-            <div style="display:flex;flex-direction:column;gap:6px">
-              <label style="font-family:var(--f-mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--smoke)">Name</label>
-              <input id="detailsName" readonly style="background:rgba(255,255,255,.03);border:1px solid rgba(167,124,255,.12);border-radius:6px;padding:10px;font-family:var(--f-sans);font-size:13px;color:#fff;cursor:not-allowed" />
-            </div>
-            <div style="display:flex;flex-direction:column;gap:6px">
-              <label style="font-family:var(--f-mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--smoke)">Email</label>
-              <input id="detailsEmail" readonly style="background:rgba(255,255,255,.03);border:1px solid rgba(167,124,255,.12);border-radius:6px;padding:10px;font-family:var(--f-mono);font-size:12px;color:var(--violet);cursor:not-allowed" />
-            </div>
-            <div style="display:flex;flex-direction:column;gap:6px">
-              <label style="font-family:var(--f-mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--smoke)">Phone</label>
-              <input id="detailsPhone" readonly style="background:rgba(255,255,255,.03);border:1px solid rgba(167,124,255,.12);border-radius:6px;padding:10px;font-family:var(--f-mono);font-size:12px;color:var(--smoke);cursor:not-allowed" />
-            </div>
-            <div style="display:flex;flex-direction:column;gap:6px;grid-column:1/-1">
-              <label style="font-family:var(--f-mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--smoke)">Password Hash</label>
-              <input id="detailsPasswordHash" readonly style="background:rgba(255,255,255,.03);border:1px solid rgba(167,124,255,.12);border-radius:6px;padding:10px;font-family:var(--f-mono);font-size:10px;color:var(--smoke);word-break:break-all;cursor:not-allowed" />
-            </div>
-            <div style="display:flex;flex-direction:column;gap:6px">
-              <label style="font-family:var(--f-mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--smoke)">Role</label>
-              <select id="detailsRole" disabled style="background:rgba(255,255,255,.03);border:1px solid rgba(167,124,255,.12);border-radius:6px;padding:10px;font-family:var(--f-sans);font-size:12px;color:#fff;cursor:not-allowed">
-                <option value="user">User</option>
-                <option value="creator">Creator</option>
-                <option value="admin">Admin</option>
-              </select>
-            </div>
-            <div style="display:flex;flex-direction:column;gap:6px">
-              <label style="font-family:var(--f-mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--smoke)">Status</label>
-              <select id="detailsStatus" disabled style="background:rgba(255,255,255,.03);border:1px solid rgba(167,124,255,.12);border-radius:6px;padding:10px;font-family:var(--f-sans);font-size:12px;color:#fff;cursor:not-allowed">
-                <option value="active">Active</option>
-                <option value="inactive">Inactive</option>
-              </select>
-            </div>
-            <div style="display:flex;flex-direction:column;gap:6px">
-              <label style="font-family:var(--f-mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--smoke)">Referral Code</label>
-              <input id="detailsReferralCode" readonly style="background:rgba(255,255,255,.03);border:1px solid rgba(167,124,255,.12);border-radius:6px;padding:10px;font-family:var(--f-mono);font-size:11px;color:var(--smoke);cursor:not-allowed" />
-            </div>
-            <div style="display:flex;flex-direction:column;gap:6px">
-              <label style="font-family:var(--f-mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--smoke)">Referred By</label>
-              <input id="detailsReferredBy" readonly style="background:rgba(255,255,255,.03);border:1px solid rgba(167,124,255,.12);border-radius:6px;padding:10px;font-family:var(--f-mono);font-size:10px;color:var(--smoke);cursor:not-allowed" />
-            </div>
-            <div style="display:flex;flex-direction:column;gap:6px">
-              <label style="font-family:var(--f-mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--smoke)">Wallet Balance</label>
-              <input id="detailsWalletBalance" readonly style="background:rgba(255,255,255,.03);border:1px solid rgba(167,124,255,.12);border-radius:6px;padding:10px;font-family:var(--f-mono);font-size:12px;color:var(--green);cursor:not-allowed" />
-            </div>
-            <div style="display:flex;flex-direction:column;gap:6px">
-              <label style="font-family:var(--f-mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--smoke)">Referral Wallet Balance</label>
-              <input id="detailsReferralWalletBalance" readonly style="background:rgba(255,255,255,.03);border:1px solid rgba(167,124,255,.12);border-radius:6px;padding:10px;font-family:var(--f-mono);font-size:12px;color:var(--aqua);cursor:not-allowed" />
-            </div>
-            <div style="display:flex;flex-direction:column;gap:6px;grid-column:1/-1">
-              <label style="font-family:var(--f-mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--smoke)">Created At</label>
-              <input id="detailsCreatedAt" readonly style="background:rgba(255,255,255,.03);border:1px solid rgba(167,124,255,.12);border-radius:6px;padding:10px;font-family:var(--f-mono);font-size:11px;color:var(--smoke);cursor:not-allowed" />
+          <div class="au-field" style="margin-bottom:12px">
+            <label class="au-label">Amount (₹)</label>
+            <div class="au-input-wrap">
+              <input id="walletAmount" class="au-input" type="number" min="0" step="0.01" placeholder="0.00" required/>
             </div>
           </div>
-          <button onclick="closeDetailsModal()" style="width:100%;padding:12px;background:var(--iris);color:#fff;border:none;border-radius:6px;font-family:var(--f-sans);font-weight:700;cursor:pointer;transition:background .2s" onmouseover="this.style.background='var(--violet)'" onmouseout="this.style.background='var(--iris)'">Close</button>
+          <div class="au-field" style="margin-bottom:16px">
+            <label class="au-label">Type</label>
+            <select id="walletType" class="au-select">
+              <option value="credit">Credit</option>
+              <option value="debit">Debit</option>
+            </select>
+          </div>
+          <div id="walletError" class="au-error" style="margin-bottom:8px"></div>
+          <div style="display:flex;justify-content:flex-end;gap:10px">
+            <button id="walletSubmitBtn" onclick="submitWalletUpdate()" class="au-submit-btn">Update</button>
+            <button type="button" onclick="closeWalletModal()" class="au-cancel-btn">&#x2715; Cancel</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Add User Modal -->
+      <div class="au-modal-overlay" id="addUserModal" style="display:none">
+        <div class="au-modal">
+          <div style="margin-bottom:24px">
+            <h2 style="font-family:var(--f-sans);font-size:20px;font-weight:700;color:var(--white);margin:0 0 4px">Add User</h2>
+            <p style="font-family:var(--f-sans);font-size:13px;color:var(--smoke);margin:0">Add a new user to the system.</p>
+          </div>
+          <form id="addUserForm" onsubmit="event.preventDefault();submitAddUser()" style="display:flex;flex-direction:column;gap:16px">
+            <div class="au-field">
+              <label class="au-label">Name</label>
+              <div class="au-input-wrap">
+                <svg width="15" height="15" viewBox="0 0 16 16" fill="currentColor" style="opacity:.4;flex-shrink:0"><circle cx="8" cy="5" r="3"/><path d="M2 14c0-3.3 2.7-6 6-6s6 2.7 6 6H2z"/></svg>
+                <input id="auName" class="au-input" type="text" required/>
+              </div>
+            </div>
+            <div class="au-field">
+              <label class="au-label">Phone</label>
+              <div class="au-input-wrap">
+                <span style="font-size:14px">&#127470;&#127475;</span>
+                <span style="font-family:var(--f-mono);font-size:13px;color:var(--smoke)">+91</span>
+                <input id="auPhone" class="au-input" type="tel"/>
+              </div>
+            </div>
+            <div class="au-field">
+              <label class="au-label">Email</label>
+              <div class="au-input-wrap">
+                <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" style="opacity:.4;flex-shrink:0"><rect x="1" y="3" width="14" height="10" rx="1"/><path d="M1 5l7 5 7-5"/></svg>
+                <input id="auEmail" class="au-input" type="email" required/>
+              </div>
+            </div>
+            <div class="au-field">
+              <div style="display:flex;justify-content:space-between;align-items:center">
+                <label class="au-label">Password</label>
+                <button type="button" onclick="generatePassword()" style="background:none;border:none;font-family:var(--f-sans);font-size:12px;color:var(--smoke);cursor:pointer;display:flex;align-items:center;gap:5px">
+                  Generate Random
+                  <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M2 8a6 6 0 0 1 11-3M14 8a6 6 0 0 1-11 3"/><path d="M12 2v3h3M1 11v3h3"/></svg>
+                </button>
+              </div>
+              <div class="au-input-wrap">
+                <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" style="opacity:.4;flex-shrink:0"><rect x="4" y="7" width="8" height="7" rx="1"/><path d="M5 7V5a3 3 0 0 1 6 0v2"/></svg>
+                <input id="auPassword" class="au-input" type="password" required/>
+                <button type="button" id="auPasswordToggle" onclick="toggleAUPassword()" style="background:none;border:none;color:var(--smoke);cursor:pointer;padding:0;display:flex;align-items:center"></button>
+              </div>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+              <div class="au-field">
+                <label class="au-label">Role</label>
+                <select id="auRole" class="au-select">
+                  <option value="user">User</option>
+                  <option value="creator">Creator</option>
+                  <option value="admin">Admin</option>
+                </select>
+              </div>
+              <div class="au-field">
+                <label class="au-label">Status</label>
+                <select id="auStatus" class="au-select">
+                  <option value="active">Active</option>
+                  <option value="inactive" selected>Inactive</option>
+                  <option value="suspended">Suspended</option>
+                </select>
+              </div>
+            </div>
+            <div id="addUserError" class="au-error"></div>
+            <div style="display:flex;justify-content:flex-end;gap:10px">
+              <button id="auSubmitBtn" type="submit" class="au-submit-btn">+ Create User</button>
+              <button type="button" onclick="closeAddUserModal()" class="au-cancel-btn">&#x2715; Cancel</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Edit User Modal -->
+      <div class="au-modal-overlay" id="editUserModal" style="display:none">
+        <div class="au-modal">
+          <div style="margin-bottom:24px">
+            <h2 style="font-family:var(--f-sans);font-size:20px;font-weight:700;color:var(--white);margin:0 0 4px">Edit User</h2>
+            <p style="font-family:var(--f-sans);font-size:13px;color:var(--violet);margin:0">Update user information.</p>
+          </div>
+          <form id="editUserForm" onsubmit="event.preventDefault();submitEditUser()" style="display:flex;flex-direction:column;gap:16px">
+            <input type="hidden" id="editUserId"/>
+            <div class="au-field">
+              <label class="au-label">Name</label>
+              <div class="au-input-wrap">
+                <svg width="15" height="15" viewBox="0 0 16 16" fill="currentColor" style="opacity:.4;flex-shrink:0"><circle cx="8" cy="5" r="3"/><path d="M2 14c0-3.3 2.7-6 6-6s6 2.7 6 6H2z"/></svg>
+                <input id="editName" class="au-input" type="text" required/>
+              </div>
+            </div>
+            <div class="au-field">
+              <label class="au-label">Phone</label>
+              <div class="au-input-wrap">
+                <span style="font-size:14px">&#127470;&#127475;</span>
+                <span style="font-family:var(--f-mono);font-size:13px;color:var(--smoke)">+91</span>
+                <input id="editPhone" class="au-input" type="tel"/>
+              </div>
+            </div>
+            <div class="au-field">
+              <label class="au-label">Email</label>
+              <div class="au-input-wrap">
+                <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" style="opacity:.4;flex-shrink:0"><rect x="1" y="3" width="14" height="10" rx="1"/><path d="M1 5l7 5 7-5"/></svg>
+                <input id="editEmail" class="au-input" type="email" required/>
+              </div>
+            </div>
+            <div class="au-field">
+              <div style="display:flex;justify-content:space-between;align-items:center">
+                <label class="au-label">Password (leave empty to keep current)</label>
+                <button type="button" onclick="generateEditPassword()" style="background:none;border:none;font-family:var(--f-sans);font-size:12px;color:var(--smoke);cursor:pointer;display:flex;align-items:center;gap:5px">
+                  Generate Random
+                  <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M2 8a6 6 0 0 1 11-3M14 8a6 6 0 0 1-11 3"/><path d="M12 2v3h3M1 11v3h3"/></svg>
+                </button>
+              </div>
+              <div class="au-input-wrap">
+                <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" style="opacity:.4;flex-shrink:0"><rect x="4" y="7" width="8" height="7" rx="1"/><path d="M5 7V5a3 3 0 0 1 6 0v2"/></svg>
+                <input id="editPassword" class="au-input" type="password" placeholder=""/>
+                <button type="button" id="editPasswordToggle" onclick="toggleEditPassword()" style="background:none;border:none;color:var(--smoke);cursor:pointer;padding:0;display:flex;align-items:center"></button>
+              </div>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+              <div class="au-field">
+                <label class="au-label">Role</label>
+                <select id="editRole" class="au-select">
+                  <option value="user">User</option>
+                  <option value="creator">Creator</option>
+                  <option value="admin">Admin</option>
+                </select>
+              </div>
+              <div class="au-field">
+                <label class="au-label">Status</label>
+                <select id="editStatus" class="au-select">
+                  <option value="active">Active</option>
+                  <option value="inactive">Inactive</option>
+                  <option value="suspended">Suspended</option>
+                </select>
+              </div>
+            </div>
+            <div id="editUserError" class="au-error"></div>
+            <div style="display:flex;justify-content:space-between;align-items:center;gap:10px">
+              <button type="button" onclick="deleteUserFromEdit()" style="background:rgba(232,103,74,.12);border:1px solid rgba(232,103,74,.3);color:var(--ember);font-family:var(--f-sans);font-size:13px;font-weight:700;padding:10px 18px;border-radius:6px;cursor:pointer">
+                <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" style="margin-right:5px;vertical-align:middle"><path d="M3 4h10M5 4V3h6v1M6 7v5M10 7v5M4 4l1 9h6l1-9"/></svg>
+                Delete User
+              </button>
+              <div style="display:flex;gap:10px">
+                <button id="editSubmitBtn" type="submit" class="au-submit-btn">
+                  <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" style="margin-right:5px"><path d="M13 2H5L2 5v9h12V2z"/><rect x="5" y="9" width="6" height="5"/><rect x="5" y="2" width="4" height="3"/></svg>
+                  Update User
+                </button>
+                <button type="button" onclick="closeEditUserModal()" class="au-cancel-btn">&#x2715; Cancel</button>
+              </div>
+            </div>
+          </form>
         </div>
       </div>
     </div>
