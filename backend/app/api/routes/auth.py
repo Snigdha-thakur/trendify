@@ -3,11 +3,25 @@ from sqlalchemy.orm import Session
 from app.core.database import get_db
 from app.core.security import create_access_token, verify_password, get_password_hash, decode_token
 from app.models.models import User
-from app.schemas.schemas import UserLogin, UserRegister, TokenResponse, TokenRequest, UserLoginResponse, UserProfile
+from app.schemas.schemas import UserLogin, UserRegister, TokenResponse, TokenRequest, UserLoginResponse, UserProfile, UserUpdate
 import secrets, string
 import traceback
+from fastapi.security import HTTPBearer, HTTPAuthCredentials
 
 router = APIRouter(prefix="/api/auth", tags=["Auth"])
+security = HTTPBearer()
+
+
+def get_current_user(credentials: HTTPAuthCredentials = Depends(security), db: Session = Depends(get_db)) -> User:
+    """Get current user from JWT token"""
+    token = credentials.credentials
+    payload = decode_token(token)
+    if not payload or "sub" not in payload:
+        raise HTTPException(status_code=401, detail="Invalid token")
+    user = db.query(User).filter(User.id == payload["sub"]).first()
+    if not user:
+        raise HTTPException(status_code=401, detail="User not found")
+    return user
 
 
 def _gen_referral_code(name: str) -> str:
@@ -40,6 +54,12 @@ def login(data: UserLogin, db: Session = Depends(get_db)):
                 wallet_balance=float(user.wallet_balance or 0),
                 referral_wallet_balance=float(user.referral_wallet_balance or 0),
                 referral_code=user.referral_code or "",
+                address=user.address or "",
+                disclaimer=user.disclaimer or "",
+                instagram=user.instagram or "",
+                facebook=user.facebook or "",
+                youtube=user.youtube or "",
+                linkedin=user.linkedin or "",
             )
         )
     except HTTPException:
@@ -99,6 +119,12 @@ def register(data: UserRegister, db: Session = Depends(get_db)):
             wallet_balance=float(user.wallet_balance or 0),
             referral_wallet_balance=float(user.referral_wallet_balance or 0),
             referral_code=user.referral_code or "",
+            address=user.address or "",
+            disclaimer=user.disclaimer or "",
+            instagram=user.instagram or "",
+            facebook=user.facebook or "",
+            youtube=user.youtube or "",
+            linkedin=user.linkedin or "",
         )
     )
 
@@ -106,3 +132,61 @@ def register(data: UserRegister, db: Session = Depends(get_db)):
 @router.post("/logout")
 def logout():
     return {"message": "Logged out"}
+
+
+@router.get("/me", response_model=UserProfile)
+def get_current_user_profile(user: User = Depends(get_current_user)):
+    """Get current user profile"""
+    return UserProfile(
+        id=str(user.id),
+        name=user.name,
+        email=user.email,
+        phone=user.phone or "",
+        role=user.role,
+        status=user.status,
+        wallet_balance=float(user.wallet_balance or 0),
+        referral_wallet_balance=float(user.referral_wallet_balance or 0),
+        referral_code=user.referral_code or "",
+        address=user.address or "",
+        disclaimer=user.disclaimer or "",
+        instagram=user.instagram or "",
+        facebook=user.facebook or "",
+        youtube=user.youtube or "",
+        linkedin=user.linkedin or "",
+    )
+
+
+@router.patch("/me", response_model=UserProfile)
+def update_current_user_profile(
+    data: UserUpdate, 
+    user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """Update current user profile"""
+    # Update only provided fields
+    for field, value in data.model_dump(exclude_none=True).items():
+        if field == "password" and value:
+            setattr(user, "password_hash", get_password_hash(value))
+        else:
+            setattr(user, field, value)
+    
+    db.commit()
+    db.refresh(user)
+    
+    return UserProfile(
+        id=str(user.id),
+        name=user.name,
+        email=user.email,
+        phone=user.phone or "",
+        role=user.role,
+        status=user.status,
+        wallet_balance=float(user.wallet_balance or 0),
+        referral_wallet_balance=float(user.referral_wallet_balance or 0),
+        referral_code=user.referral_code or "",
+        address=user.address or "",
+        disclaimer=user.disclaimer or "",
+        instagram=user.instagram or "",
+        facebook=user.facebook or "",
+        youtube=user.youtube or "",
+        linkedin=user.linkedin or "",
+    )

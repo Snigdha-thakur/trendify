@@ -193,10 +193,6 @@
 
 <script type="module" src="../js/auth-api.js"></script>
 <script>
-const SUPABASE_URL = 'https://hzukzpxelruvdmporrak.supabase.co';
-const ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh6dWt6cHhlbHJ1dmRtcG9ycmFrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk3NjA5MjgsImV4cCI6MjA5NTMzNjkyOH0.9EQ7E6LKZc1lceSuy1h-jEX0QVkFifeBVjHqyHEAF3M';
-const getToken = () => { try { return JSON.parse(localStorage.getItem('trendify_session')).access_token; } catch { return ANON_KEY; } };
-
 // Auth guard
 (function() {
   const user = TrendifyAuth.requireAuth('../signin.html');
@@ -210,13 +206,60 @@ const getToken = () => { try { return JSON.parse(localStorage.getItem('trendify_
 
 // Load real user data
 async function loadProfile() {
-  const user = TrendifyAuth.getUser();
-  if (!user) return;
-  document.getElementById('profileName').value  = user.name  || '';
-  document.getElementById('profileEmail').value = user.email || '';
-  document.getElementById('profilePhone').value = user.phone || '';
-  document.getElementById('adminEmail').value   = user.email || '';
-  document.getElementById('adminPhone').value   = user.phone || '';
+  try {
+    const user = TrendifyAuth.getUser();
+    if (!user) {
+      console.error('No user found in localStorage');
+      return;
+    }
+    
+    console.log('Loading profile for user:', user);
+    
+    // Ensure DOM is ready
+    await new Promise(resolve => {
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', resolve);
+      } else {
+        resolve();
+      }
+    });
+    
+    // Load profile info - Profile tab
+    const profileName = document.getElementById('profileName');
+    const profileEmail = document.getElementById('profileEmail');
+    const profilePhone = document.getElementById('profilePhone');
+    
+    console.log('Profile elements found:', { profileName, profileEmail, profilePhone });
+    
+    if (profileName) profileName.value = user.name || '';
+    if (profileEmail) profileEmail.value = user.email || '';
+    if (profilePhone) profilePhone.value = user.phone || '';
+    
+    // Load admin settings - Admin tab
+    const adminEmail = document.getElementById('adminEmail');
+    const adminPhone = document.getElementById('adminPhone');
+    const adminAddress = document.getElementById('adminAddress');
+    const adminDisclaimer = document.getElementById('adminDisclaimer');
+    const adminInstagram = document.getElementById('adminInstagram');
+    const adminFacebook = document.getElementById('adminFacebook');
+    const adminYoutube = document.getElementById('adminYoutube');
+    const adminLinkedin = document.getElementById('adminLinkedin');
+    
+    console.log('Admin elements found:', { adminEmail, adminPhone, adminAddress, adminDisclaimer });
+    
+    if (adminEmail) adminEmail.value = user.email || '';
+    if (adminPhone) adminPhone.value = user.phone || '';
+    if (adminAddress) adminAddress.value = user.address || '';
+    if (adminDisclaimer) adminDisclaimer.value = user.disclaimer || '';
+    if (adminInstagram) adminInstagram.value = user.instagram || '';
+    if (adminFacebook) adminFacebook.value = user.facebook || '';
+    if (adminYoutube) adminYoutube.value = user.youtube || '';
+    if (adminLinkedin) adminLinkedin.value = user.linkedin || '';
+    
+    console.log('Profile loaded successfully');
+  } catch (err) {
+    console.error('Error loading profile:', err);
+  }
 }
 
 async function updateProfile() {
@@ -225,34 +268,119 @@ async function updateProfile() {
   const name  = document.getElementById('profileName').value.trim();
   const phone = document.getElementById('profilePhone').value.trim();
   const btn = event.target;
+  
+  if (!name) {
+    alert('Name is required');
+    return;
+  }
+  
   btn.textContent = 'Saving…';
   btn.disabled = true;
-  const res = await fetch(SUPABASE_URL + '/rest/v1/users?id=eq.' + user.id, {
-    method: 'PATCH',
-    headers: { 'apikey': ANON_KEY, 'Authorization': 'Bearer ' + getToken(), 'Content-Type': 'application/json' },
-    body: JSON.stringify({ name, phone }),
-  });
-  if (res.ok) {
-    const updated = { ...user, name, phone };
-    localStorage.setItem('trendify_user', JSON.stringify(updated));
-    document.querySelectorAll('.sb-name').forEach(el => el.textContent = name);
-    const initials = name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0,2);
-    document.querySelectorAll('.sb-av').forEach(el => el.textContent = initials);
-    btn.textContent = '✓ Saved';
-    btn.style.background = 'var(--green)';
-    setTimeout(() => { btn.textContent = 'Update Profile'; btn.style.background = ''; btn.disabled = false; }, 2000);
-  } else {
+  try {
+    const token = TrendifyAuth.getToken();
+    const res = await fetch((typeof __API_URL__ !== 'undefined' ? __API_URL__ : 'https://trendify-pxkx.onrender.com') + '/api/auth/me', {
+      method: 'PATCH',
+      headers: { 
+        'Authorization': 'Bearer ' + token, 
+        'Content-Type': 'application/json' 
+      },
+      body: JSON.stringify({ name, phone }),
+    });
+    if (res.ok) {
+      const updated = await res.json();
+      const userData = {
+        id: updated.id,
+        name: updated.name,
+        email: updated.email,
+        phone: updated.phone,
+        role: updated.role,
+        status: updated.status,
+        wallet_balance: updated.wallet_balance,
+        referral_wallet_balance: updated.referral_wallet_balance,
+        referral_code: updated.referral_code,
+        address: updated.address,
+        disclaimer: updated.disclaimer,
+        instagram: updated.instagram,
+        facebook: updated.facebook,
+        youtube: updated.youtube,
+        linkedin: updated.linkedin,
+      };
+      localStorage.setItem('trendify_user', JSON.stringify(userData));
+      document.querySelectorAll('.sb-name').forEach(el => el.textContent = name);
+      const initials = name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0,2);
+      document.querySelectorAll('.sb-av').forEach(el => el.textContent = initials);
+      btn.textContent = '✓ Saved';
+      btn.style.background = 'var(--green)';
+      setTimeout(() => { btn.textContent = 'Update Profile'; btn.style.background = ''; btn.disabled = false; }, 2000);
+    } else {
+      throw new Error('Save failed: ' + res.statusText);
+    }
+  } catch (err) {
+    console.error(err);
     btn.textContent = 'Error saving';
     btn.style.background = 'var(--ember)';
     setTimeout(() => { btn.textContent = 'Update Profile'; btn.style.background = ''; btn.disabled = false; }, 2000);
   }
 }
 
-function updateAdminSettings() {
+async function updateAdminSettings() {
+  const user = TrendifyAuth.getUser();
+  if (!user) return;
+  
+  const phone = document.getElementById('adminPhone').value.trim();
+  const address = document.getElementById('adminAddress').value.trim();
+  const disclaimer = document.getElementById('adminDisclaimer').value.trim();
+  const instagram = document.getElementById('adminInstagram').value.trim();
+  const facebook = document.getElementById('adminFacebook').value.trim();
+  const youtube = document.getElementById('adminYoutube').value.trim();
+  const linkedin = document.getElementById('adminLinkedin').value.trim();
+  
   const btn = event.target;
-  btn.textContent = '✓ Saved';
-  btn.style.background = 'var(--green)';
-  setTimeout(() => { btn.textContent = 'Update Profile'; btn.style.background = ''; }, 2000);
+  btn.textContent = 'Saving…';
+  btn.disabled = true;
+  
+  try {
+    const token = TrendifyAuth.getToken();
+    const res = await fetch((typeof __API_URL__ !== 'undefined' ? __API_URL__ : 'https://trendify-pxkx.onrender.com') + '/api/auth/me', {
+      method: 'PATCH',
+      headers: { 
+        'Authorization': 'Bearer ' + token, 
+        'Content-Type': 'application/json' 
+      },
+      body: JSON.stringify({ phone, address, disclaimer, instagram, facebook, youtube, linkedin }),
+    });
+    if (res.ok) {
+      const updated = await res.json();
+      const userData = {
+        id: updated.id,
+        name: updated.name,
+        email: updated.email,
+        phone: updated.phone,
+        role: updated.role,
+        status: updated.status,
+        wallet_balance: updated.wallet_balance,
+        referral_wallet_balance: updated.referral_wallet_balance,
+        referral_code: updated.referral_code,
+        address: updated.address,
+        disclaimer: updated.disclaimer,
+        instagram: updated.instagram,
+        facebook: updated.facebook,
+        youtube: updated.youtube,
+        linkedin: updated.linkedin,
+      };
+      localStorage.setItem('trendify_user', JSON.stringify(userData));
+      btn.textContent = '✓ Saved';
+      btn.style.background = 'var(--green)';
+      setTimeout(() => { btn.textContent = 'Update Profile'; btn.style.background = ''; btn.disabled = false; }, 2000);
+    } else {
+      throw new Error('Save failed: ' + res.statusText);
+    }
+  } catch (err) {
+    console.error(err);
+    btn.textContent = 'Error saving';
+    btn.style.background = 'var(--ember)';
+    setTimeout(() => { btn.textContent = 'Update Profile'; btn.style.background = ''; btn.disabled = false; }, 2000);
+  }
 }
 
 function switchTab(tab) {

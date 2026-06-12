@@ -34,6 +34,7 @@ export default defineConfig(({ mode }) => {
         'admin-wallet-logs': './admin/wallet-logs.html',
         'admin-webhook-logs': './admin/webhook-logs.html',
         'admin-payout-webhooks': './admin/payout-webhooks.html',
+        'admin-profile-settings': './admin/profile-settings.html',
         // Creator pages
         'creator-dashboard': './creator/dashboard.html',
         'creator-landing': './creator/landing-page.html',

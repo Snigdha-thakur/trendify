@@ -39,6 +39,12 @@ class UserProfile(BaseModel):
     wallet_balance: Optional[float] = 0
     referral_wallet_balance: Optional[float] = 0
     referral_code: Optional[str] = ""
+    address: Optional[str] = None
+    disclaimer: Optional[str] = None
+    instagram: Optional[str] = None
+    facebook: Optional[str] = None
+    youtube: Optional[str] = None
+    linkedin: Optional[str] = None
 
 
 class UserLoginResponse(BaseModel):
@@ -72,6 +78,12 @@ class UserUpdate(BaseModel):
     password: Optional[str] = None
     status: Optional[str] = None
     role: Optional[str] = None
+    address: Optional[str] = None
+    disclaimer: Optional[str] = None
+    instagram: Optional[str] = None
+    facebook: Optional[str] = None
+    youtube: Optional[str] = None
+    linkedin: Optional[str] = None
 
 
 # KYC

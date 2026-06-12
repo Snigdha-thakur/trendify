@@ -21,6 +21,13 @@ class User(Base):
     referred_by = Column(UUID(as_uuid=True), ForeignKey("public.users.id"))
     wallet_balance = Column(Numeric, default=0)
     referral_wallet_balance = Column(Numeric, default=0)
+    # Admin profile fields
+    address = Column(Text)
+    disclaimer = Column(Text)
+    instagram = Column(Text)
+    facebook = Column(Text)
+    youtube = Column(Text)
+    linkedin = Column(Text)
     created_at = Column(TIMESTAMP(timezone=True), server_default=func.now())
 
     kyc = relationship("KYC", back_populates="user", uselist=False)
