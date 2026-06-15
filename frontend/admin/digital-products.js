@@ -28,6 +28,24 @@ async function loadData() {
   renderTable();
 }
 
+async function toggleStatus(id, currentStatus) {
+  const newStatus = currentStatus === 'Active' ? 'Under review' : 'Active';
+  await fetch(SUPABASE_URL + '/rest/v1/digital_products?id=eq.' + id, {
+    method: 'PATCH',
+    headers: {
+      'apikey': ANON_KEY,
+      'Authorization': 'Bearer ' + getToken(),
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ status: newStatus }),
+  });
+  const item = allData.find(r => r.id === id);
+  if (item) item.status = newStatus;
+  const fitem = filtered.find(r => r.id === id);
+  if (fitem) fitem.status = newStatus;
+  renderTable();
+}
+
 async function toggleWhitelabel(id, val) {
   await fetch(SUPABASE_URL + '/rest/v1/digital_products?id=eq.' + id, {
     method: 'PATCH',
@@ -61,7 +79,7 @@ function renderTable() {
         + '<td>' + statusBadge(r.status) + '</td>'
         + '<td><label class="dp-toggle"><input type="checkbox" ' + (r.whitelabeled ? 'checked' : '') + ' onchange="toggleWhitelabel(\'' + r.id + '\',this.checked)"/><span class="dp-toggle-slider"></span></label></td>'
         + '<td style="font-family:var(--f-mono);font-size:12px;white-space:nowrap;color:var(--smoke)">' + r.date + '</td>'
-        + '<td><button class="action-icon-btn" onclick="copyText(\'' + r.name + '\',this)" title="Copy">⧉</button></td>'
+        + '<td style="display:flex;gap:6px;align-items:center"><button class="action-icon-btn" onclick="copyText(\'' + r.name + '\',this)" title="Copy">⧉</button><button class="btn-primary" style="padding:4px 10px;font-size:12px" onclick="toggleStatus(\'' + r.id + '\',\'' + r.status + '\')">' + (r.status === 'Active' ? 'Deactivate' : 'Activate') + '</button></td>'
         + '</tr>';
     }).join('');
   }
@@ -121,6 +139,7 @@ window.renderTable = renderTable;
 window.goPage = goPage;
 window.copyText = copyText;
 window.toggleWhitelabel = toggleWhitelabel;
+window.toggleStatus = toggleStatus;
 
 // Add product modal handling
 function openAddModal() { document.getElementById('addModal').style.display = 'block'; }
