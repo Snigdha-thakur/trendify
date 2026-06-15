@@ -22,10 +22,7 @@ def create_product(
 
     product = DigitalProduct(
         creator_id=current_user.id,
-        name=data.name,
-        description=data.description,
-        price_type=data.price_type,
-        amount=data.amount,
+        **data.model_dump(exclude_none=True),
         status="Under review",
     )
     db.add(product)
@@ -39,9 +36,47 @@ def list_products(skip: int = 0, limit: int = 20, db: Session = Depends(get_db))
     return db.query(DigitalProduct).filter(DigitalProduct.status == "Active").offset(skip).limit(limit).all()
 
 
-@router.get("/my", response_model=list[ProductResponse])
+@router.get("/my")
 def my_products(current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
-    return db.query(DigitalProduct).filter(DigitalProduct.creator_id == current_user.id).all()
+    products = db.query(DigitalProduct).filter(DigitalProduct.creator_id == current_user.id).all()
+    result = []
+    for p in products:
+        result.append({
+            'id': str(p.id),
+            'creator_id': str(p.creator_id) if p.creator_id else None,
+            'name': p.name,
+            'creator_name': p.creator_name,
+            'profile_picture': p.profile_picture,
+            'category': p.category,
+            'price_type': p.price_type,
+            'status': p.status,
+            'whitelabeled': p.whitelabeled,
+            'description': p.description,
+            'cover_image': p.cover_image,
+            'button_text': p.button_text,
+            'amount': float(p.amount) if p.amount is not None else 0,
+            'discount_price': float(p.discount_price) if p.discount_price is not None else 0,
+            'offer_discount': p.offer_discount,
+            'payment_link': p.payment_link,
+            'testimonials': p.testimonials,
+            'faqs': p.faqs,
+            'benefits': p.benefits,
+            'social_links': p.social_links,
+            'form_fields': p.form_fields,
+            'digital_files': p.digital_files,
+            'success_redirect': p.success_redirect,
+            'failed_redirect': p.failed_redirect,
+            'support_phone': p.support_phone,
+            'support_email': p.support_email,
+            'limit_quantity': p.limit_quantity,
+            'max_quantity': float(p.max_quantity) if p.max_quantity is not None else 0,
+            'meta_pixel_id': p.meta_pixel_id,
+            'google_analytics_id': p.google_analytics_id,
+            'webhook_url': p.webhook_url,
+            'webhook_key': p.webhook_key,
+            'created_at': p.created_at.isoformat() if p.created_at else None,
+        })
+    return result
 
 
 @router.get("/{product_id}", response_model=ProductResponse)

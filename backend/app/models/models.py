@@ -63,15 +63,46 @@ class DigitalProduct(Base):
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     creator_id = Column(UUID(as_uuid=True), ForeignKey("public.users.id"))
     name = Column(Text, nullable=False)
+    creator_name = Column(Text)
+    profile_picture = Column(Text)
+    category = Column(Text)
     price_type = Column(Text)
     status = Column(Text, nullable=False, default="Under review")
     whitelabeled = Column(Boolean, default=False)
     created_at = Column(TIMESTAMP(timezone=True), server_default=func.now())
     description = Column(Text)
     amount = Column(Numeric, default=0)
+    discount_price = Column(Numeric, default=0)
+    offer_discount = Column(Boolean, default=False)
+    button_text = Column(Text, default="Make Payment")
+    cover_image = Column(Text)
     payment_link = Column(Text)
     cashfree_link_id = Column(Text)
     qr_code = Column(Text)
+    # Sections
+    testimonials = Column(Text)  # JSON string
+    faqs = Column(Text)  # JSON string
+    benefits = Column(Text)  # JSON string
+    social_links = Column(Text)  # JSON string
+    # Registration
+    form_fields = Column(Text)  # JSON string
+    # Digital files
+    digital_files = Column(Text)  # JSON string
+    # Redirection
+    success_redirect = Column(Text)
+    failed_redirect = Column(Text)
+    # Support
+    support_phone = Column(Text)
+    support_email = Column(Text)
+    # Limit
+    limit_quantity = Column(Boolean, default=False)
+    max_quantity = Column(Numeric, default=0)
+    # Tracking
+    meta_pixel_id = Column(Text)
+    google_analytics_id = Column(Text)
+    # Webhook
+    webhook_url = Column(Text)
+    webhook_key = Column(Text)
 
     creator = relationship("User", back_populates="products", foreign_keys=[creator_id])
     transactions = relationship("Transaction", back_populates="product")

@@ -1,4 +1,5 @@
 let allData = [], filtered = [], currentPage = 1;
+let usersList = [];
 const fmt = d => d ? new Date(d).toLocaleString('en-IN') : '—';
 const copyText = (t, b) => navigator.clipboard.writeText(t).then(() => { b.textContent = '✓'; setTimeout(() => b.textContent = '⧉', 1200); });
 const statusBadge = s => (s === 'Active' || s === 'active')
@@ -12,6 +13,7 @@ const getToken = () => { try { return JSON.parse(localStorage.getItem('trendify_
 async function loadData() {
   const [products, users] = await Promise.all([AdminAPI.getProducts(), AdminAPI.getUsers()]);
   const uMap = {};
+  usersList = users || [];
   users.forEach(u => { uMap[u.id] = u.email || '—'; });
   allData = products.map(r => ({
     id: r.id,
@@ -119,3 +121,34 @@ window.renderTable = renderTable;
 window.goPage = goPage;
 window.copyText = copyText;
 window.toggleWhitelabel = toggleWhitelabel;
+
+// Add product modal handling
+function openAddModal() { document.getElementById('addModal').style.display = 'block'; }
+function closeAddModal() { document.getElementById('addModal').style.display = 'none'; }
+async function submitAddProduct() {
+  const name = document.getElementById('p_name').value.trim();
+  const description = document.getElementById('p_description').value.trim();
+  const price_type = document.getElementById('p_price_type').value;
+  const amount = parseFloat(document.getElementById('p_amount').value || '0') || 0;
+  if (!name) { alert('Name required'); return; }
+  try {
+    const obj = { name, description, price_type, amount };
+    const creatorId = document.getElementById('p_creator') ? document.getElementById('p_creator').value : '';
+    await AdminAPI.createProduct(obj, creatorId || undefined);
+    closeAddModal();
+    // reload data
+    await loadData();
+    alert('Product created (under review)');
+  } catch (e) { console.error(e); alert('Create failed: ' + (e.message || e)); }
+}
+
+function populateCreatorSelect() {
+  const sel = document.getElementById('p_creator');
+  if (!sel) return;
+  sel.innerHTML = '<option value="">(default: current user)</option>' + (usersList.map(u => '<option value="' + u.id + '">' + (u.email || u.name || u.id.slice(0,8)) + '</option>').join(''));
+  sel.style.display = usersList.length ? 'block' : 'none';
+}
+
+// update creator select after data load
+const _origLoad = loadData;
+loadData = async function() { await _origLoad(); populateCreatorSelect(); };

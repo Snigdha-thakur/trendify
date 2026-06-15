@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Product Preview</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#04040f;color:#f2f0ff;font-family:'Syne',sans-serif;min-height:100vh;}
+.shell{max-width:700px;margin:0 auto;padding:32px 16px 60px;}
+.back-btn{display:inline-flex;align-items:center;gap:8px;color:#9d99bb;font-size:13px;cursor:pointer;margin-bottom:24px;background:none;border:none;text-decoration:none;}
+.back-btn:hover{color:#f2f0ff;}
+.product-card{background:#14142e;border:1px solid rgba(167,124,255,.15);border-radius:14px;overflow:hidden;}
+.cover-img{width:100%;height:220px;object-fit:cover;display:block;}
+.cover-placeholder{width:100%;height:220px;background:rgba(167,124,255,.08);display:flex;align-items:center;justify-content:center;color:#9d99bb;font-size:13px;}
+.card-body{padding:24px;}
+.creator-row{display:flex;align-items:center;gap:10px;margin-bottom:16px;}
+.creator-av{width:40px;height:40px;border-radius:50%;background:rgba(123,94,167,.25);border:1px solid rgba(167,124,255,.3);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#a67cff;flex-shrink:0;background-size:cover;background-position:center;}
+.creator-by{font-size:11px;color:#9d99bb;}
+.creator-name{font-size:14px;font-weight:700;color:#f2f0ff;}
+.product-title{font-size:24px;font-weight:800;color:#f2f0ff;margin-bottom:8px;}
+.section-line{display:flex;align-items:center;gap:8px;margin:20px 0 10px;font-size:13px;color:#9d99bb;}
+.section-line-bar{width:28px;height:3px;border-radius:2px;}
+.desc{font-size:14px;color:#c8c4e8;line-height:1.7;}
+.price-block{display:flex;align-items:center;gap:12px;margin:16px 0;}
+.price{font-size:28px;font-weight:800;color:#f2f0ff;}
+.price-original{font-size:16px;color:#9d99bb;text-decoration:line-through;}
+.price-type{font-size:12px;color:#9d99bb;margin-left:4px;}
+.pay-btn{width:100%;background:#a67cff;color:#fff;border:none;border-radius:10px;padding:16px;font-size:16px;font-weight:700;cursor:pointer;margin:16px 0;font-family:'Syne',sans-serif;transition:opacity .15s;}
+.pay-btn:hover{opacity:.88;}
+.payment-note{background:rgba(255,255,255,.03);border:1px solid rgba(167,124,255,.1);border-radius:8px;padding:12px 14px;font-size:12px;color:#9d99bb;margin-bottom:8px;}
+.payment-note a{color:#a67cff;}
+/* Testimonials */
+.testimonials-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;}
+.testimonial-card{background:#04040f;border:1px solid rgba(167,124,255,.1);border-radius:8px;padding:14px;}
+.t-header{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
+.t-av{width:32px;height:32px;border-radius:50%;background:rgba(123,94,167,.2);flex-shrink:0;background-size:cover;background-position:center;display:flex;align-items:center;justify-content:center;font-size:11px;color:#a67cff;font-weight:700;}
+.t-name{font-size:13px;font-weight:600;color:#f2f0ff;}
+.t-stars{font-size:11px;color:#f59e0b;}
+.t-desc{font-size:12px;color:#9d99bb;line-height:1.5;}
+/* FAQ */
+.faq-item{border:1px solid rgba(167,124,255,.1);border-radius:8px;margin-bottom:8px;overflow:hidden;}
+.faq-q{padding:12px 14px;font-size:13px;font-weight:600;color:#f2f0ff;cursor:pointer;display:flex;justify-content:space-between;align-items:center;}
+.faq-a{padding:0 14px 12px;font-size:13px;color:#9d99bb;line-height:1.6;display:none;}
+.faq-item.open .faq-a{display:block;}
+/* Benefits */
+.benefits-list{display:flex;flex-direction:column;gap:8px;}
+.benefit-item{display:flex;align-items:center;gap:10px;font-size:13px;color:#c8c4e8;}
+.benefit-dot{width:8px;height:8px;border-radius:50%;background:#a67cff;flex-shrink:0;}
+/* Social */
+.social-row{display:flex;flex-wrap:wrap;gap:10px;}
+.social-link{display:inline-flex;align-items:center;gap:6px;background:#04040f;border:1px solid rgba(167,124,255,.15);border-radius:6px;padding:7px 12px;font-size:12px;color:#c8c4e8;text-decoration:none;}
+.social-link:hover{border-color:rgba(167,124,255,.4);color:#f2f0ff;}
+/* Support */
+.support-list{display:flex;flex-direction:column;gap:8px;}
+.support-item{display:flex;align-items:center;gap:10px;font-size:13px;color:#c8c4e8;}
+/* Terms */
+.terms-text{font-size:12px;color:#9d99bb;line-height:1.6;}
+.status-badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-family:'DM Mono',monospace;}
+.status-active{background:rgba(34,212,122,.1);border:1px solid rgba(34,212,122,.25);color:#22d47a;}
+.status-review{background:rgba(212,168,67,.1);border:1px solid rgba(212,168,67,.25);color:#d4a843;}
+</style>
+</head>
+<body>
+<div class="shell">
+  <button class="back-btn" onclick="window.close();if(!window.closed)location.href='../creator/products.html'">
+    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10 3L5 8l5 5"/></svg>
+    Back
+  </button>
+  <div id="loading" style="text-align:center;padding:60px;color:#9d99bb;">Loading product...</div>
+  <div class="product-card" id="productCard" style="display:none;">
+    <div id="coverWrap"></div>
+    <div class="card-body">
+      <div class="creator-row">
+        <div class="creator-av" id="creatorAv"></div>
+        <div>
+          <div class="creator-by">Created by</div>
+          <div class="creator-name" id="creatorName"></div>
+        </div>
+        <span id="statusBadge" style="margin-left:auto;"></span>
+      </div>
+      <div class="product-title" id="productTitle"></div>
+
+      <div class="section-line"><div class="section-line-bar" style="background:#f59e0b"></div>Description</div>
+      <div class="desc" id="productDesc"></div>
+
+      <div class="section-line" style="margin-top:24px;"><div class="section-line-bar" style="background:#a67cff"></div>Pricing</div>
+      <div class="price-block" id="priceBlock"></div>
+
+      <button class="pay-btn" id="payBtn" onclick="goCheckout()"></button>
+
+      <div class="payment-note">Already made a payment on this page? <a href="#">Sign in to view details</a></div>
+
+      <div id="testimonialsSection" style="display:none;">
+        <div class="section-line"><div class="section-line-bar" style="background:#f59e0b"></div>Testimonials</div>
+        <div class="testimonials-grid" id="testimonialsGrid"></div>
+      </div>
+
+      <div id="benefitsSection" style="display:none;">
+        <div class="section-line"><div class="section-line-bar" style="background:#10b981"></div>Benefits</div>
+        <div class="benefits-list" id="benefitsList"></div>
+      </div>
+
+      <div id="faqSection" style="display:none;">
+        <div class="section-line"><div class="section-line-bar" style="background:#8b5cf6"></div>FAQ</div>
+        <div id="faqList"></div>
+      </div>
+
+      <div id="socialSection" style="display:none;">
+        <div class="section-line"><div class="section-line-bar" style="background:#ec4899"></div>Social Links</div>
+        <div class="social-row" id="socialRow"></div>
+      </div>
+
+      <div class="section-line" style="margin-top:20px;"><div class="section-line-bar" style="background:#10b981"></div>Contact Support</div>
+      <div class="support-list" id="supportList"></div>
+
+      <div class="section-line" style="margin-top:20px;"><div class="section-line-bar" style="background:#8b5cf6"></div>Terms and Conditions</div>
+      <div class="terms-text" id="termsText"></div>
+
+      <div class="section-line" style="margin-top:20px;"><div class="section-line-bar" style="background:#22c55e"></div>Disclaimer</div>
+      <div class="terms-text">Creator is solely responsible for the product and its delivery. Trendify acts only as a payment facilitator.</div>
+    </div>
+  </div>
+</div>
+<script>
+var BASE = (location.hostname==='localhost'||location.hostname==='127.0.0.1')?'http://localhost:8000/api':'/api';
+var productId = new URLSearchParams(location.search).get('id');
+var product = null;
+
+async function init(){
+  if(!productId){document.getElementById('loading').textContent='No product ID provided.';return;}
+  try{
+    var r=await fetch(BASE+'/products/'+encodeURIComponent(productId));
+    if(!r.ok)throw new Error('Not found');
+    product=await r.json();
+    render(product);
+  }catch(e){document.getElementById('loading').textContent='Product not found.';}
+}
+
+function render(p){
+  document.getElementById('loading').style.display='none';
+  document.getElementById('productCard').style.display='block';
+  document.title=(p.name||'Product')+' — Preview';
+
+  // Cover
+  var coverWrap=document.getElementById('coverWrap');
+  if(p.cover_image){
+    coverWrap.innerHTML='<img class="cover-img" src="'+p.cover_image+'" alt="cover"/>';
+  }
+
+  // Creator avatar
+  var av=document.getElementById('creatorAv');
+  if(p.profile_picture){av.style.backgroundImage='url('+p.profile_picture+')';av.textContent='';}
+  else{var ini=(p.creator_name||'').split(' ').filter(Boolean).map(function(w){return w[0];}).join('').toUpperCase().slice(0,2)||'?';av.textContent=ini;}
+  document.getElementById('creatorName').textContent=p.creator_name||'';
+
+  // Status badge
+  var sb=document.getElementById('statusBadge');
+  sb.textContent=p.status;
+  sb.className='status-badge '+(p.status==='Active'?'status-active':'status-review');
+
+  // Title
+  document.getElementById('productTitle').textContent=p.name||'';
+
+  // Description
+  document.getElementById('productDesc').innerHTML=p.description||'';
+
+  // Price
+  var pb=document.getElementById('priceBlock');
+  if(p.price_type==='Customer Decided'){
+    pb.innerHTML='<span class="price">Pay what you want</span>';
+  } else {
+    var priceHtml='<span class="price">₹'+parseFloat(p.amount||0).toLocaleString('en-IN')+'</span>';
+    if(p.offer_discount&&p.discount_price){
+      priceHtml='<span class="price">₹'+parseFloat(p.discount_price).toLocaleString('en-IN')+'</span>'
+        +'<span class="price-original">₹'+parseFloat(p.amount).toLocaleString('en-IN')+'</span>';
+    }
+    pb.innerHTML=priceHtml+'<span class="price-type">One-time payment</span>';
+  }
+
+  // Pay button
+  var payBtn=document.getElementById('payBtn');
+  payBtn.textContent=p.button_text||'Make Payment';
+
+  // Testimonials
+  try{
+    var testimonials=p.testimonials?JSON.parse(p.testimonials):[];
+    if(testimonials.length){
+      document.getElementById('testimonialsSection').style.display='block';
+      document.getElementById('testimonialsGrid').innerHTML=testimonials.map(function(t){
+        var avHtml=t.image?'<div class="t-av" style="background-image:url('+t.image+')"></div>'
+          :'<div class="t-av">'+(t.name||'').charAt(0).toUpperCase()+'</div>';
+        var stars='★'.repeat(parseInt(t.rating)||5)+'☆'.repeat(5-(parseInt(t.rating)||5));
+        return '<div class="testimonial-card"><div class="t-header">'+avHtml+'<div><div class="t-name">'+t.name+'</div><div class="t-stars">'+stars+'</div></div></div><div class="t-desc">'+t.description+'</div></div>';
+      }).join('');
+    }
+  }catch(e){}
+
+  // Benefits
+  try{
+    var benefits=p.benefits?JSON.parse(p.benefits):[];
+    if(benefits.length){
+      document.getElementById('benefitsSection').style.display='block';
+      document.getElementById('benefitsList').innerHTML=benefits.map(function(b){
+        return '<div class="benefit-item"><div class="benefit-dot"></div>'+b+'</div>';
+      }).join('');
+    }
+  }catch(e){}
+
+  // FAQ
+  try{
+    var faqs=p.faqs?JSON.parse(p.faqs):[];
+    if(faqs.length){
+      document.getElementById('faqSection').style.display='block';
+      document.getElementById('faqList').innerHTML=faqs.map(function(f,i){
+        return '<div class="faq-item" id="faq'+i+'"><div class="faq-q" onclick="toggleFaq('+i+')">'+f.question+'<span>＋</span></div><div class="faq-a">'+f.answer+'</div></div>';
+      }).join('');
+    }
+  }catch(e){}
+
+  // Social
+  try{
+    var sl=p.social_links?JSON.parse(p.social_links):{};
+    var socialHtml='';
+    var socialMap={instagram:'📸 Instagram',twitter:'🐦 Twitter',facebook:'👤 Facebook',youtube:'▶️ YouTube',tiktok:'🎵 TikTok',linkedin:'💼 LinkedIn'};
+    Object.keys(socialMap).forEach(function(key){
+      if(sl[key])socialHtml+='<a class="social-link" href="'+sl[key]+'" target="_blank">'+socialMap[key]+'</a>';
+    });
+    if(socialHtml){document.getElementById('socialSection').style.display='block';document.getElementById('socialRow').innerHTML=socialHtml;}
+  }catch(e){}
+
+  // Support
+  var supHtml='';
+  if(p.support_phone)supHtml+='<div class="support-item"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M2 2h3l1 4-2 1a9 9 0 0 0 5 5l1-2 4 1v3a1 1 0 0 1-1 1C5 15 1 11 1 3a1 1 0 0 1 1-1z"/></svg>'+p.support_phone+'</div>';
+  if(p.support_email)supHtml+='<div class="support-item"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="1" y="3" width="14" height="10" rx="1"/><path d="M1 5l7 5 7-5"/></svg>'+p.support_email+'</div>';
+  document.getElementById('supportList').innerHTML=supHtml||'<div style="font-size:13px;color:#9d99bb;">No support contact provided.</div>';
+
+  // Terms
+  document.getElementById('termsText').textContent='You agree to share information entered on this page with '+(p.creator_name||'the creator')+' (owner of this page), adhering to applicable laws.';
+}
+
+function toggleFaq(i){var el=document.getElementById('faq'+i);el.classList.toggle('open');}
+
+function goCheckout(){
+  if(!productId)return;
+  var base=(location.origin||'');
+  window.location.href=base+'/product.html?id='+encodeURIComponent(productId);
+}
+
+init();
+</script>
+</body>
+</html>

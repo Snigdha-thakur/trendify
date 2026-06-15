@@ -11,6 +11,7 @@ from app.models.models import (
 )
 from app.schemas.schemas import (
     UserResponse, UserUpdate, UserRegister, KYCResponse, ProductResponse,
+    ProductCreate,
     TransactionResponse, PayoutResponse, CreatorPayoutResponse,
     ReferralEarningResponse, WalletLogResponse, GatewayLogResponse,
     PayoutWebhookResponse,
@@ -160,6 +161,35 @@ def list_products(
     db: Session = Depends(get_db), _: User = Depends(require_admin),
 ):
     return db.query(DigitalProduct).order_by(DigitalProduct.created_at.desc()).offset(skip).limit(limit).all()
+
+
+@router.post("/products", response_model=ProductResponse)
+def admin_create_product(
+    data: ProductCreate,
+    creator_id: UUID | None = None,
+    db: Session = Depends(get_db), _: User = Depends(require_admin),
+):
+    # Admin can create a product for any creator by passing creator_id
+    chosen_creator = None
+    if creator_id:
+        chosen_creator = db.query(User).filter(User.id == creator_id).first()
+        if not chosen_creator:
+            raise HTTPException(status_code=404, detail="Creator not found")
+    # default to admin user as creator if none provided
+    cid = chosen_creator.id if chosen_creator else _.id
+
+    product = DigitalProduct(
+        creator_id=cid,
+        name=data.name,
+        description=data.description,
+        price_type=data.price_type,
+        amount=data.amount,
+        status="Under review",
+    )
+    db.add(product)
+    db.commit()
+    db.refresh(product)
+    return product
 
 
 @router.put("/products/{product_id}/status")

@@ -97,6 +97,19 @@
     getKYC: () => query('/kyc?skip=0&limit=1000'),
     updateKYCStatus: (id, status) => put(`/kyc/${id}?status=${status}`, {}),
     getProducts: () => query('/products?skip=0&limit=1000'),
+    createProduct: async (data, creatorId) => {
+      const token = getToken();
+      if (!token) throw new Error('No auth token');
+      let url = `${API_URL}/products`;
+      if (creatorId) url += '?creator_id=' + encodeURIComponent(creatorId);
+      const res = await fetch(url, {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+      if (!res.ok) { const t = await res.text(); console.error('Create product failed', t); throw new Error(t); }
+      return res.json();
+    },
     getWalletLogs: () => query('/wallet-logs?skip=0&limit=1000'),
     getWebhookLogs: () => query('/webhook-logs?skip=0&limit=1000'),
     getGatewayLogs: () => query('/gateway-logs?skip=0&limit=1000'),

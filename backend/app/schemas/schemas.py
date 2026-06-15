@@ -109,32 +109,101 @@ class KYCResponse(BaseModel):
 # Digital Product
 class ProductCreate(BaseModel):
     name: str
+    creator_name: Optional[str] = None
+    profile_picture: Optional[str] = None
+    category: Optional[str] = None
     description: Optional[str] = None
+    cover_image: Optional[str] = None
+    button_text: Optional[str] = "Make Payment"
     price_type: Optional[str] = None
     amount: Optional[float] = 0
+    discount_price: Optional[float] = 0
+    offer_discount: Optional[bool] = False
+    testimonials: Optional[str] = None
+    faqs: Optional[str] = None
+    benefits: Optional[str] = None
+    social_links: Optional[str] = None
+    form_fields: Optional[str] = None
+    digital_files: Optional[str] = None
+    success_redirect: Optional[str] = None
+    failed_redirect: Optional[str] = None
+    support_phone: Optional[str] = None
+    support_email: Optional[str] = None
+    limit_quantity: Optional[bool] = False
+    max_quantity: Optional[float] = 0
+    meta_pixel_id: Optional[str] = None
+    google_analytics_id: Optional[str] = None
+    webhook_url: Optional[str] = None
+    webhook_key: Optional[str] = None
 
 
 class ProductUpdate(BaseModel):
     name: Optional[str] = None
+    creator_name: Optional[str] = None
+    profile_picture: Optional[str] = None
+    category: Optional[str] = None
     description: Optional[str] = None
+    cover_image: Optional[str] = None
+    button_text: Optional[str] = None
     price_type: Optional[str] = None
     amount: Optional[float] = None
+    discount_price: Optional[float] = None
+    offer_discount: Optional[bool] = None
     status: Optional[str] = None
     whitelabeled: Optional[bool] = None
+    testimonials: Optional[str] = None
+    faqs: Optional[str] = None
+    benefits: Optional[str] = None
+    social_links: Optional[str] = None
+    form_fields: Optional[str] = None
+    digital_files: Optional[str] = None
+    success_redirect: Optional[str] = None
+    failed_redirect: Optional[str] = None
+    support_phone: Optional[str] = None
+    support_email: Optional[str] = None
+    limit_quantity: Optional[bool] = None
+    max_quantity: Optional[float] = None
+    meta_pixel_id: Optional[str] = None
+    google_analytics_id: Optional[str] = None
+    webhook_url: Optional[str] = None
+    webhook_key: Optional[str] = None
 
 
 class ProductResponse(BaseModel):
     id: UUID
     creator_id: Optional[UUID]
     name: str
+    creator_name: Optional[str]
+    profile_picture: Optional[str]
+    category: Optional[str]
     price_type: Optional[str]
     status: str
     whitelabeled: Optional[bool]
     description: Optional[str]
+    cover_image: Optional[str]
+    button_text: Optional[str]
     amount: Optional[float]
+    discount_price: Optional[float]
+    offer_discount: Optional[bool]
     payment_link: Optional[str]
     cashfree_link_id: Optional[str]
     qr_code: Optional[str]
+    testimonials: Optional[str]
+    faqs: Optional[str]
+    benefits: Optional[str]
+    social_links: Optional[str]
+    form_fields: Optional[str]
+    digital_files: Optional[str]
+    success_redirect: Optional[str]
+    failed_redirect: Optional[str]
+    support_phone: Optional[str]
+    support_email: Optional[str]
+    limit_quantity: Optional[bool]
+    max_quantity: Optional[float]
+    meta_pixel_id: Optional[str]
+    google_analytics_id: Optional[str]
+    webhook_url: Optional[str]
+    webhook_key: Optional[str]
     created_at: Optional[datetime]
 
     class Config:
