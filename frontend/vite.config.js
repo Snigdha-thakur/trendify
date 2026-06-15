@@ -55,7 +55,8 @@ export default defineConfig(({ mode }) => {
         'privacy': './privacy.html',
         'terms': './terms.html',
         'refunds': './refunds.html',
-        'product': './product.html'
+        'product': './product.html',
+        'product-preview': './product-preview.html'
       }
     }
   },

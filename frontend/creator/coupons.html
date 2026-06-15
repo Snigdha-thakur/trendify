@@ -153,7 +153,7 @@
   </div>
 </div>
 
-<script type="module" src="creator-api.js"></script>
+<script type="module" src="/creator/creator-api.js"></script>
 <script>
 var all=[],filtered=[],page=1,products=[];
 function initUser(){var u=null;try{u=JSON.parse(localStorage.getItem('trendify_user'));}catch(e){}if(!u)return;var ini=(u.name||'CR').split(' ').map(function(w){return w[0];}).join('').toUpperCase().slice(0,2);document.getElementById('sbAv').textContent=ini;document.getElementById('sbName').textContent=u.name||'Creator';var idDisplay=(u.email&&u.email.trim())||(u.username&&u.username.trim())||u.id||u._id||'';document.getElementById('sbEmail').textContent=idDisplay;if(u.role==='admin')document.getElementById('backBtn').style.display='inline-flex';}
