@@ -48,11 +48,14 @@ window.TrendifyAuth = {
     return data.user;
   },
 
-  async register(email, password, name, phone, role = 'user') {
+  async register(email, password, name, phone, role = 'user', referralCode = '') {
+    const payload = { email, password, name, phone, role };
+    if (referralCode) payload.referral_code = referralCode;
+
     const res = await fetch(`${API}/register`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password, name, phone, role }),
+      body: JSON.stringify(payload),
     });
     const data = await res.json();
     if (!res.ok) throw new Error(data.detail || 'Registration failed');

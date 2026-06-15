@@ -207,7 +207,7 @@
     const initials = (user.name || 'A').split(' ').map(w => w[0]).join('').toUpperCase().slice(0,2);
     document.querySelectorAll('.sb-av').forEach(el => el.textContent = initials);
     document.querySelectorAll('.sb-name').forEach(el => el.textContent = user.name || 'Admin');
-    document.querySelectorAll('.sb-plan').forEach(el => el.textContent = user.email || '');
+    document.querySelectorAll('.sb-plan').forEach(el => el.textContent = (user.email&&user.email.trim())||(user.username&&user.username.trim())||user.id||user._id||'');
   }
   initPage();
 

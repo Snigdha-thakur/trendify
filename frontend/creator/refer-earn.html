@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<script>(function(){var t=localStorage.getItem('trendify_access_token');if(!t){location.replace('../signin.html');return;}try{var u=JSON.parse(localStorage.getItem('trendify_user'));if(!u||!['creator','admin'].includes(u.role))location.replace('../signin.html');}catch(e){location.replace('../signin.html');}})();</script>
+<title>Refer & Earn — Creator Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,600;1,300;1,600&family=Syne:wght@400;700;800&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="creator.css?v=2"/>
+<style>html,body{cursor:default!important}body{background:#04040f!important;color:#f2f0ff!important}.c-nav{background:rgba(3,3,7,.97)!important;border-bottom:1px solid rgba(167,124,255,.12)!important}.c-sidebar{background:#080818!important;border-right:1px solid rgba(167,124,255,.1)!important}.c-main{background:#04040f!important}.c-stat-card{background:#14142e!important;border:1px solid rgba(167,124,255,.12)!important}.c-stat-label,.c-nav-title,.c-search::placeholder,.c-perpage-wrap{color:#9d99bb!important}.c-stat-val,.c-page-title,.c-nav-title .current{color:#f2f0ff!important}.c-table th{background:#04040f!important;color:#f2f0ff!important}.c-table tbody tr{border-bottom:1px solid rgba(167,124,255,.07)!important}.c-table tbody tr:hover{background:rgba(123,94,167,.05)!important}.c-table td{color:#c8c4e8!important}.c-search-wrap,.c-perpage,.c-date-sel{background:#14142e!important;border:1px solid rgba(167,124,255,.15)!important;color:#f2f0ff!important}.c-search{background:none!important;color:#f2f0ff!important}.c-pg{background:#14142e!important;border:1px solid rgba(167,124,255,.15)!important;color:#9d99bb!important}.c-pg.active{background:rgba(123,94,167,.2)!important;color:#a67cff!important}.c-sidebar-link{color:#9d99bb!important}.c-sidebar-link:hover{background:rgba(255,255,255,.04)!important;color:#f2f0ff!important}.c-sidebar-link.active{color:#a67cff!important;background:rgba(123,94,167,.1)!important}.c-sidebar-divider{background:rgba(167,124,255,.1)!important}.c-empty{color:#9d99bb!important}
+/* page specific */
+.re-hero{background:#14142e;border:1px solid rgba(167,124,255,.12);border-radius:12px;padding:36px 32px;display:grid;grid-template-columns:1fr 320px;gap:32px;align-items:center;margin-bottom:28px;}
+.re-hero-left{display:flex;align-items:flex-start;gap:18px;}
+.re-hero-icon{width:48px;height:48px;border-radius:10px;background:rgba(167,124,255,.15);border:1px solid rgba(167,124,255,.2);display:flex;align-items:center;justify-content:center;flex-shrink:0;color:#a67cff;}
+.re-hero-title{font-size:26px;font-weight:800;color:#f2f0ff;margin-bottom:8px;}
+.re-hero-desc{font-size:14px;color:#9d99bb;line-height:1.7;max-width:400px;}
+.re-invite-card{background:rgba(255,255,255,.03);border:1px dashed rgba(167,124,255,.25);border-radius:10px;padding:20px;}
+.re-invite-label{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:#9d99bb;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;}
+.re-invite-active{background:rgba(167,124,255,.12);border:1px solid rgba(167,124,255,.25);color:#a67cff;font-size:11px;font-weight:700;padding:2px 10px;border-radius:4px;}
+.re-invite-row{display:flex;align-items:center;gap:8px;margin-bottom:10px;}
+.re-invite-code{flex:1;background:rgba(167,124,255,.07);border:1px solid rgba(167,124,255,.2);border-radius:6px;padding:10px 14px;font-family:'DM Mono',monospace;font-size:13px;color:#a67cff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.re-invite-copy{width:40px;height:40px;background:#a67cff;border:none;border-radius:6px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#fff;transition:opacity .15s;flex-shrink:0;}
+.re-invite-copy:hover{opacity:.85;}
+.re-invite-hint{font-size:12px;color:#9d99bb;text-align:center;}
+.re-section-header{display:flex;align-items:center;gap:10px;margin-bottom:16px;}
+.re-section-title{font-size:17px;font-weight:700;color:#f2f0ff;}
+.re-section-ico{color:#a67cff;}
+.re-stat-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:28px;}
+.re-history-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;}
+.re-history-sub{font-size:13px;color:#9d99bb;margin-bottom:16px;}
+</style>
+</head>
+<body>
+<nav class="c-nav">
+  <div class="c-nav-left">
+    <button class="c-sidebar-toggle" onclick="toggleSidebar()"><svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="3" width="14" height="1.5" rx=".75"/><rect x="1" y="7.25" width="14" height="1.5" rx=".75"/><rect x="1" y="11.5" width="14" height="1.5" rx=".75"/></svg></button>
+    <span class="c-nav-title">Creator Dashboard <span class="sep">›</span><span class="current">Refer &amp; Earn</span></span>
+  </div>
+  <div class="c-nav-right">
+    <button class="c-back-btn" id="backBtn" onclick="location.href='../admin/overview.html'"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10 3l5 5-5 5M3 8h12"/></svg>Back to Admin</button>
+    <button class="c-theme-btn" onclick="toggleTheme()">☾</button>
+  </div>
+</nav>
+<div class="c-shell">
+  <aside class="c-sidebar" id="sidebar">
+    <a class="c-sidebar-link" href="dashboard.html" title="Dashboard"><svg viewBox="0 0 16 16" fill="currentColor"><rect x="1" y="1" width="6" height="6" rx="1"/><rect x="9" y="1" width="6" height="6" rx="1"/><rect x="1" y="9" width="6" height="6" rx="1"/><rect x="9" y="9" width="6" height="6" rx="1"/></svg><span class="c-sidebar-label">Dashboard</span></a>
+    <a class="c-sidebar-link" href="payments.html" title="Payments"><svg viewBox="0 0 16 16" fill="currentColor"><rect x="1" y="4" width="14" height="9" rx="1" fill="none" stroke="currentColor" stroke-width="1.3"/><path d="M1 7h14" stroke="currentColor" stroke-width="1.3"/></svg><span class="c-sidebar-label">Payments</span></a>
+    <a class="c-sidebar-link" href="purchases.html" title="Purchases"><svg viewBox="0 0 16 16" fill="currentColor"><rect x="2" y="2" width="12" height="12" rx="1" fill="none" stroke="currentColor" stroke-width="1.3"/><path d="M5 8h6M8 5v6" stroke="currentColor" stroke-width="1.3"/></svg><span class="c-sidebar-label">Purchases</span></a>
+    <a class="c-sidebar-link" href="wallet.html" title="Wallet"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M2 3h12a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z" fill="none" stroke="currentColor" stroke-width="1.3"/><circle cx="11.5" cy="8" r="1.5"/></svg><span class="c-sidebar-label">Wallet</span></a>
+    <a class="c-sidebar-link" href="payout-history.html" title="Payout History"><svg viewBox="0 0 16 16" fill="currentColor"><circle cx="8" cy="8" r="6" fill="none" stroke="currentColor" stroke-width="1.3"/><path d="M8 5v3l2 2" stroke="currentColor" stroke-width="1.3"/></svg><span class="c-sidebar-label">Payout History</span></a>
+    <a class="c-sidebar-link" href="paid-earnings.html" title="Paid Earnings"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M1 12L4 7l3 3 3-4 4 5H1z"/></svg><span class="c-sidebar-label">Paid Earnings</span></a>
+    <div class="c-sidebar-divider"></div>
+    <a class="c-sidebar-link active" href="refer-earn.html" title="Refer & Earn"><svg viewBox="0 0 16 16" fill="currentColor"><circle cx="5" cy="5" r="2.5" fill="none" stroke="currentColor" stroke-width="1.3"/><circle cx="11" cy="5" r="2.5" fill="none" stroke="currentColor" stroke-width="1.3"/><circle cx="8" cy="12" r="2.5" fill="none" stroke="currentColor" stroke-width="1.3"/><path d="M7.5 7.5l-2 3M8.5 7.5l2 3M7 5h2" stroke="currentColor" stroke-width="1.1"/></svg><span class="c-sidebar-label">Refer &amp; Earn</span></a>
+    <a class="c-sidebar-link" href="audience.html" title="Audience"><svg viewBox="0 0 16 16" fill="currentColor"><circle cx="6" cy="5" r="3"/><path d="M1 14c0-2.8 2.2-5 5-5M10 9a3 3 0 0 1 0 6M13 10a3 3 0 0 1 0 5" fill="none" stroke="currentColor" stroke-width="1.2"/></svg><span class="c-sidebar-label">Audience</span></a>
+    <a class="c-sidebar-link" href="coupons.html" title="Coupons"><svg viewBox="0 0 16 16" fill="currentColor"><rect x="1" y="5" width="14" height="6" rx="1" fill="none" stroke="currentColor" stroke-width="1.3"/><path d="M6 5v6M4 8h.01M8 8h4" stroke="currentColor" stroke-width="1.3"/></svg><span class="c-sidebar-label">Coupons</span></a>
+    <a class="c-sidebar-link" href="products.html" title="Products"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 1l2 1v3l-2 1-2-1V2l2-1zM3 4l2 1v3L3 9 1 8V5l2-1zM13 4l2 1v3l-2 1-2-1V5l2-1z" fill="none" stroke="currentColor" stroke-width="1.2"/></svg><span class="c-sidebar-label">Products</span></a>
+    <div class="c-sidebar-divider"></div>
+    <div class="c-sidebar-bottom">
+      <div class="c-sidebar-link" style="cursor:default;" id="sbUser">
+        <div class="c-av" id="sbAv">CR</div>
+        <div style="display:flex;flex-direction:column;">
+          <span class="c-sidebar-label" id="sbName" style="font-size:12px;font-weight:600;"></span>
+          <span class="c-sb-email" id="sbEmail" style="font-size:11px;"></span>
+        </div>
+      </div>
+    </div>
+  </aside>
+  <main class="c-main">
+    <!-- Hero banner -->
+    <div class="re-hero">
+      <div class="re-hero-left">
+        <div class="re-hero-icon">
+          <svg width="24" height="24" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="5" cy="5" r="2.5"/><circle cx="11" cy="5" r="2.5"/><circle cx="8" cy="12" r="2.5"/><path d="M7.5 7.5l-2 3M8.5 7.5l2 3"/></svg>
+        </div>
+        <div>
+          <div class="re-hero-title">Refer &amp; Earn</div>
+          <div class="re-hero-desc">Grow your community and earn rewards. Share your unique referral code with other creators and earn on their transactions.</div>
+        </div>
+      </div>
+      <div class="re-invite-card">
+        <div class="re-invite-label">
+          YOUR INVITATION CODE
+          <span class="re-invite-active">Active</span>
+        </div>
+        <div class="re-invite-row">
+          <div class="re-invite-code" id="refCode">—</div>
+          <button class="re-invite-copy" onclick="copyRefCode()" title="Copy code">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5" y="5" width="9" height="9" rx="1"/><path d="M4 11H3a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1h7a1 1 0 0 1 1 1v1"/></svg>
+          </button>
+        </div>
+        <div class="re-invite-hint">Copy and share this code to start earning</div>
+      </div>
+    </div>
+
+    <!-- Earnings Overview -->
+    <div class="re-section-header">
+      <svg class="re-section-ico" width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 2v12M4 6l4-4 4 4M4 10l4 4 4-4" stroke-width="1.3"/></svg>
+      <span class="re-section-title">Earnings Overview</span>
+    </div>
+    <div class="re-stat-cards">
+      <div class="c-stat-card">
+        <div class="c-stat-top">
+          <span class="c-stat-label">Total Referral Amount</span>
+          <svg class="c-stat-ico" width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><circle cx="8" cy="8" r="6"/><path d="M8 5v6M6 7h3a1 1 0 0 1 0 2H6"/></svg>
+        </div>
+        <div class="c-stat-val" id="totalRef">₹0</div>
+      </div>
+      <div class="c-stat-card">
+        <div class="c-stat-top">
+          <span class="c-stat-label">Referral Balance</span>
+          <svg class="c-stat-ico" width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M2 3h12a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"/><circle cx="11.5" cy="8" r="1.5"/></svg>
+        </div>
+        <div class="c-stat-val" id="refBalance">₹0</div>
+      </div>
+      <div class="c-stat-card">
+        <div class="c-stat-top">
+          <span class="c-stat-label">Total Earnings Paid</span>
+          <svg class="c-stat-ico" width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="2" y="2" width="12" height="12" rx="1"/><path d="M5 8h6M8 5v6"/></svg>
+        </div>
+        <div class="c-stat-val" id="totalPaid">₹0</div>
+      </div>
+    </div>
+
+    <!-- Referral History -->
+    <div class="re-history-header">
+      <div class="re-section-header" style="margin-bottom:0;">
+        <svg class="re-section-ico" width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="2" y="2" width="12" height="12" rx="1"/><path d="M5 6h6M5 9h4"/></svg>
+        <span class="re-section-title">Referral History</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px;">
+        <div class="c-search-wrap" style="width:280px;">
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" style="opacity:.5;flex-shrink:0"><circle cx="6.5" cy="6.5" r="4.5"/><path d="M10.5 10.5l3 3"/></svg>
+          <input class="c-search" id="searchInput" placeholder="Search by transaction ID..." oninput="filterTable()"/>
+        </div>
+        <div class="c-perpage-wrap" style="margin-left:0;">View: <select class="c-perpage" id="perPage" onchange="renderTable()"><option value="15" selected>15</option><option value="25">25</option><option value="50">50</option></select></div>
+      </div>
+    </div>
+    <div class="re-history-sub">Detailed log of your referral earnings and customer activity.</div>
+
+    <div class="c-table-wrap">
+      <table class="c-table">
+        <thead><tr><th>Customer</th><th>Transaction ID</th><th>Source</th><th>Amount</th><th>Percentage</th><th>Date</th></tr></thead>
+        <tbody id="tbody"></tbody>
+      </table>
+      <div class="c-empty" id="empty" style="display:none">No referral history found.</div>
+    </div>
+    <div class="c-pagination" id="pagination"></div>
+  </main>
+</div>
+
+<script src="creator-api.js"></script>
+<script>
+var all=[],filtered=[],page=1;
+function fmtAmt(a){return '₹'+parseFloat(a||0).toLocaleString('en-IN');}
+function fmt(d){return d?new Date(d).toLocaleString('en-IN',{year:'numeric',month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}):'—';}
+function copy(t,b){navigator.clipboard.writeText(t).then(function(){var old=b.innerHTML;b.innerHTML='<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8l3 3 7-7"/></svg>';setTimeout(function(){b.innerHTML=old;},1500);});}
+function copyRefCode(){var code=document.getElementById('refCode').textContent;if(code&&code!=='—')navigator.clipboard.writeText(code).then(function(){var b=document.querySelector('.re-invite-copy');var old=b.innerHTML;b.innerHTML='<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8l3 3 7-7"/></svg>';setTimeout(function(){b.innerHTML=old;},1500);});}
+function initUser(){
+  var u=null;try{u=JSON.parse(localStorage.getItem('trendify_user'));}catch(e){}
+  if(!u)return;
+  var ini=(u.name||'CR').split(' ').map(function(w){return w[0];}).join('').toUpperCase().slice(0,2);
+  document.getElementById('sbAv').textContent=ini;
+  document.getElementById('sbName').textContent=u.name||'Creator';
+  var idDisplay=(u.email&&u.email.trim())||(u.username&&u.username.trim())||u.id||u._id||'';
+  document.getElementById('sbEmail').textContent=idDisplay;
+  if(u.role==='admin')document.getElementById('backBtn').style.display='inline-flex';
+  // set referral code
+  if(u.referral_code){
+    document.getElementById('refCode').textContent='ref-'+u.referral_code;
+  }
+}
+async function load(){
+  // wallet balance for referral
+  try{
+    var bal=await CreatorAPI.getWalletBalance();
+    document.getElementById('refBalance').textContent=fmtAmt(bal.referral_wallet_balance||0);
+  }catch(e){}
+  // referral earnings
+  try{
+    var earnings=await CreatorAPI.getReferralEarnings();
+    var total=earnings.reduce(function(s,r){return s+parseFloat(r.amount||0);},0);
+    document.getElementById('totalRef').textContent=fmtAmt(total);
+    all=earnings;filtered=[...all];
+  }catch(e){all=[];filtered=[];}
+  // payouts paid
+  try{
+    var payouts=await CreatorAPI.getPayouts();
+    var paid=payouts.filter(function(p){return p.status==='Paid'&&p.payout_type==='referral';});
+    var totalPaid=paid.reduce(function(s,p){return s+parseFloat(p.amount||0);},0);
+    document.getElementById('totalPaid').textContent=fmtAmt(totalPaid);
+  }catch(e){}
+  renderTable();
+}
+function filterTable(){var q=document.getElementById('searchInput').value.trim().toLowerCase();filtered=q?all.filter(function(r){return (r.transaction_id||'').toLowerCase().includes(q);}):all.slice();page=1;renderTable();}
+function renderTable(){
+  var pp=parseInt(document.getElementById('perPage').value);
+  var total=Math.max(1,Math.ceil(filtered.length/pp));
+  if(page>total)page=total;
+  var slice=filtered.slice((page-1)*pp,page*pp);
+  var tbody=document.getElementById('tbody');
+  var empty=document.getElementById('empty');
+  if(!slice.length){tbody.innerHTML='';empty.style.display='block';return;}
+  empty.style.display='none';
+  tbody.innerHTML=slice.map(function(r){
+    return '<tr>'
+      +'<td style="color:#f2f0ff;font-weight:600">'+(r.from_creator_email||r.from_creator_id||'—')+'</td>'
+      +'<td><div style="display:flex;align-items:center;gap:5px;font-family:\'DM Mono\',monospace;font-size:12px;color:#a67cff"><button class="c-copy" onclick="copy(\''+r.transaction_id+'\',this)">⧉</button>'+(r.transaction_id||'—')+'</div></td>'
+      +'<td style="color:#9d99bb">Referral</td>'
+      +'<td style="font-weight:700;color:#f2f0ff">'+fmtAmt(r.amount)+'</td>'
+      +'<td style="color:#9d99bb">'+(r.percentage||'30')+'%</td>'
+      +'<td style="white-space:nowrap;font-weight:500">'+fmt(r.created_at)+'</td></tr>';
+  }).join('');
+  renderPag(total);
+}
+function renderPag(total){var pg=document.getElementById('pagination');if(total<=1){pg.innerHTML='';return;}var h='<button class="c-pg" onclick="goPage('+(page-1)+')" '+(page===1?'disabled':'')+'>‹</button>';for(var i=1;i<=total;i++){if(total>7&&i>2&&i<total-1&&Math.abs(i-page)>1){if(i===3||i===total-2)h+='<span class="c-pg" style="cursor:default;opacity:.4">…</span>';continue;}h+='<button class="c-pg '+(i===page?'active':'')+'" onclick="goPage('+i+')">'+i+'</button>';}h+='<button class="c-pg" onclick="goPage('+(page+1)+')" '+(page===total?'disabled':'')+'>›</button>';pg.innerHTML=h;}
+function goPage(n){var pp=parseInt(document.getElementById('perPage').value);var total=Math.ceil(filtered.length/pp);if(n<1||n>total)return;page=n;renderTable();}
+function toggleSidebar(){document.getElementById('sidebar').classList.toggle('expanded');}
+function toggleTheme(){document.body.classList.toggle('dark');}
+window.copy=copy;window.copyRefCode=copyRefCode;window.goPage=goPage;window.filterTable=filterTable;window.renderTable=renderTable;
+initUser();load();
+</script>
+</body>
+</html>

@@ -205,6 +205,7 @@ class ReferralEarningResponse(BaseModel):
     transaction_id: Optional[str]
     referrer_id: Optional[UUID]
     from_creator_id: Optional[UUID]
+    from_creator_email: Optional[str] = None
     amount: Optional[float]
     percentage: Optional[str]
     source: Optional[str]

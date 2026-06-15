@@ -43,9 +43,11 @@ export default defineConfig(({ mode }) => {
         'creator-hosting': './creator/hosting-services.html',
         'creator-website': './creator/website-design.html',
         'creator-orders': './creator/my-orders.html',
+        'creator-refer-earn': './creator/refer-earn.html',
         'privacy': './privacy.html',
         'terms': './terms.html',
-        'refunds': './refunds.html'
+        'refunds': './refunds.html',
+        'product': './product.html'
       }
     }
   },

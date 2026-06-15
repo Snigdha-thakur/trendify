@@ -98,12 +98,27 @@ def get_referral_earnings(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
-    return (
+    earnings = (
         db.query(ReferralEarning)
         .filter(ReferralEarning.referrer_id == current_user.id)
         .order_by(ReferralEarning.created_at.desc())
         .all()
     )
+
+    return [
+        {
+            "id": earn.id,
+            "transaction_id": earn.transaction_id,
+            "referrer_id": earn.referrer_id,
+            "from_creator_id": earn.from_creator_id,
+            "from_creator_email": earn.from_creator.email if earn.from_creator else None,
+            "amount": float(earn.amount or 0),
+            "percentage": earn.percentage,
+            "source": earn.source,
+            "created_at": earn.created_at,
+        }
+        for earn in earnings
+    ]
 
 
 # Payout Webhooks

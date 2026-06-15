@@ -237,7 +237,21 @@ def list_referral_earnings(
     skip: int = 0, limit: int = 20,
     db: Session = Depends(get_db), _: User = Depends(require_admin),
 ):
-    return db.query(ReferralEarning).order_by(ReferralEarning.created_at.desc()).offset(skip).limit(limit).all()
+    earnings = db.query(ReferralEarning).order_by(ReferralEarning.created_at.desc()).offset(skip).limit(limit).all()
+    return [
+        {
+            "id": earn.id,
+            "transaction_id": earn.transaction_id,
+            "referrer_id": earn.referrer_id,
+            "from_creator_id": earn.from_creator_id,
+            "from_creator_email": earn.from_creator.email if earn.from_creator else None,
+            "amount": float(earn.amount or 0),
+            "percentage": earn.percentage,
+            "source": earn.source,
+            "created_at": earn.created_at,
+        }
+        for earn in earnings
+    ]
 
 
 # --- Wallet Logs ---

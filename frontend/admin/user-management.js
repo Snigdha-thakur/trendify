@@ -27,9 +27,20 @@ function openCtx(idx, btn) {
   const rect = btn.getBoundingClientRect();
   menu.style.top = (rect.bottom + window.scrollY + 4) + 'px';
   menu.style.left = (rect.left + window.scrollX - 140) + 'px';
-  // Dynamic label: Login as Creator / Login as User / Login as Admin
-  const label = u.role === 'creator' ? 'Login as Creator' : u.role === 'admin' ? 'Login as Admin' : 'Login as User';
-  document.getElementById('ctxLoginBtn').childNodes[2].textContent = ' ' + label;
+  // Dynamic label: Login as User only (creator has no dashboard yet)
+  const loginBtn = document.getElementById('ctxLoginBtn');
+  if (u.role === 'user') {
+    loginBtn.style.display = '';
+    loginBtn.childNodes[2].textContent = ' Login as User';
+  } else if (u.role === 'admin') {
+    loginBtn.style.display = '';
+    loginBtn.childNodes[2].textContent = ' Login as Admin';
+  } else if (u.role === 'creator') {
+    loginBtn.style.display = '';
+    loginBtn.childNodes[2].textContent = ' Login as Creator';
+  } else {
+    loginBtn.style.display = 'none';
+  }
   // Dynamic status label
   const statusLabel = u.status === 'active' ? 'Deactivate User' : 'Activate User';
   document.getElementById('ctxStatusBtn').childNodes[2].textContent = ' ' + statusLabel;
@@ -133,7 +144,10 @@ async function ctxAction(action) {
   if (action === 'edit') {
     viewDetails(activeCtxIdx);
   } else if (action === 'login') {
-    window.location.href = '../creator/dashboard.html';
+    const u2 = filtered[activeCtxIdx];
+    if (u2.role === 'user') window.location.href = '../user/dashboard.html';
+    else if (u2.role === 'creator') window.location.href = '../creator/dashboard.html';
+    else if (u2.role === 'admin') window.location.href = '../admin/overview.html';
   } else if (action === 'status') {
     const newStatus = u.status === 'active' ? 'inactive' : 'active';
     try {

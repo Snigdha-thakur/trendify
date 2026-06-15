@@ -5,7 +5,7 @@ from app.core.database import get_db
 from app.models.models import Transaction, DigitalProduct, User, WalletLog, ReferralEarning, GatewayLog
 from app.schemas.schemas import TransactionCreate, TransactionResponse
 from app.api.routes.users import get_current_user
-import httpx
+from app.services.cashfree_service import CashfreeService
 from app.core.config import settings
 from decimal import Decimal
 
@@ -27,6 +27,28 @@ async def initiate_payment(
     commission = (amount * COMMISSION_RATE).quantize(Decimal("0.01"))
     creator_amount = amount - commission
 
+    order_payload = {
+        "order_id": data.id,
+        "amount": float(amount),
+        "currency": "INR",
+        "customer_details": {
+            "customer_id": str(data.buyer_email),
+            "customer_email": data.buyer_email,
+            "customer_phone": data.buyer_phone or "",
+            "customer_name": data.buyer_name or "",
+        },
+    }
+
+    cashfree_result = await CashfreeService.create_order(
+        order_id=data.id,
+        amount=float(amount),
+        currency="INR",
+        customer_details=order_payload["customer_details"],
+    )
+
+    if not cashfree_result.get("success"):
+        raise HTTPException(status_code=502, detail=f"Cashfree order creation failed: {cashfree_result.get('error')}")
+
     txn = Transaction(
         id=data.id,
         creator_id=product.creator_id,
@@ -38,8 +60,8 @@ async def initiate_payment(
         status="Pending",
         commission_amount=commission,
         creator_amount=creator_amount,
-        cashfree_order_id=data.cashfree_order_id,
-        payment_link=data.payment_link,
+        cashfree_order_id=cashfree_result.get("order_id"),
+        payment_link=cashfree_result.get("payment_link"),
     )
     db.add(txn)
 

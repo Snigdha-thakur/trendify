@@ -3,14 +3,14 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>Website Design Services — Creator Platform</title>
+<title>Landing Page Services — Creator Platform</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,600;1,300;1,600&family=Syne:wght@400;700;800&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet"/>
 <link rel="stylesheet" href="../css/styles.css"/>
-<link rel="stylesheet" href="creator.css"/>
+<link rel="stylesheet" href="user.css"/>
 </head>
 <body>
-<nav id="nav" class="s creator-nav">
+<nav id="nav" class="s user-nav">
   <a href="../index.html" class="logo">Trendify</a>
   <div class="na">
     <a href="#" class="btn-nav" id="backToAdmin" style="display:none">← Back to Admin</a>
@@ -25,8 +25,8 @@
       <a class="sb-link" href="digital-training.html"><svg class="sb-icon" viewBox="0 0 16 16" fill="currentColor"><rect x="1" y="2" width="14" height="10" rx="1" fill="none" stroke="currentColor" stroke-width="1.2"/><path d="M6 6l4 2-4 2z"/></svg>Digital Training Services</a>
       <a class="sb-link" href="digital-tools.html"><svg class="sb-icon" viewBox="0 0 16 16" fill="currentColor"><path d="M2 6l6-4 6 4v6a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V6z" fill="none" stroke="currentColor" stroke-width="1.2"/><path d="M6 12V8h4v4"/></svg>Digital Tools</a>
       <a class="sb-link" href="hosting-services.html"><svg class="sb-icon" viewBox="0 0 16 16" fill="currentColor"><rect x="2" y="3" width="12" height="3" rx="1" fill="none" stroke="currentColor" stroke-width="1.2"/><rect x="2" y="7" width="12" height="3" rx="1" fill="none" stroke="currentColor" stroke-width="1.2"/><rect x="2" y="11" width="12" height="3" rx="1" fill="none" stroke="currentColor" stroke-width="1.2"/></svg>Hosting Services</a>
-      <a class="sb-link active" href="website-design.html"><svg class="sb-icon" viewBox="0 0 16 16" fill="currentColor"><rect x="1" y="2" width="14" height="11" rx="1" fill="none" stroke="currentColor" stroke-width="1.2"/><path d="M1 5h14"/><circle cx="3.5" cy="3.5" r=".8"/><circle cx="5.5" cy="3.5" r=".8"/></svg>Website Design Services</a>
-      <a class="sb-link" href="landing-page.html"><svg class="sb-icon" viewBox="0 0 16 16" fill="currentColor"><rect x="2" y="2" width="12" height="12" rx="1" fill="none" stroke="currentColor" stroke-width="1.2"/><path d="M5 6h6M5 9h4"/></svg>Landing Page Services</a>
+      <a class="sb-link" href="website-design.html"><svg class="sb-icon" viewBox="0 0 16 16" fill="currentColor"><rect x="1" y="2" width="14" height="11" rx="1" fill="none" stroke="currentColor" stroke-width="1.2"/><path d="M1 5h14"/><circle cx="3.5" cy="3.5" r=".8"/><circle cx="5.5" cy="3.5" r=".8"/></svg>Website Design Services</a>
+      <a class="sb-link active" href="landing-page.html"><svg class="sb-icon" viewBox="0 0 16 16" fill="currentColor"><rect x="2" y="2" width="12" height="12" rx="1" fill="none" stroke="currentColor" stroke-width="1.2"/><path d="M5 6h6M5 9h4"/></svg>Landing Page Services</a>
     </div>
     <div class="sb-bottom">
       <div class="sb-user" id="sbUser" onclick="toggleUserMenu()">
@@ -44,20 +44,20 @@
   <main class="admin-main">
     <div class="admin-breadcrumb">
       <button class="sb-toggle-btn" onclick="toggleSidebar()"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><rect x="1" y="2" width="14" height="2" rx="1"/><rect x="1" y="7" width="14" height="2" rx="1"/><rect x="1" y="12" width="14" height="2" rx="1"/></svg></button>
-      <span class="bc-parent">Dashboard</span><span class="bc-sep">›</span><span class="bc-current">Website Design Services</span>
+      <span class="bc-parent">Dashboard</span><span class="bc-sep">›</span><span class="bc-current">Landing Page Services</span>
       <button class="theme-toggle-btn" onclick="toggleTheme()">☾</button>
     </div>
     <div class="admin-page-body">
       <div class="service-card" style="max-width:800px;margin:0 auto">
         <div class="service-header">
-          <h3 class="service-title">Website Design Services</h3>
-          <p class="service-desc">Professional website design focused on brand trust, user experience, and higher conversion rates.</p>
+          <h3 class="service-title">Landing Page Services</h3>
+          <p class="service-desc">High-converting landing pages designed for ads, campaigns, launches, and lead generation.</p>
         </div>
         <ul class="service-features">
-          <li>Custom layouts aligned with your brand identity, audience, and business goals.</li>
-          <li>Mobile-first design approach for smooth browsing across phones, tablets, and desktops.</li>
-          <li>Clear content sections, strong CTA placement, and intuitive navigation for better engagement.</li>
-          <li>Design can be prepared for business sites, service websites, portfolios, and product showcases.</li>
+          <li>Conversion-focused section flow: headline, offer, social proof, benefits, and clear CTA.</li>
+          <li>Fast-loading and mobile-optimized design for better ad performance and lower bounce rates.</li>
+          <li>Form and WhatsApp CTA integrations to capture inquiries and leads instantly.</li>
+          <li>Ideal for paid marketing campaigns, webinar registrations, offers, and product promotions.</li>
         </ul>
         <button class="service-btn">Get Pricing</button>
       </div>
@@ -78,7 +78,7 @@
   var ini = (user.name || 'C').split(' ').map(function(w) { return w[0]; }).join('').toUpperCase().slice(0, 2);
   document.querySelectorAll('.sb-av').forEach(function(el) { el.textContent = ini; });
   document.querySelectorAll('.sb-name').forEach(function(el) { el.textContent = user.name || 'Creator'; });
-  document.querySelectorAll('.sb-plan').forEach(function(el) { el.textContent = user.email || ''; });
+  document.querySelectorAll('.sb-plan').forEach(function(el) { el.textContent = (user.email&&user.email.trim())||(user.username&&user.username.trim())||user.id||user._id||''; });
 })();
 document.querySelectorAll('a[href="../signin.html"]').forEach(function(el) {
   el.addEventListener('click', async function(e) { e.preventDefault(); await TrendifyAuth.logout(); window.location.href = '../signin.html'; });

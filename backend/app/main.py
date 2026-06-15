@@ -10,6 +10,7 @@ app.add_middleware(
     # Allow the configured frontend URL, common deploy hosts and localhost for development.
     allow_origins=[
         settings.FRONTEND_URL, 
+        "http://localhost:3000",
         "http://localhost:3001",
         "http://localhost:5173", 
         "http://127.0.0.1:3001",

@@ -32,9 +32,23 @@ def get_current_user(authorization: str = Header(None), db: Session = Depends(ge
     return user
 
 
-def _gen_referral_code(name: str) -> str:
-    suffix = "".join(secrets.choice(string.ascii_uppercase + string.digits) for _ in range(6))
-    return f"{name.replace(' ', '').upper()[:4]}{suffix}"
+from sqlalchemy import func
+
+
+def _gen_referral_code(name: str, db: Session) -> str:
+    for _ in range(10):
+        suffix = "".join(secrets.choice(string.ascii_uppercase + string.digits) for _ in range(6))
+        code = f"{name.replace(' ', '').upper()[:4]}{suffix}"
+        if not db.query(User).filter(func.upper(User.referral_code) == code).first():
+            return code
+    raise HTTPException(status_code=500, detail="Unable to generate unique referral code")
+
+
+def _resolve_referrer(referral_code: str, db: Session):
+    if not referral_code:
+        return None
+    normalized = referral_code.strip().upper().replace('REF-', '').replace(' ', '')
+    return db.query(User).filter(func.upper(User.referral_code) == normalized).first()
 
 
 @router.post("/login", response_model=UserLoginResponse)
@@ -98,8 +112,8 @@ def register(data: UserRegister, db: Session = Depends(get_db)):
         raise HTTPException(status_code=400, detail="Email already registered")
 
     hashed = get_password_hash(data.password)
-    # generate referral code if not provided
-    ref_code = data.referral_code or _gen_referral_code(data.name or data.email.split("@")[0])
+    referrer = _resolve_referrer(data.referral_code or "", db)
+    ref_code = data.referral_code or _gen_referral_code(data.name or data.email.split("@")[0], db)
 
     user = User(
         name=data.name,
@@ -108,6 +122,7 @@ def register(data: UserRegister, db: Session = Depends(get_db)):
         password_hash=hashed,
         role=getattr(data, 'role', 'user') or 'user',
         referral_code=ref_code,
+        referred_by=referrer.id if referrer else None,
     )
     db.add(user)
     db.commit()

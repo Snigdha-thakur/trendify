@@ -3,34 +3,29 @@
 <head>
 <meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <script>(function(){var t=localStorage.getItem('trendify_access_token');if(!t){location.replace('../signin.html');return;}try{var u=JSON.parse(localStorage.getItem('trendify_user'));if(!u||!['creator','admin'].includes(u.role))location.replace('../signin.html');}catch(e){location.replace('../signin.html');}})();</script>
-<title>Creator Dashboard</title>
+<title>Wallet — Creator Dashboard</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,600;1,300;1,600&family=Syne:wght@400;700;800&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet"/>
 <link rel="stylesheet" href="creator.css"/>
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <style>html,body{cursor:default!important}body{background:#04040f!important;color:#f2f0ff!important}.c-nav{background:rgba(3,3,7,.97)!important;border-bottom:1px solid rgba(167,124,255,.12)!important}.c-sidebar{background:#080818!important;border-right:1px solid rgba(167,124,255,.1)!important}.c-main{background:#04040f!important}.c-stat-card{background:#14142e!important;border:1px solid rgba(167,124,255,.12)!important}.c-chart-card{background:#14142e!important;border:1px solid rgba(167,124,255,.12)!important}.c-stat-label,.c-chart-sub,.c-nav-title,.c-search::placeholder,.c-perpage-wrap{color:#9d99bb!important}.c-stat-val,.c-page-title,.c-chart-title,.c-nav-title .current{color:#f2f0ff!important}.c-table th{background:#04040f!important;color:#f2f0ff!important}.c-table tbody tr{border-bottom:1px solid rgba(167,124,255,.07)!important}.c-table tbody tr:hover{background:rgba(123,94,167,.05)!important}.c-table td{color:#c8c4e8!important}.c-search-wrap,.c-perpage,.c-date-sel{background:#14142e!important;border:1px solid rgba(167,124,255,.15)!important;color:#f2f0ff!important}.c-search{background:none!important;color:#f2f0ff!important}.c-tabs{border-bottom:1px solid rgba(167,124,255,.12)!important}.c-tab{color:#9d99bb!important}.c-tab.active{color:#f2f0ff!important;border-bottom-color:#a67cff!important}.c-pg{background:#14142e!important;border:1px solid rgba(167,124,255,.15)!important;color:#9d99bb!important}.c-pg.active{background:rgba(123,94,167,.2)!important;color:#a67cff!important}.c-modal{background:#14142e!important}.c-modal-title{color:#f2f0ff!important}.c-modal-sub{color:#9d99bb!important}.c-input-wrap,.c-input,.c-select,.c-price-input{background:#04040f!important;color:#f2f0ff!important;border-color:rgba(167,124,255,.15)!important}.c-field-label,.c-section-title{color:#f2f0ff!important}.c-pricing-card{background:#04040f!important;border-color:rgba(167,124,255,.15)!important}.c-pricing-card.selected{border-color:#a67cff!important}.c-section-item,.c-form-field-placeholder{background:#04040f!important;border-color:rgba(167,124,255,.12)!important}.c-preview-card,.c-preview-content,.c-preview-bar{background:#14142e!important;border-color:rgba(167,124,255,.12)!important}.c-preview-browser{background:#080818!important}.c-preview-product-title,.c-preview-name{color:#f2f0ff!important}.c-preview-by,.c-preview-section,.c-preview-contact,.c-upload-label{color:#9d99bb!important}.c-save-bar{background:rgba(3,3,7,.97)!important;border-bottom:1px solid rgba(167,124,255,.12)!important}.c-sidebar-link{color:#9d99bb!important}.c-sidebar-link:hover{background:rgba(255,255,255,.04)!important;color:#f2f0ff!important}.c-sidebar-link.active{color:#a67cff!important;background:rgba(123,94,167,.1)!important}.c-sidebar-divider{background:rgba(167,124,255,.1)!important}.c-wallet-cards .c-stat-card{background:#14142e!important}.c-empty{color:#9d99bb!important}</style>
 </head>
 <body>
-<!-- NAV -->
 <nav class="c-nav">
   <div class="c-nav-left">
     <button class="c-sidebar-toggle" onclick="toggleSidebar()"><svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="3" width="14" height="1.5" rx=".75"/><rect x="1" y="7.25" width="14" height="1.5" rx=".75"/><rect x="1" y="11.5" width="14" height="1.5" rx=".75"/></svg></button>
-    <span class="c-nav-title">Creator Dashboard</span>
+    <span class="c-nav-title">Creator Dashboard <span class="sep">›</span><span class="current">Wallet</span></span>
   </div>
   <div class="c-nav-right">
-    <button class="c-back-btn" id="backBtn" onclick="location.href='../admin/overview.html'">
-      <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10 3l5 5-5 5M3 8h12"/></svg>Back to Admin
-    </button>
+    <button class="c-back-btn" id="backBtn" onclick="location.href='../admin/overview.html'"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10 3l5 5-5 5M3 8h12"/></svg>Back to Admin</button>
     <button class="c-theme-btn" onclick="toggleTheme()">☾</button>
   </div>
 </nav>
 <div class="c-shell">
-  <!-- SIDEBAR -->
   <aside class="c-sidebar" id="sidebar">
-    <a class="c-sidebar-link active" href="dashboard.html" title="Dashboard"><svg viewBox="0 0 16 16" fill="currentColor"><rect x="1" y="1" width="6" height="6" rx="1"/><rect x="9" y="1" width="6" height="6" rx="1"/><rect x="1" y="9" width="6" height="6" rx="1"/><rect x="9" y="9" width="6" height="6" rx="1"/></svg><span class="c-sidebar-label">Dashboard</span></a>
+    <a class="c-sidebar-link" href="dashboard.html" title="Dashboard"><svg viewBox="0 0 16 16" fill="currentColor"><rect x="1" y="1" width="6" height="6" rx="1"/><rect x="9" y="1" width="6" height="6" rx="1"/><rect x="1" y="9" width="6" height="6" rx="1"/><rect x="9" y="9" width="6" height="6" rx="1"/></svg><span class="c-sidebar-label">Dashboard</span></a>
     <a class="c-sidebar-link" href="payments.html" title="Payments"><svg viewBox="0 0 16 16" fill="currentColor"><rect x="1" y="4" width="14" height="9" rx="1" fill="none" stroke="currentColor" stroke-width="1.3"/><path d="M1 7h14" stroke="currentColor" stroke-width="1.3"/></svg><span class="c-sidebar-label">Payments</span></a>
     <a class="c-sidebar-link" href="purchases.html" title="Purchases"><svg viewBox="0 0 16 16" fill="currentColor"><rect x="2" y="2" width="12" height="12" rx="1" fill="none" stroke="currentColor" stroke-width="1.3"/><path d="M5 8h6M8 5v6" stroke="currentColor" stroke-width="1.3"/></svg><span class="c-sidebar-label">Purchases</span></a>
-    <a class="c-sidebar-link" href="wallet.html" title="Wallet"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M2 3h12a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z" fill="none" stroke="currentColor" stroke-width="1.3"/><circle cx="11.5" cy="8" r="1.5"/></svg><span class="c-sidebar-label">Wallet</span></a>
+    <a class="c-sidebar-link active" href="wallet.html" title="Wallet"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M2 3h12a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z" fill="none" stroke="currentColor" stroke-width="1.3"/><circle cx="11.5" cy="8" r="1.5"/></svg><span class="c-sidebar-label">Wallet</span></a>
     <a class="c-sidebar-link" href="payout-history.html" title="Payout History"><svg viewBox="0 0 16 16" fill="currentColor"><circle cx="8" cy="8" r="6" fill="none" stroke="currentColor" stroke-width="1.3"/><path d="M8 5v3l2 2" stroke="currentColor" stroke-width="1.3"/></svg><span class="c-sidebar-label">Payout History</span></a>
     <a class="c-sidebar-link" href="paid-earnings.html" title="Paid Earnings"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M1 12L4 7l3 3 3-4 4 5H1z"/></svg><span class="c-sidebar-label">Paid Earnings</span></a>
     <div class="c-sidebar-divider"></div>
@@ -49,121 +44,79 @@
       </div>
     </div>
   </aside>
-  <!-- MAIN -->
   <main class="c-main">
-    <div class="c-page-header">
-      <h1 class="c-page-title">Analytics Dashboard</h1>
-      <select class="c-date-sel" id="dateFilter" onchange="loadDashboard()">
-        <option value="7">Last 7 Days</option>
-        <option value="30">Last 30 Days</option>
-        <option value="90">Last 90 Days</option>
-        <option value="all">All Time</option>
-      </select>
-    </div>
     <!-- Stat cards -->
-    <div class="c-stat-cards">
+    <div class="c-wallet-cards">
       <div class="c-stat-card">
-        <div class="c-stat-top"><span class="c-stat-label">Total Amount</span><svg class="c-stat-ico" width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><circle cx="8" cy="8" r="6"/><path d="M8 5v6M6 7h3a1 1 0 0 1 0 2H6"/></svg></div>
-        <div class="c-stat-val" id="totalAmount">₹0</div>
+        <div class="c-stat-top"><span class="c-stat-label">Total Wallet Balance</span><svg class="c-stat-ico" width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M2 3h12a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"/><circle cx="11.5" cy="8" r="1.5"/></svg></div>
+        <div class="c-stat-val" id="walletBal">₹0</div>
       </div>
       <div class="c-stat-card">
-        <div class="c-stat-top"><span class="c-stat-label">Total Transactions</span><svg class="c-stat-ico" width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M1 5l4-3 4 3 4-3M1 11l4-3 4 3 4-3"/></svg></div>
-        <div class="c-stat-val" id="totalTxns">0</div>
-      </div>
-      <div class="c-stat-card">
-        <div class="c-stat-top"><span class="c-stat-label">Total Digital Products</span><svg class="c-stat-ico" width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="2" y="2" width="12" height="12" rx="1"/></svg></div>
-        <div class="c-stat-val" id="totalProducts">0</div>
-      </div>
-      <div class="c-stat-card">
-        <div class="c-stat-top"><span class="c-stat-label">Total Users</span><svg class="c-stat-ico" width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><circle cx="8" cy="5" r="3"/><path d="M2 14c0-3.3 2.7-6 6-6s6 2.7 6 6H2z"/></svg></div>
-        <div class="c-stat-val" id="totalUsers">0</div>
+        <div class="c-stat-top"><span class="c-stat-label">Total Transactions</span><svg class="c-stat-ico" width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="2" y="2" width="12" height="12" rx="1"/><path d="M5 8h6"/></svg></div>
+        <div class="c-stat-val" id="totalLogs">0</div>
       </div>
     </div>
-    <!-- Chart -->
-    <div class="c-chart-card">
-      <div class="c-chart-title">Analytics Chart</div>
-      <div class="c-chart-sub">Showing transaction analytics for the selected period</div>
-      <div class="c-chart-wrap"><canvas id="analyticsChart"></canvas></div>
-      <div class="c-chart-legend">
-        <div class="c-legend-item"><div class="c-legend-dot" style="background:#f97316"></div>Total Amount</div>
-        <div class="c-legend-item"><div class="c-legend-dot" style="background:#14b8a6"></div>Total Transactions</div>
-      </div>
+    <!-- Toolbar -->
+    <div class="c-toolbar">
+      <div class="c-search-wrap"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" style="opacity:.5;flex-shrink:0"><circle cx="6.5" cy="6.5" r="4.5"/><path d="M10.5 10.5l3 3"/></svg><input class="c-search" id="searchInput" placeholder="Search by user name, transaction ID, or description..." oninput="filterTable()"/></div>
+      <div class="c-perpage-wrap">Per page:<select class="c-perpage" id="perPage" onchange="renderTable()"><option value="15" selected>15</option><option value="25">25</option><option value="50">50</option><option value="100">100</option></select></div>
     </div>
+    <div class="c-table-wrap">
+      <table class="c-table">
+        <thead><tr><th>Creator Email</th><th>Payment Txn ID</th><th>Wallet Type</th><th>Type</th><th>Existing Balance</th><th>Amount</th><th>New Balance</th><th>Date</th></tr></thead>
+        <tbody id="tbody"></tbody>
+      </table>
+      <div class="c-empty" id="empty" style="display:none">No wallet logs found.</div>
+    </div>
+    <div class="c-pagination" id="pagination"></div>
   </main>
 </div>
 <script src="creator-api.js"></script>
 <script>
-var chartInst=null;
-function fmt(n){return '₹'+parseFloat(n||0).toLocaleString('en-IN');}
-function initUser(){
-  var u=null;try{u=JSON.parse(localStorage.getItem('trendify_user'));}catch(e){}
-  if(!u) return;
-  var ini=(u.name||'CR').split(' ').map(function(w){return w[0];}).join('').toUpperCase().slice(0,2);
-    document.getElementById('sbAv').textContent=ini;document.getElementById('sbName').textContent=u.name||'Creator';var idDisplay=(u.email&&u.email.trim())||(u.username&&u.username.trim())||u.id||u._id||'';document.getElementById('sbEmail').textContent=idDisplay;
-  if(u.role==='admin') document.getElementById('backBtn').style.display='inline-flex';
+var all=[],filtered=[],page=1,userEmail='';
+function fmt(d){return d?new Date(d).toLocaleString('en-IN',{year:'numeric',month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}):'—';}
+function fmtAmt(a){return '₹'+parseFloat(a||0).toLocaleString('en-IN');}
+function copy(t,b){navigator.clipboard.writeText(t).then(function(){b.textContent='✓';setTimeout(function(){b.textContent='⧉';},1200);});}
+function initUser(){var u=null;try{u=JSON.parse(localStorage.getItem('trendify_user'));}catch(e){}if(!u)return;var ini=(u.name||'CR').split(' ').map(function(w){return w[0];}).join('').toUpperCase().slice(0,2);document.getElementById('sbAv').textContent=ini;document.getElementById('sbName').textContent=u.name||'Creator';var idDisplay=(u.email&&u.email.trim())||(u.username&&u.username.trim())||u.id||u._id||'';document.getElementById('sbEmail').textContent=idDisplay;userEmail=u.email||'';if(u.role==='admin')document.getElementById('backBtn').style.display='inline-flex';}
+async function load(){
+  var bal=await CreatorAPI.getWalletBalance();
+  document.getElementById('walletBal').textContent=fmtAmt(bal.wallet_balance);
+  var logs=await CreatorAPI.getWalletLogs();
+  all=logs;filtered=[...all];
+  document.getElementById('totalLogs').textContent=all.length;
+  renderTable();
 }
-async function loadDashboard(){
-  var days=document.getElementById('dateFilter').value;
-  var txns=await CreatorAPI.getTransactions();
-  var prods=await CreatorAPI.getProducts();
-  // filter by days
-  if(days!=='all'){
-    var cutoff=Date.now()-parseInt(days)*86400000;
-    txns=txns.filter(function(t){return new Date(t.created_at).getTime()>=cutoff;});
-  }
-  var successTxns=txns.filter(function(t){return t.status==='Success';});
-  var totalAmt=successTxns.reduce(function(s,t){return s+parseFloat(t.amount||0);},0);
-  document.getElementById('totalAmount').textContent=fmt(totalAmt);
-  document.getElementById('totalTxns').textContent=txns.length;
-  document.getElementById('totalProducts').textContent=prods.length;
-  // unique buyers
-  var buyers=new Set(txns.map(function(t){return t.buyer_email;}));
-  document.getElementById('totalUsers').textContent=buyers.size;
-  buildChart(txns,days);
+function filterTable(){var q=document.getElementById('searchInput').value.trim().toLowerCase();filtered=q?all.filter(function(r){return (r.transaction_id||'').toLowerCase().includes(q)||(userEmail).toLowerCase().includes(q);}):all.slice();page=1;renderTable();}
+function renderTable(){
+  var pp=parseInt(document.getElementById('perPage').value);
+  var total=Math.max(1,Math.ceil(filtered.length/pp));
+  if(page>total)page=total;
+  var slice=filtered.slice((page-1)*pp,page*pp);
+  var tbody=document.getElementById('tbody');
+  var empty=document.getElementById('empty');
+  if(!slice.length){tbody.innerHTML='';empty.style.display='block';return;}
+  empty.style.display='none';
+  tbody.innerHTML=slice.map(function(r){
+    var txnId=r.transaction_id||'N/A';
+    var typeBadge=r.type==='Credit'?'<span class="b-credit"><svg width="10" height="10" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 13V3M3 8l5-5 5 5"/></svg> Credit</span>':'<span class="b-debit"><svg width="10" height="10" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3v10M3 8l5 5 5-5"/></svg> Debit</span>';
+    return '<tr>'
+      +'<td><div style="display:flex;align-items:center;gap:5px"><button class="c-copy" onclick="copy(\''+userEmail+'\',this)">⧉</button><span style="font-size:13px">'+userEmail+'</span></div></td>'
+      +'<td><div style="display:flex;align-items:center;gap:5px;font-family:var(--f-mono);font-size:11px;color:#7c3aed"><button class="c-copy" onclick="copy(\''+txnId+'\',this)">⧉</button>'+(txnId.length>30?txnId.slice(0,30)+'…':txnId)+'</div></td>'
+      +'<td><span class="b-wallet">'+(r.wallet_type||'Main Wallet')+'</span></td>'
+      +'<td>'+typeBadge+'</td>'
+      +'<td style="font-family:var(--f-mono);font-size:12px">'+fmtAmt(r.existing_balance)+'</td>'
+      +'<td style="font-weight:700;color:var(--text)">'+fmtAmt(r.amount)+'</td>'
+      +'<td style="font-family:var(--f-mono);font-size:12px">'+fmtAmt(r.new_balance)+'</td>'
+      +'<td style="white-space:nowrap;font-weight:600">'+fmt(r.created_at)+'</td></tr>';
+  }).join('');
+  renderPag(total);
 }
-function buildChart(txns,days){
-  // group by day
-  var map={};
-  txns.forEach(function(t){
-    var d=new Date(t.created_at).toLocaleDateString('en-IN',{month:'short',day:'numeric'});
-    if(!map[d]) map[d]={amount:0,count:0};
-    if(t.status==='Success') map[d].amount+=parseFloat(t.amount||0);
-    map[d].count++;
-  });
-  // sort keys by date
-  var keys=Object.keys(map).sort(function(a,b){return new Date(a)-new Date(b);});
-  if(keys.length===0){
-    var today=new Date().toLocaleDateString('en-IN',{month:'short',day:'numeric'});
-    keys=[today]; map[today]={amount:0,count:0};
-  }
-  var amounts=keys.map(function(k){return map[k].amount;});
-  var counts=keys.map(function(k){return map[k].count;});
-  var ctx=document.getElementById('analyticsChart').getContext('2d');
-  if(chartInst) chartInst.destroy();
-  chartInst=new Chart(ctx,{
-    type:'line',
-    data:{
-      labels:keys,
-      datasets:[
-        {label:'Total Amount',data:amounts,borderColor:'#f97316',backgroundColor:'rgba(249,115,22,.15)',fill:true,tension:.3,pointRadius:4,pointBackgroundColor:'#f97316',yAxisID:'y'},
-        {label:'Total Transactions',data:counts,borderColor:'#14b8a6',backgroundColor:'transparent',fill:false,tension:.3,pointRadius:4,pointBackgroundColor:'#14b8a6',yAxisID:'y1'}
-      ]
-    },
-    options:{
-      responsive:true,maintainAspectRatio:false,
-      plugins:{legend:{display:false}},
-      scales:{
-        y:{position:'left',grid:{color:'rgba(167,124,255,.08)'},ticks:{color:'#9d99bb',callback:function(v){return '₹'+v.toLocaleString('en-IN');}},border:{color:'rgba(167,124,255,.12)'}},
-        y1:{position:'right',grid:{drawOnChartArea:false},ticks:{color:'#9d99bb',stepSize:1},border:{color:'rgba(167,124,255,.12)'}},
-        x:{grid:{color:'rgba(167,124,255,.06)'},ticks:{color:'#9d99bb'},border:{color:'rgba(167,124,255,.12)'}}
-      }
-    }
-  });
-}
+function renderPag(total){var pg=document.getElementById('pagination');if(total<=1){pg.innerHTML='';return;}var h='<button class="c-pg" onclick="goPage('+(page-1)+')" '+(page===1?'disabled':'')+'>‹</button>';for(var i=1;i<=total;i++){if(total>7&&i>2&&i<total-1&&Math.abs(i-page)>1){if(i===3||i===total-2)h+='<span class="c-pg" style="cursor:default;opacity:.4">…</span>';continue;}h+='<button class="c-pg '+(i===page?'active':'')+'" onclick="goPage('+i+')">'+i+'</button>';}h+='<button class="c-pg" onclick="goPage('+(page+1)+')" '+(page===total?'disabled':'')+'>›</button>';pg.innerHTML=h;}
+function goPage(n){var pp=parseInt(document.getElementById('perPage').value);var total=Math.ceil(filtered.length/pp);if(n<1||n>total)return;page=n;renderTable();}
 function toggleSidebar(){document.getElementById('sidebar').classList.toggle('expanded');}
 function toggleTheme(){document.body.classList.toggle('dark');}
-initUser();
-loadDashboard();
+window.copy=copy;window.goPage=goPage;window.filterTable=filterTable;window.renderTable=renderTable;
+initUser();load();
 </script>
 </body>
 </html>

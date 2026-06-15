@@ -353,7 +353,9 @@
 
     try {
       const role = document.querySelector('input[name="role"]:checked')?.value || 'user';
-      const user = await TrendifyAuth.register(email, password, fullname, phone, role);
+      const urlParams = new URLSearchParams(window.location.search);
+      const referralCode = urlParams.get('referral') || urlParams.get('referral_code') || '';
+      const user = await TrendifyAuth.register(email, password, fullname, phone, role, referralCode);
       // If email confirmation is off, auto-login; otherwise prompt
       if (user && user.access_token) {
         btn.textContent = '✓ Account created!';
