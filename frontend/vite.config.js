@@ -43,6 +43,7 @@ export default defineConfig(({ mode }) => {
         'creator-payout-history': './creator/payout-history.html',
         'creator-products': './creator/products.html',
         'creator-payments': './creator/payments.html',
+        'creator-wallet': './creator/wallet.html',
         'creator-purchases': './creator/purchases.html',
         'creator-landing': './user/landing-page.html',
         'creator-digital-tools': './user/digital-tools.html',
