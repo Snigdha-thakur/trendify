@@ -37,6 +37,13 @@ export default defineConfig(({ mode }) => {
         'admin-profile-settings': './admin/profile-settings.html',
         // Creator pages
         'creator-dashboard': './creator/dashboard.html',
+        'creator-audience': './creator/audience.html',
+        'creator-coupons': './creator/coupons.html',
+        'creator-paid-earnings': './creator/paid-earnings.html',
+        'creator-payout-history': './creator/payout-history.html',
+        'creator-products': './creator/products.html',
+        'creator-payments': './creator/payments.html',
+        'creator-purchases': './creator/purchases.html',
         'creator-landing': './user/landing-page.html',
         'creator-digital-tools': './user/digital-tools.html',
         'creator-digital-training': './user/digital-training.html',
