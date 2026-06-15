@@ -1,3 +1,4 @@
+import re
 from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlalchemy.orm import Session
 from uuid import UUID
@@ -14,7 +15,7 @@ router = APIRouter(prefix="/api/payments", tags=["Payments"])
 COMMISSION_RATE = Decimal("0.10")  # 10% platform commission
 
 
-@router.post("/initiate", response_model=TransactionResponse)
+@router.post("/initiate")
 async def initiate_payment(
     data: TransactionCreate,
     db: Session = Depends(get_db),
@@ -32,7 +33,7 @@ async def initiate_payment(
         "amount": float(amount),
         "currency": "INR",
         "customer_details": {
-            "customer_id": str(data.buyer_email),
+            "customer_id": "cust_" + re.sub(r'[^a-zA-Z0-9_-]', '_', str(data.buyer_email))[:45],
             "customer_email": data.buyer_email,
             "customer_phone": data.buyer_phone or "",
             "customer_name": data.buyer_name or "",
@@ -68,7 +69,13 @@ async def initiate_payment(
     db.add(GatewayLog(transaction_id=data.id, log_type="Request"))
     db.commit()
     db.refresh(txn)
-    return txn
+
+    # Return extra fields needed by frontend SDK
+    from app.schemas.schemas import TransactionResponse
+    txn_dict = TransactionResponse.model_validate(txn).model_dump()
+    txn_dict["payment_session_id"] = cashfree_result.get("payment_session_id")
+    txn_dict["env"] = cashfree_result.get("env", "PROD")
+    return txn_dict
 
 
 @router.post("/webhook/cashfree")

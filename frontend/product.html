@@ -122,6 +122,7 @@
       <div>Powered by Trendify • Cashfree gateway</div>
     </div>
   </div>
+  <script src="https://sdk.cashfree.com/js/v3/cashfree.js"></script>
   <script>
     const baseApi = (location.hostname === 'localhost' || location.hostname === '127.0.0.1') ? 'http://localhost:8000/api' : '/api';
     const productId = new URLSearchParams(window.location.search).get('id');
@@ -232,6 +233,14 @@
         const result = await response.json();
         if (!response.ok) {
           throw new Error(result.detail || result.error || 'Payment initiation failed');
+        }
+        if (result.payment_session_id) {
+          const cashfree = Cashfree({ mode: result.env === 'PROD' ? 'production' : 'sandbox' });
+          cashfree.checkout({
+            paymentSessionId: result.payment_session_id,
+            returnUrl: `${window.location.origin}/product.html?id=${productId}&status=success`,
+          });
+          return;
         }
         if (result.payment_link) {
           window.location.href = result.payment_link;
