@@ -91,7 +91,7 @@
     </div>
   </main>
 </div>
-<script type="module" src="/creator/creator-api.js"></script>
+<script src="/creator/creator-api.js"></script>
 <script>
 var chartInst=null;
 function fmt(n){return '₹'+parseFloat(n||0).toLocaleString('en-IN');}
@@ -107,6 +107,7 @@ async function loadDashboard(){
   var txns=await CreatorAPI.getTransactions();
   var prods=await CreatorAPI.getProducts();
   // filter by days
+  var allTxns=txns.slice();
   if(days!=='all'){
     var cutoff=Date.now()-parseInt(days)*86400000;
     txns=txns.filter(function(t){return new Date(t.created_at).getTime()>=cutoff;});
@@ -116,8 +117,7 @@ async function loadDashboard(){
   document.getElementById('totalAmount').textContent=fmt(totalAmt);
   document.getElementById('totalTxns').textContent=txns.length;
   document.getElementById('totalProducts').textContent=prods.length;
-  // unique buyers
-  var buyers=new Set(txns.map(function(t){return t.buyer_email;}));
+  var buyers=new Set(successTxns.map(function(t){return t.buyer_email;}).filter(Boolean));
   document.getElementById('totalUsers').textContent=buyers.size;
   buildChart(txns,days);
 }
