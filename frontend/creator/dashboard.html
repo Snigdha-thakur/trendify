@@ -18,7 +18,7 @@
     <span class="c-nav-title">Creator Dashboard</span>
   </div>
   <div class="c-nav-right">
-    <button class="c-back-btn" id="backBtn" onclick="backToAdmin()">
+    <button class="c-back-btn" id="backBtn" style="display:none" onclick="backToAdmin()">
       <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10 3l5 5-5 5M3 8h12"/></svg>Back to Admin
     </button>
     <button class="c-theme-btn" onclick="toggleTheme()">☾</button>
@@ -40,12 +40,28 @@
     <a class="c-sidebar-link" href="products.html" title="Products"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 1l2 1v3l-2 1-2-1V2l2-1zM3 4l2 1v3L3 9 1 8V5l2-1zM13 4l2 1v3l-2 1-2-1V5l2-1z" fill="none" stroke="currentColor" stroke-width="1.2"/></svg><span class="c-sidebar-label">Products</span></a>
     <div class="c-sidebar-divider"></div>
     <div class="c-sidebar-bottom">
-      <div class="c-sidebar-link" style="cursor:default;" id="sbUser">
+      <div class="c-sb-user" id="sbUser" onclick="toggleUserMenu(event)">
         <div class="c-av" id="sbAv">CR</div>
         <div style="display:flex;flex-direction:column;">
           <span class="c-sidebar-label" id="sbName" style="font-size:12px;font-weight:600;"></span>
           <span class="c-sb-email" id="sbEmail" style="font-size:11px;"></span>
         </div>
+        <svg style="margin-left:auto;opacity:.5;flex-shrink:0" width="12" height="12" viewBox="0 0 16 16" fill="currentColor"><path d="M4 6l4 4 4-4"/></svg>
+      </div>
+      <div class="c-user-popup" id="userPopup">
+        <div class="c-user-popup-head">
+          <div class="c-av" id="sbAv2">CR</div>
+          <div><div style="font-size:12px;font-weight:700;color:#f2f0ff" id="sbName2"></div><div style="font-family:'DM Mono',monospace;font-size:10px;color:#9d99bb" id="sbEmail2"></div></div>
+        </div>
+        <div class="c-user-popup-divider"></div>
+        <a class="c-user-popup-item" href="../user/dashboard.html">
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><circle cx="8" cy="5" r="3"/><path d="M2 14c0-3.3 2.7-6 6-6s6 2.7 6 6H2z"/></svg>
+          Account Settings
+        </a>
+        <button class="c-user-popup-item" id="signOutBtn">
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M6 2H3a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3M10 11l3-3-3-3M13 8H6"/></svg>
+          Sign Out
+        </button>
       </div>
     </div>
   </aside>
