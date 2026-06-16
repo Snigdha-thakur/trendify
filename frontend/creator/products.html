@@ -80,7 +80,7 @@ body{background:#04040f!important;color:#f2f0ff!important}
     <span class="c-nav-title" id="navTitle">Creator Dashboard <span class="sep">›</span><span class="current">Products</span></span>
   </div>
   <div class="c-nav-right">
-    <button class="c-back-btn" id="backBtn" style="display:none" onclick="location.href='../admin/overview.html'"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10 3l5 5-5 5M3 8h12"/></svg>Back to Admin</button>
+    <button class="c-back-btn" id="backBtn" style="display:none" onclick="backToAdmin()"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10 3l5 5-5 5M3 8h12"/></svg>Back to Admin</button>
     <button class="c-theme-btn" onclick="toggleTheme()">☾</button>
   </div>
 </nav>
@@ -511,7 +511,7 @@ body{background:#04040f!important;color:#f2f0ff!important}
   </div>
 </div>
 
-<script src="/creator/creator-api.js"></script>
+<script src="/creator/creator-api.js?v=3"></script>
 <script>
 var all=[],filtered=[],page=1,pricingMode='fixed',editId=null,userData=null;
 var testimonials=[],faqs=[],benefits=[],formFields=[],digitalFiles=[];
@@ -530,7 +530,7 @@ function initUser(){
   document.getElementById('previewAv').textContent=ini;
   document.getElementById('previewCreatorName').textContent=u.name||'';
   document.getElementById('previewCreatorName2').textContent=u.name||'';
-  if(u.role==='admin')document.getElementById('backBtn').style.display='inline-flex';
+  if(localStorage.getItem('_from_admin'))document.getElementById('backBtn').style.display='inline-flex';
 }
 
 async function load(){all=await CreatorAPI.getProducts();filtered=[...all];renderTable();}
@@ -840,7 +840,7 @@ function copyProductLink(id){var l=(window.location.origin||'')+'/product.html?i
 function copyPreviewLink(){if(!editId){alert('Save the product first.');return;}copyProductLink(editId);}
 async function deleteProduct(id){if(!confirm('Delete this product?'))return;try{await CreatorAPI.deleteProduct(id);all=all.filter(function(r){return r.id!==id;});filtered=filtered.filter(function(r){return r.id!==id;});renderTable();}catch(e){alert(e.message||'Failed.');}}
 
-function toggleSidebar(){document.getElementById('sidebar').classList.toggle('expanded');}
+function backToAdmin(){var tok=localStorage.getItem('_admin_token_backup');var usr=localStorage.getItem('_admin_user_backup');if(tok){localStorage.setItem('trendify_access_token',tok);localStorage.setItem('trendify_user',usr||'');}localStorage.removeItem('_from_admin');localStorage.removeItem('_admin_token_backup');localStorage.removeItem('_admin_user_backup');window.location.href='../admin/overview.html';}window.backToAdmin=backToAdmin;function toggleSidebar(){document.getElementById('sidebar').classList.toggle('expanded');}
 function toggleTheme(){document.body.classList.toggle('dark');}
 
 initUser();

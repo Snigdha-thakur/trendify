@@ -157,6 +157,36 @@ def logout():
     return {"message": "Logged out"}
 
 
+@router.post("/impersonate/{user_id}")
+def impersonate_user(
+    user_id: str,
+    admin: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    if admin.role != "admin":
+        raise HTTPException(status_code=403, detail="Admin only")
+    from uuid import UUID
+    target = db.query(User).filter(User.id == UUID(user_id)).first()
+    if not target:
+        raise HTTPException(status_code=404, detail="User not found")
+    token = create_access_token({"sub": str(target.id), "role": target.role})
+    return {
+        "access_token": token,
+        "token_type": "bearer",
+        "user": {
+            "id": str(target.id),
+            "name": target.name,
+            "email": target.email,
+            "phone": target.phone or "",
+            "role": target.role,
+            "status": target.status,
+            "wallet_balance": float(target.wallet_balance or 0),
+            "referral_wallet_balance": float(target.referral_wallet_balance or 0),
+            "referral_code": target.referral_code or "",
+        }
+    }
+
+
 @router.get("/me", response_model=UserProfile)
 def get_current_user_profile(user: User = Depends(get_current_user)):
     """Get current user profile"""

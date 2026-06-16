@@ -1,13 +1,14 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.core.config import settings
-from app.core.db_migrations import ensure_digital_product_columns
-from app.api.routes import auth, users, payments, products, admin, wallets
+from app.core.db_migrations import ensure_coupons_table, ensure_digital_product_columns
+from app.api.routes import auth, users, payments, products, admin, wallets, coupons
 
 app = FastAPI(title=settings.API_TITLE, version=settings.API_VERSION)
 
-# Ensure product schema compatibility on startup in deployed environments.
+# Ensure product schema compatibility and coupon table readiness on startup in deployed environments.
 ensure_digital_product_columns()
+ensure_coupons_table()
 
 app.add_middleware(
     CORSMiddleware,
@@ -30,6 +31,7 @@ app.include_router(auth.router)
 app.include_router(users.router)
 app.include_router(payments.router)
 app.include_router(products.router)
+app.include_router(coupons.router)
 app.include_router(admin.router)
 app.include_router(wallets.router)
 

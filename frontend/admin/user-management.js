@@ -145,9 +145,21 @@ async function ctxAction(action) {
     viewDetails(activeCtxIdx);
   } else if (action === 'login') {
     const u2 = filtered[activeCtxIdx];
-    if (u2.role === 'user') window.location.href = '../user/dashboard.html';
-    else if (u2.role === 'creator') window.location.href = '../creator/dashboard.html';
-    else if (u2.role === 'admin') window.location.href = '../admin/overview.html';
+    if (u2.role === 'admin') { window.location.href = '../admin/overview.html'; return; }
+    try {
+      // backup current admin session
+      const adminToken = localStorage.getItem('trendify_access_token');
+      const adminUser = localStorage.getItem('trendify_user');
+      localStorage.setItem('_admin_token_backup', adminToken);
+      localStorage.setItem('_admin_user_backup', adminUser);
+      // get a token for the target user
+      const data = await AdminAPI.impersonate(u2.id);
+      localStorage.setItem('trendify_access_token', data.access_token);
+      localStorage.setItem('trendify_user', JSON.stringify(data.user));
+      localStorage.setItem('_from_admin', '1');
+      if (u2.role === 'creator') window.location.href = '../creator/dashboard.html';
+      else window.location.href = '../user/dashboard.html';
+    } catch(e) { alert('Login as user failed: ' + e.message); }
   } else if (action === 'status') {
     const newStatus = u.status === 'active' ? 'inactive' : 'active';
     try {

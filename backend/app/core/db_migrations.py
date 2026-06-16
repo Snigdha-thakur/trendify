@@ -33,3 +33,29 @@ def ensure_digital_product_columns() -> None:
         for col, typ in cols:
             conn.execute(text(f"ALTER TABLE public.digital_products ADD COLUMN IF NOT EXISTS {col} {typ}"))
         conn.commit()
+
+
+def ensure_coupons_table() -> None:
+    create_table_sql = text(
+        """
+        CREATE TABLE IF NOT EXISTS public.coupons (
+            id UUID PRIMARY KEY,
+            creator_id UUID NOT NULL REFERENCES public.users(id),
+            product_id UUID REFERENCES public.digital_products(id),
+            name TEXT NOT NULL,
+            code TEXT NOT NULL UNIQUE,
+            status TEXT NOT NULL DEFAULT 'active',
+            discount_type TEXT NOT NULL DEFAULT 'fixed',
+            discount_value NUMERIC DEFAULT 0,
+            limited BOOLEAN DEFAULT FALSE,
+            usage_limit NUMERIC DEFAULT 0,
+            usage_count NUMERIC DEFAULT 0,
+            valid_from DATE,
+            valid_until DATE,
+            created_at TIMESTAMP WITH TIME ZONE DEFAULT now()
+        )
+        """
+    )
+    with engine.connect() as conn:
+        conn.execute(create_table_sql)
+        conn.commit()

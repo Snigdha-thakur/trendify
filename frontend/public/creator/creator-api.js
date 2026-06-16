@@ -19,10 +19,16 @@
     getWalletBalance:()=>req('GET','/wallets/balance'),
     getWalletLogs:(skip=0,limit=500)=>req('GET',`/wallets/logs?skip=${skip}&limit=${limit}`),
     getPayouts:()=>req('GET','/wallets/payouts'),
+    requestWithdraw:(amount,payout_type)=>req('POST',`/wallets/withdraw?amount=${amount}&payout_type=${payout_type}`),
     getProducts:()=>req('GET','/products/my'),
     createProduct:(data)=>req('POST','/products/',data),
     updateProduct:(id,data)=>req('PUT',`/products/${id}`,data),
     deleteProduct:(id)=>req('DELETE',`/products/${id}`),
+    getCoupons:()=>req('GET','/coupons/my'),
+    createCoupon:(data)=>req('POST','/coupons/',data),
+    updateCoupon:(id,data)=>req('PUT',`/coupons/${id}`,data),
+    deleteCoupon:(id)=>req('DELETE',`/coupons/${id}`),
     getReferralEarnings:()=>req('GET','/wallets/referral-earnings'),
+    getAudience:()=>req('GET','/payments/transactions'),
   };
 })();

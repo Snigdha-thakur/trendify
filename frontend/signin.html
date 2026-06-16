@@ -263,16 +263,49 @@
   gsap.from('.si-heading, .si-sub', {opacity:0, y:16, duration:.6, ease:'power2.out', stagger:.1, delay:.4});
 
   var currentRole = 'admin';
+  var fromAdmin = false;
+
+  // Read URL params
+  (function(){
+    var params = new URLSearchParams(window.location.search);
+    var roleParam = params.get('role');
+    var fromParam = params.get('from');
+    if(fromParam === 'admin') {
+      fromAdmin = true;
+      // Save admin token before creator signs in
+      var adminToken = localStorage.getItem('trendify_access_token');
+      var adminUser = localStorage.getItem('trendify_user');
+      if(adminToken) localStorage.setItem('_admin_token_backup', adminToken);
+      if(adminUser) localStorage.setItem('_admin_user_backup', adminUser);
+      // Show back to admin banner
+      var banner = document.createElement('div');
+      banner.id = 'adminBanner';
+      banner.innerHTML = '<span style="font-size:13px;color:#9d99bb;">Signing in as Creator on behalf of Admin</span><button onclick="restoreAdmin()" style="background:rgba(167,124,255,.2);border:1px solid rgba(167,124,255,.3);color:#a67cff;font-size:12px;font-weight:700;padding:5px 14px;border-radius:6px;cursor:pointer;white-space:nowrap;">&#8592; Back to Admin</button>';
+      banner.style.cssText = 'display:flex;align-items:center;justify-content:space-between;gap:12px;background:rgba(167,124,255,.08);border:1px solid rgba(167,124,255,.2);border-radius:8px;padding:10px 16px;margin-bottom:20px;';
+      document.querySelector('.si-card').insertBefore(banner, document.querySelector('.si-card').firstChild);
+    }
+    if(roleParam === 'creator') setRole('creator');
+    else if(roleParam === 'admin') setRole('admin');
+  })();
+
+  function restoreAdmin(){
+    var tok = localStorage.getItem('_admin_token_backup');
+    var usr = localStorage.getItem('_admin_user_backup');
+    if(tok) localStorage.setItem('trendify_access_token', tok);
+    if(usr) localStorage.setItem('trendify_user', usr);
+    localStorage.removeItem('_admin_token_backup');
+    localStorage.removeItem('_admin_user_backup');
+    window.location.href = 'admin/overview.html';
+  }
+  window.restoreAdmin = restoreAdmin;
+
   function setRole(role) {
     currentRole = role;
     document.getElementById('roleAdmin').classList.toggle('active', role === 'admin');
     document.getElementById('roleCreator').classList.toggle('active', role === 'creator');
     document.getElementById('si-heading').innerHTML = role === 'admin' ? 'Admin<br/><em>sign in.</em>' : 'Creator<br/><em>sign in.</em>';
-    document.getElementById('si-submit').textContent = role === 'admin' ? 'Sign in as Admin →' : 'Sign in as Creator →';
+    document.getElementById('si-submit').textContent = role === 'admin' ? 'Sign in as Admin \u2192' : 'Sign in as Creator \u2192';
   }
-
-  // Don't auto-redirect - let users sign in even if they have a stale session
-  // if (TrendifyAuth.isLoggedIn()) TrendifyAuth.redirectByRole(TrendifyAuth.getUser());
 
   document.getElementById('si-form').addEventListener('submit', async function(e) {
     e.preventDefault();
@@ -283,27 +316,37 @@
     if (!email || !password) {
       btn.textContent = 'Fill in all fields';
       btn.style.background = 'var(--ember)';
-      setTimeout(() => { btn.textContent = 'Sign in →'; btn.style.background = ''; }, 2000);
+      setTimeout(() => { btn.textContent = currentRole === 'admin' ? 'Sign in as Admin \u2192' : 'Sign in as Creator \u2192'; btn.style.background = ''; }, 2000);
       return;
     }
 
-    btn.textContent = 'Signing in…';
+    btn.textContent = 'Signing in\u2026';
     btn.disabled = true;
 
     try {
       const user = await TrendifyAuth.login(email, password);
       if (user.role !== currentRole) {
         TrendifyAuth.logout();
-        throw new Error(`This account is not a ${currentRole}`);
+        // Restore admin token if we were coming from admin
+        if(fromAdmin){
+          var tok = localStorage.getItem('_admin_token_backup');
+          var usr = localStorage.getItem('_admin_user_backup');
+          if(tok) localStorage.setItem('trendify_access_token', tok);
+          if(usr) localStorage.setItem('trendify_user', usr);
+        }
+        throw new Error('This account is not a ' + currentRole);
       }
-      btn.textContent = '✓ Welcome back';
+      // Store from=admin flag so creator dashboard knows to show Back to Admin
+      if(fromAdmin) localStorage.setItem('_from_admin', '1');
+      else localStorage.removeItem('_from_admin');
+      btn.textContent = '\u2713 Welcome back';
       btn.style.background = 'var(--green)';
       setTimeout(() => { TrendifyAuth.redirectByRole(user); }, 600);
     } catch (err) {
       btn.textContent = err.message || 'Login failed';
       btn.style.background = 'var(--ember)';
       btn.disabled = false;
-      setTimeout(() => { btn.textContent = 'Sign in →'; btn.style.background = ''; }, 3000);
+      setTimeout(() => { btn.textContent = currentRole === 'admin' ? 'Sign in as Admin \u2192' : 'Sign in as Creator \u2192'; btn.style.background = ''; }, 3000);
     }
   });
 </script>

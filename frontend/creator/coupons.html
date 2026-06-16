@@ -16,7 +16,7 @@
     <span class="c-nav-title">Creator Dashboard <span class="sep">›</span><span class="current">Coupons</span></span>
   </div>
   <div class="c-nav-right">
-    <button class="c-back-btn" id="backBtn" onclick="location.href='../admin/overview.html'"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10 3l5 5-5 5M3 8h12"/></svg>Back to Admin</button>
+    <button class="c-back-btn" id="backBtn" onclick="backToAdmin()"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10 3l5 5-5 5M3 8h12"/></svg>Back to Admin</button>
     <button class="c-theme-btn" onclick="toggleTheme()">☾</button>
   </div>
 </nav>
@@ -54,10 +54,10 @@
     </div>
     <div class="c-table-wrap">
       <table class="c-table">
-        <thead><tr><th>CODE</th><th>TYPE</th><th>PRODUCT</th><th>USED COUNT</th><th>EDIT</th></tr></thead>
-        <tbody id="tbody"></tbody>
+        <thead><tr><th>CODE</th><th>NAME</th><th>TYPE</th><th>DISCOUNT</th><th>PRODUCT</th><th>STATUS</th><th>USED</th><th>VALID FROM</th><th>VALID UNTIL</th><th>ACTIONS</th></tr></thead>
+        <tbody id="tbody"><tr><td colspan="10" style="text-align:center;padding:32px;color:#9d99bb">Loading…</td></tr></tbody>
       </table>
-      <div class="c-empty" id="empty">No coupons found.</div>
+      <div class="c-empty" id="empty" style="display:none">No coupons found.</div>
     </div>
     <div class="c-pagination" id="pagination"></div>
   </main>
@@ -66,8 +66,8 @@
 <!-- Create Coupon Modal -->
 <div class="c-modal-overlay" id="modal">
   <div class="c-modal" style="max-width:520px;">
-    <div class="c-modal-title">Create Coupons</div>
-    <div class="c-modal-sub" style="color:#a67cff;margin-bottom:24px;">Create a new coupon for your product.</div>
+    <div class="c-modal-title" id="couponModalTitle">Create Coupons</div>
+    <div class="c-modal-sub" style="color:#a67cff;margin-bottom:24px;" id="couponModalSub">Create a new coupon for your product.</div>
 
     <div class="c-field">
       <label class="c-field-label">Coupon Name</label>
@@ -136,59 +136,95 @@
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
         <div>
           <label class="c-field-label" style="font-size:12px;">Valid From</label>
-          <div class="c-input-wrap" style="padding:8px 12px;"><input class="c-input" id="validFrom" type="date"/></div>
+          <input id="validFrom" type="date" style="width:100%;background:#0a0a1a;border:1px solid rgba(167,124,255,.3);border-radius:6px;padding:9px 12px;font-size:13px;color:#f2f0ff;outline:none;box-sizing:border-box;color-scheme:dark;"/>
         </div>
         <div>
           <label class="c-field-label" style="font-size:12px;">Valid Until</label>
-          <div class="c-input-wrap" style="padding:8px 12px;"><input class="c-input" id="validUntil" type="date"/></div>
+          <input id="validUntil" type="date" style="width:100%;background:#0a0a1a;border:1px solid rgba(167,124,255,.3);border-radius:6px;padding:9px 12px;font-size:13px;color:#f2f0ff;outline:none;box-sizing:border-box;color-scheme:dark;"/>
         </div>
       </div>
     </div>
 
     <div class="c-error" id="couponErr"></div>
     <div class="c-modal-footer">
-      <button class="c-btn-primary" onclick="saveCoupon()">+ Add Coupon</button>
+      <button class="c-btn-primary" id="couponSaveBtn" onclick="saveCoupon()">+ Add Coupon</button>
       <button style="background:#dc2626;border:none;color:#fff;font-family:'Syne',sans-serif;font-size:13px;font-weight:700;padding:8px 18px;border-radius:6px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;" onclick="closeModal()">✕ Close</button>
     </div>
   </div>
 </div>
 
-<script type="module" src="/creator/creator-api.js"></script>
+<script src="/creator/creator-api.js?v=3"></script>
 <script>
-var all=[],filtered=[],page=1,products=[];
-function initUser(){var u=null;try{u=JSON.parse(localStorage.getItem('trendify_user'));}catch(e){}if(!u)return;var ini=(u.name||'CR').split(' ').map(function(w){return w[0];}).join('').toUpperCase().slice(0,2);document.getElementById('sbAv').textContent=ini;document.getElementById('sbName').textContent=u.name||'Creator';var idDisplay=(u.email&&u.email.trim())||(u.username&&u.username.trim())||u.id||u._id||'';document.getElementById('sbEmail').textContent=idDisplay;if(u.role==='admin')document.getElementById('backBtn').style.display='inline-flex';}
+var all=[],filtered=[],page=1,products=[],editingCouponId=null;
+function initUser(){var u=null;try{u=JSON.parse(localStorage.getItem('trendify_user'));}catch(e){}if(!u)return;var ini=(u.name||'CR').split(' ').map(function(w){return w[0];}).join('').toUpperCase().slice(0,2);document.getElementById('sbAv').textContent=ini;document.getElementById('sbName').textContent=u.name||'Creator';var idDisplay=(u.email&&u.email.trim())||(u.username&&u.username.trim())||u.id||u._id||'';document.getElementById('sbEmail').textContent=idDisplay;if(localStorage.getItem('_from_admin'))document.getElementById('backBtn').style.display='inline-flex';}
 async function load(){
-  products=await CreatorAPI.getProducts();
-  var sel=document.getElementById('couponProduct');
-  products.forEach(function(p){var o=document.createElement('option');o.value=p.id;o.textContent=p.name;sel.appendChild(o);});
-  all=[];filtered=[];renderTable();
+  document.getElementById('empty').style.display='none';
+  try{
+    products=await CreatorAPI.getProducts();
+    var sel=document.getElementById('couponProduct');
+    sel.innerHTML='<option value="">Select a product...</option>';
+    products.forEach(function(p){var o=document.createElement('option');o.value=p.id;o.textContent=p.name;sel.appendChild(o);});
+    all=await CreatorAPI.getCoupons();
+    filtered=all.slice();
+    renderTable();
+  }catch(e){
+    document.getElementById('empty').textContent='Error loading coupons: '+e.message;
+    document.getElementById('empty').style.display='block';
+  }
 }
 function filterTable(){var q=document.getElementById('searchInput').value.trim().toLowerCase();filtered=q?all.filter(function(r){return (r.code||'').toLowerCase().includes(q)||(r.name||'').toLowerCase().includes(q);}):all.slice();page=1;renderTable();}
+function fmtDate(d){if(!d)return '—';var dt=new Date(d);return dt.toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'});}
 function renderTable(){
   var empty=document.getElementById('empty');
   var tbody=document.getElementById('tbody');
   if(!filtered.length){tbody.innerHTML='';empty.style.display='block';return;}
   empty.style.display='none';
-  tbody.innerHTML=filtered.map(function(r){
+  tbody.innerHTML=filtered.map(function(r,i){
     var statusBadge=r.status==='active'?'<span class="b-success">Active</span>':'<span class="b-pending">Inactive</span>';
-    return '<tr><td style="font-family:var(--f-mono,monospace);font-weight:700;color:#a67cff">'+r.code+'</td><td>'+r.type+'</td><td>'+(r.product||'All')+'</td><td>'+r.used+'</td><td><button class="c-btn-primary" style="padding:5px 12px;font-size:12px" onclick="editCoupon('+filtered.indexOf(r)+')">Edit</button></td></tr>';
+    var discountVal=r.discount_type==='percent'?(r.discount_value+'%'):('₹'+r.discount_value);
+    var validFrom=fmtDate(r.valid_from);
+    var validUntil=fmtDate(r.valid_until);
+    return '<tr>'
+      +'<td style="font-family:var(--f-mono);font-weight:700;color:#a67cff;letter-spacing:.05em">'+r.code+'</td>'
+      +'<td style="font-weight:600;color:#f2f0ff">'+(r.name||'—')+'</td>'
+      +'<td style="color:#9d99bb">'+(r.discount_type==='percent'?'Percentage':'Fixed')+'</td>'
+      +'<td style="font-weight:700;color:#f2f0ff">'+discountVal+'</td>'
+      +'<td style="color:#9d99bb">'+(r.product_name||'All Products')+'</td>'
+      +'<td>'+statusBadge+'</td>'
+      +'<td style="text-align:center;color:#9d99bb">'+(r.usage_count||0)+'</td>'
+      +'<td style="font-size:12px;color:#9d99bb">'+validFrom+'</td>'
+      +'<td style="font-size:12px;color:#9d99bb">'+validUntil+'</td>'
+      +'<td><div style="display:flex;gap:6px;">'
+        +'<button onclick="editCoupon('+i+')" style="background:rgba(167,124,255,.15);border:1px solid rgba(167,124,255,.3);color:#a67cff;font-size:12px;font-weight:700;padding:5px 12px;border-radius:6px;cursor:pointer;">Edit</button>'
+        +'<button onclick="deleteCoupon(\''+r.id+'\')" style="background:rgba(220,38,38,.12);border:1px solid rgba(220,38,38,.3);color:#e8674a;font-size:12px;font-weight:700;padding:5px 12px;border-radius:6px;cursor:pointer;">Delete</button>'
+      +'</div></td>'
+      +'</tr>';
   }).join('');
   document.getElementById('pagination').innerHTML='';
 }
 function openModal(){
+  editingCouponId=null;
   document.getElementById('modal').classList.add('open');
   document.getElementById('couponErr').textContent='';
   document.getElementById('couponName').value='';
   document.getElementById('couponCode').value='';
   document.getElementById('couponValue').value='';
   document.getElementById('codeCount').textContent='0/20';
+  document.getElementById('couponType').value='fixed';
+  toggleDiscountType();
   document.getElementById('limitedToggle').checked=false;
   document.getElementById('limitedSection').style.display='none';
   document.getElementById('toggleTrack').style.background='rgba(167,124,255,.2)';
   document.getElementById('toggleThumb').style.transform='translateX(0)';
   document.getElementById('toggleThumb').style.background='#9d99bb';
+  document.getElementById('couponStatus').value='active';
+  document.getElementById('couponProduct').value='';
+  document.getElementById('couponLimit').value='';
   document.getElementById('validFrom').value='';
   document.getElementById('validUntil').value='';
+  document.getElementById('couponModalTitle').textContent = 'Create Coupon';
+  document.getElementById('couponModalSub').textContent = 'Create a new coupon for your product.';
+  document.getElementById('couponSaveBtn').textContent = '+ Add Coupon';
 }
 function closeModal(){document.getElementById('modal').classList.remove('open');}
 function generateCode(){
@@ -205,26 +241,101 @@ function toggleLimited(){
   document.getElementById('toggleThumb').style.transform=checked?'translateX(16px)':'translateX(0)';
   document.getElementById('toggleThumb').style.background=checked?'#fff':'#9d99bb';
 }
-function toggleDiscountType(){}
-function editCoupon(idx){}
-function saveCoupon(){
+function toggleDiscountType(){
+  var selected=document.getElementById('couponType').value;
+  var label=document.getElementById('couponValueLabel');
+  if(label){label.textContent = selected==='percent' ? 'Discount Percentage (%)' : 'Discount Amount';}
+}
+function editCoupon(idx){
+  var coupon=filtered[idx];
+  if(!coupon) return;
+  editingCouponId=coupon.id;
+  // reset first
+  document.getElementById('couponErr').textContent='';
+  // fill fields
+  document.getElementById('couponName').value=coupon.name||'';
+  document.getElementById('couponCode').value=coupon.code||'';
+  document.getElementById('codeCount').textContent=(coupon.code||'').length+'/20';
+  document.getElementById('couponType').value=coupon.discount_type||'fixed';
+  toggleDiscountType();
+  document.getElementById('couponValue').value=coupon.discount_value||'';
+  document.getElementById('couponStatus').value=coupon.status||'active';
+  document.getElementById('couponProduct').value=coupon.product_id||'';
+  var limited=!!(coupon.limited||coupon.usage_limit>0);
+  document.getElementById('limitedToggle').checked=limited;
+  document.getElementById('limitedSection').style.display=limited?'block':'none';
+  document.getElementById('toggleTrack').style.background=limited?'#a67cff':'rgba(167,124,255,.2)';
+  document.getElementById('toggleThumb').style.transform=limited?'translateX(16px)':'translateX(0)';
+  document.getElementById('toggleThumb').style.background=limited?'#fff':'#9d99bb';
+  document.getElementById('couponLimit').value=coupon.usage_limit||'';
+  // format date for input[type=date] needs YYYY-MM-DD
+  document.getElementById('validFrom').value=coupon.valid_from?coupon.valid_from.slice(0,10):'';
+  document.getElementById('validUntil').value=coupon.valid_until?coupon.valid_until.slice(0,10):'';
+  document.getElementById('couponModalTitle').textContent='Edit Coupon';
+  document.getElementById('couponModalSub').textContent='Update coupon settings for your product.';
+  document.getElementById('couponSaveBtn').textContent='Save Changes';
+  // open modal WITHOUT calling openModal() which resets fields
+  document.getElementById('modal').classList.add('open');
+}
+async function deleteCoupon(id){
+  if(!confirm('Delete this coupon?'))return;
+  try{
+    await CreatorAPI.deleteCoupon(id);
+    all=all.filter(function(r){return r.id!==id;});
+    filtered=filtered.filter(function(r){return r.id!==id;});
+    renderTable();
+  }catch(e){alert(e.message||'Failed to delete.');}
+}
+async function saveCoupon(){
   var name=document.getElementById('couponName').value.trim();
   var code=document.getElementById('couponCode').value.trim().toUpperCase();
   var type=document.getElementById('couponType').value;
   var val=document.getElementById('couponValue').value;
   var status=document.getElementById('couponStatus').value;
   var prod=document.getElementById('couponProduct');
+  var limitToggle=document.getElementById('limitedToggle').checked;
+  var limitValue=document.getElementById('couponLimit').value;
+  var validFrom=document.getElementById('validFrom').value;
+  var validUntil=document.getElementById('validUntil').value;
   var err=document.getElementById('couponErr');
   err.textContent='';
   if(!name){err.textContent='Coupon name is required.';return;}
   if(!code){err.textContent='Coupon code is required.';return;}
   if(!val||isNaN(parseFloat(val))){err.textContent='Enter a valid discount value.';return;}
-  all.unshift({name:name,code:code,type:type==='percent'?'Percentage':'Fixed',product:prod.options[prod.selectedIndex].text,used:0,status:status});
-  filtered=[...all];renderTable();closeModal();
+  var payload={
+    name:name,
+    code:code,
+    product_id:prod.value || null,
+    status:status,
+    discount_type:type,
+    discount_value:parseFloat(val),
+    limited:limitToggle,
+    usage_limit: limitToggle && limitValue ? parseFloat(limitValue) : 0,
+    valid_from: validFrom || null,
+    valid_until: validUntil || null
+  };
+  try{
+    var result;
+    if(editingCouponId){
+      result = await CreatorAPI.updateCoupon(editingCouponId, payload);
+      var idx = all.findIndex(function(r){return r.id === editingCouponId;});
+      if(idx !== -1) all[idx] = result;
+    } else {
+      result = await CreatorAPI.createCoupon(payload);
+      all.unshift(result);
+    }
+    filtered=[...all];
+    renderTable();
+    closeModal();
+  }catch(e){
+    err.textContent = e.message || 'Unable to save coupon';
+  } finally {
+    document.getElementById('couponSaveBtn').textContent = editingCouponId ? 'Save Changes' : '+ Add Coupon';
+  }
 }
-function toggleSidebar(){document.getElementById('sidebar').classList.toggle('expanded');}
+function backToAdmin(){var tok=localStorage.getItem('_admin_token_backup');var usr=localStorage.getItem('_admin_user_backup');if(tok){localStorage.setItem('trendify_access_token',tok);localStorage.setItem('trendify_user',usr||'');}localStorage.removeItem('_from_admin');localStorage.removeItem('_admin_token_backup');localStorage.removeItem('_admin_user_backup');window.location.href='../admin/overview.html';}window.backToAdmin=backToAdmin;function toggleSidebar(){document.getElementById('sidebar').classList.toggle('expanded');}
 function toggleTheme(){document.body.classList.toggle('dark');}
-window.openModal=openModal;window.closeModal=closeModal;window.saveCoupon=saveCoupon;window.filterTable=filterTable;window.renderTable=renderTable;window.generateCode=generateCode;window.toggleLimited=toggleLimited;window.toggleDiscountType=toggleDiscountType;window.editCoupon=editCoupon;
+window.openModal=openModal;window.closeModal=closeModal;window.saveCoupon=saveCoupon;window.filterTable=filterTable;window.renderTable=renderTable;window.generateCode=generateCode;window.toggleLimited=toggleLimited;window.toggleDiscountType=toggleDiscountType;window.editCoupon=editCoupon;window.deleteCoupon=deleteCoupon;
 initUser();load();
 </script>
 </body>

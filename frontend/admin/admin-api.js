@@ -141,3 +141,19 @@
     }
   };
 })();
+
+/* injected: impersonate method */
+if (window.AdminAPI) {
+  window.AdminAPI.impersonate = async function(userId) {
+    var base = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+      ? 'http://localhost:8000'
+      : 'https://trendify-pxkx.onrender.com';
+    var token = localStorage.getItem('trendify_access_token');
+    var res = await fetch(base + '/api/auth/impersonate/' + userId, {
+      method: 'POST',
+      headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' }
+    });
+    if (!res.ok) { var e = await res.json(); throw new Error(e.detail || 'Impersonate failed'); }
+    return res.json();
+  };
+}

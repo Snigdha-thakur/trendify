@@ -1,6 +1,9 @@
 # Dependencies
 node_modules/
 **/node_modules/
+backend/venv/
+venv/
+**/.venv/
 frontend/node_modules/
 trendify-site/frontend/node_modules/
 backend/__pycache__/

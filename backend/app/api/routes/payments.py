@@ -111,12 +111,18 @@ def get_my_transactions(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
-    return (
+    txns = (
         db.query(Transaction)
         .filter(Transaction.creator_id == current_user.id)
         .order_by(Transaction.created_at.desc())
         .all()
     )
+    result = []
+    for txn in txns:
+        txn_dict = TransactionResponse.model_validate(txn).model_dump()
+        txn_dict["product_name"] = txn.product.name if txn.product else None
+        result.append(txn_dict)
+    return result
 
 
 @router.get("/transactions/{txn_id}", response_model=TransactionResponse)
@@ -124,7 +130,9 @@ def get_transaction(txn_id: str, db: Session = Depends(get_db)):
     txn = db.query(Transaction).filter(Transaction.id == txn_id).first()
     if not txn:
         raise HTTPException(status_code=404, detail="Transaction not found")
-    return txn
+    txn_dict = TransactionResponse.model_validate(txn).model_dump()
+    txn_dict["product_name"] = txn.product.name if txn.product else None
+    return txn_dict
 
 
 # ---------- internal helpers ----------

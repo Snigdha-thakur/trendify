@@ -37,7 +37,7 @@
     <span class="c-nav-title">Creator Dashboard <span class="sep">›</span><span class="current">Refer &amp; Earn</span></span>
   </div>
   <div class="c-nav-right">
-    <button class="c-back-btn" id="backBtn" onclick="location.href='../admin/overview.html'"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10 3l5 5-5 5M3 8h12"/></svg>Back to Admin</button>
+    <button class="c-back-btn" id="backBtn" onclick="backToAdmin()"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10 3l5 5-5 5M3 8h12"/></svg>Back to Admin</button>
     <button class="c-theme-btn" onclick="toggleTheme()">☾</button>
   </div>
 </nav>
@@ -148,7 +148,7 @@
   </main>
 </div>
 
-<script type="module" src="/creator/creator-api.js"></script>
+<script src="/creator/creator-api.js?v=3"></script>
 <script>
 var all=[],filtered=[],page=1;
 function fmtAmt(a){return '₹'+parseFloat(a||0).toLocaleString('en-IN');}
@@ -163,7 +163,7 @@ function initUser(){
   document.getElementById('sbName').textContent=u.name||'Creator';
   var idDisplay=(u.email&&u.email.trim())||(u.username&&u.username.trim())||u.id||u._id||'';
   document.getElementById('sbEmail').textContent=idDisplay;
-  if(u.role==='admin')document.getElementById('backBtn').style.display='inline-flex';
+  if(localStorage.getItem('_from_admin'))document.getElementById('backBtn').style.display='inline-flex';
   // set referral code
   if(u.referral_code){
     document.getElementById('refCode').textContent='ref-'+u.referral_code;
@@ -214,10 +214,11 @@ function renderTable(){
 }
 function renderPag(total){var pg=document.getElementById('pagination');if(total<=1){pg.innerHTML='';return;}var h='<button class="c-pg" onclick="goPage('+(page-1)+')" '+(page===1?'disabled':'')+'>‹</button>';for(var i=1;i<=total;i++){if(total>7&&i>2&&i<total-1&&Math.abs(i-page)>1){if(i===3||i===total-2)h+='<span class="c-pg" style="cursor:default;opacity:.4">…</span>';continue;}h+='<button class="c-pg '+(i===page?'active':'')+'" onclick="goPage('+i+')">'+i+'</button>';}h+='<button class="c-pg" onclick="goPage('+(page+1)+')" '+(page===total?'disabled':'')+'>›</button>';pg.innerHTML=h;}
 function goPage(n){var pp=parseInt(document.getElementById('perPage').value);var total=Math.ceil(filtered.length/pp);if(n<1||n>total)return;page=n;renderTable();}
-function toggleSidebar(){document.getElementById('sidebar').classList.toggle('expanded');}
+function backToAdmin(){var tok=localStorage.getItem('_admin_token_backup');var usr=localStorage.getItem('_admin_user_backup');if(tok){localStorage.setItem('trendify_access_token',tok);localStorage.setItem('trendify_user',usr||'');}localStorage.removeItem('_from_admin');localStorage.removeItem('_admin_token_backup');localStorage.removeItem('_admin_user_backup');window.location.href='../admin/overview.html';}window.backToAdmin=backToAdmin;function toggleSidebar(){document.getElementById('sidebar').classList.toggle('expanded');}
 function toggleTheme(){document.body.classList.toggle('dark');}
 window.copy=copy;window.copyRefCode=copyRefCode;window.goPage=goPage;window.filterTable=filterTable;window.renderTable=renderTable;
 initUser();load();
+setInterval(load,30000);
 </script>
 </body>
 </html>

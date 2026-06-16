@@ -1,4 +1,4 @@
-from sqlalchemy import Column, String, Text, Boolean, ForeignKey, Numeric, TIMESTAMP
+from sqlalchemy import Column, String, Text, Boolean, ForeignKey, Numeric, TIMESTAMP, Date
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
@@ -35,6 +35,7 @@ class User(Base):
     transactions = relationship("Transaction", back_populates="creator", foreign_keys="Transaction.creator_id")
     payouts = relationship("Payout", back_populates="user")
     creator_payouts = relationship("CreatorPayout", back_populates="creator")
+    coupons = relationship("Coupon", back_populates="creator")
     referral_earnings = relationship("ReferralEarning", back_populates="referrer", foreign_keys="ReferralEarning.referrer_id")
     wallet_logs = relationship("WalletLog", back_populates="user")
     webhook_logs = relationship("WebhookLog", back_populates="user")
@@ -106,6 +107,30 @@ class DigitalProduct(Base):
 
     creator = relationship("User", back_populates="products", foreign_keys=[creator_id])
     transactions = relationship("Transaction", back_populates="product")
+    coupons = relationship("Coupon", back_populates="product")
+
+
+class Coupon(Base):
+    __tablename__ = "coupons"
+    __table_args__ = {"schema": "public"}
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    creator_id = Column(UUID(as_uuid=True), ForeignKey("public.users.id"), nullable=False)
+    product_id = Column(UUID(as_uuid=True), ForeignKey("public.digital_products.id"), nullable=True)
+    name = Column(Text, nullable=False)
+    code = Column(Text, nullable=False, unique=True)
+    status = Column(Text, nullable=False, default="active")
+    discount_type = Column(Text, nullable=False, default="fixed")
+    discount_value = Column(Numeric, default=0)
+    limited = Column(Boolean, default=False)
+    usage_limit = Column(Numeric, default=0)
+    usage_count = Column(Numeric, default=0)
+    valid_from = Column(Date)
+    valid_until = Column(Date)
+    created_at = Column(TIMESTAMP(timezone=True), server_default=func.now())
+
+    creator = relationship("User", back_populates="coupons", foreign_keys=[creator_id])
+    product = relationship("DigitalProduct", back_populates="coupons", foreign_keys=[product_id])
 
 
 class Transaction(Base):

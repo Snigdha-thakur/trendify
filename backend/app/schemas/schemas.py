@@ -1,5 +1,5 @@
 from pydantic import BaseModel, EmailStr
-from datetime import datetime
+from datetime import datetime, date
 from typing import Optional
 from uuid import UUID
 
@@ -210,6 +210,53 @@ class ProductResponse(BaseModel):
         from_attributes = True
 
 
+class CouponCreate(BaseModel):
+    name: str
+    code: str
+    product_id: Optional[UUID] = None
+    status: Optional[str] = "active"
+    discount_type: Optional[str] = "fixed"
+    discount_value: Optional[float] = 0
+    limited: Optional[bool] = False
+    usage_limit: Optional[float] = 0
+    valid_from: Optional[date] = None
+    valid_until: Optional[date] = None
+
+
+class CouponUpdate(BaseModel):
+    name: Optional[str] = None
+    code: Optional[str] = None
+    product_id: Optional[UUID] = None
+    status: Optional[str] = None
+    discount_type: Optional[str] = None
+    discount_value: Optional[float] = None
+    limited: Optional[bool] = None
+    usage_limit: Optional[float] = None
+    valid_from: Optional[date] = None
+    valid_until: Optional[date] = None
+
+
+class CouponResponse(BaseModel):
+    id: UUID
+    creator_id: Optional[UUID]
+    product_id: Optional[UUID]
+    product_name: Optional[str]
+    name: str
+    code: str
+    status: str
+    discount_type: Optional[str]
+    discount_value: Optional[float]
+    limited: Optional[bool]
+    usage_limit: Optional[float]
+    usage_count: Optional[float]
+    valid_from: Optional[date]
+    valid_until: Optional[date]
+    created_at: Optional[datetime]
+
+    class Config:
+        from_attributes = True
+
+
 # Transaction
 class TransactionCreate(BaseModel):
     id: str
@@ -226,6 +273,7 @@ class TransactionResponse(BaseModel):
     id: str
     creator_id: Optional[UUID]
     product_id: Optional[UUID]
+    product_name: Optional[str] = None
     buyer_email: Optional[str]
     buyer_name: Optional[str]
     buyer_phone: Optional[str]

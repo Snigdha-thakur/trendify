@@ -16,7 +16,7 @@
     <span class="c-nav-title">Creator Dashboard <span class="sep">›</span><span class="current">Payout History</span></span>
   </div>
   <div class="c-nav-right">
-    <button class="c-back-btn" id="backBtn" onclick="location.href='../admin/overview.html'"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10 3l5 5-5 5M3 8h12"/></svg>Back to Admin</button>
+    <button class="c-back-btn" id="backBtn" onclick="backToAdmin()"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10 3l5 5-5 5M3 8h12"/></svg>Back to Admin</button>
     <button class="c-theme-btn" onclick="toggleTheme()">☾</button>
   </div>
 </nav>
@@ -45,37 +45,64 @@
     </div>
   </aside>
   <main class="c-main">
+    <div class="c-wallet-cards" style="margin-bottom:20px">
+      <div class="c-stat-card"><div class="c-stat-top"><span class="c-stat-label">Total Payouts</span></div><div class="c-stat-val" id="statTotal">—</div></div>
+      <div class="c-stat-card"><div class="c-stat-top"><span class="c-stat-label">Total Amount</span></div><div class="c-stat-val" id="statAmt">—</div></div>
+      <div class="c-stat-card"><div class="c-stat-top"><span class="c-stat-label">Paid</span></div><div class="c-stat-val" id="statPaid">—</div></div>
+      <div class="c-stat-card"><div class="c-stat-top"><span class="c-stat-label">Pending</span></div><div class="c-stat-val" id="statPending">—</div></div>
+    </div>
     <div class="c-tabs">
-      <button class="c-tab active" onclick="switchTab('platform',this)">Platform Payout History</button>
-      <button class="c-tab" onclick="switchTab('creator',this)">Creator Payout History</button>
+      <button class="c-tab active" onclick="switchTab('all',this)">All Payouts</button>
+      <button class="c-tab" onclick="switchTab('creator',this)">Main Wallet</button>
+      <button class="c-tab" onclick="switchTab('referral',this)">Referral Wallet</button>
     </div>
     <div class="c-toolbar">
-      <div class="c-search-wrap"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" style="opacity:.5;flex-shrink:0"><circle cx="6.5" cy="6.5" r="4.5"/><path d="M10.5 10.5l3 3"/></svg><input class="c-search" id="searchInput" placeholder="Search by payout ID, user name, email, or phone..." oninput="filterTable()"/></div>
-      <div class="c-perpage-wrap">Per page:<select class="c-perpage" id="perPage" onchange="renderTable()"><option value="15" selected>15</option><option value="25">25</option><option value="50">50</option><option value="100">100</option></select></div>
+      <div class="c-search-wrap"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" style="opacity:.5;flex-shrink:0"><circle cx="6.5" cy="6.5" r="4.5"/><path d="M10.5 10.5l3 3"/></svg><input class="c-search" id="searchInput" placeholder="Search by payout ID..." oninput="filterTable()"/></div>
+      <div class="c-perpage-wrap">
+        <button onclick="load()" style="background:none;border:1px solid rgba(167,124,255,.2);color:#a67cff;padding:5px 12px;border-radius:6px;cursor:pointer;font-size:12px;">⟳ Refresh</button>
+        Per page:<select class="c-perpage" id="perPage" onchange="renderTable()"><option value="15" selected>15</option><option value="25">25</option><option value="50">50</option><option value="100">100</option></select>
+      </div>
     </div>
+    <div id="loadErr" style="display:none;color:#e8674a;padding:12px 16px;font-size:13px;"></div>
     <div class="c-table-wrap">
       <table class="c-table" id="tbl">
-        <thead id="thead"></thead>
-        <tbody id="tbody"></tbody>
+        <thead><tr><th>Payout ID</th><th>Type</th><th>Amount</th><th>Status</th><th>Date</th></tr></thead>
+        <tbody id="tbody"><tr><td colspan="5" style="text-align:center;padding:32px;color:#9d99bb">Loading…</td></tr></tbody>
       </table>
       <div class="c-empty" id="empty" style="display:none">No payouts found.</div>
     </div>
     <div class="c-pagination" id="pagination"></div>
   </main>
 </div>
-<script type="module" src="/creator/creator-api.js"></script>
+<script src="/creator/creator-api.js?v=3"></script>
 <script>
-var all=[],filtered=[],page=1,activeTab='platform',userData=null;
+var all=[],filtered=[],page=1,activeTab='all',_timer=null;
 function fmt(d){return d?new Date(d).toLocaleString('en-IN',{year:'numeric',month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}):'—';}
 function fmtAmt(a){return '₹'+parseFloat(a||0).toLocaleString('en-IN');}
 function copy(t,b){navigator.clipboard.writeText(t).then(function(){b.textContent='✓';setTimeout(function(){b.textContent='⧉';},1200);});}
-function initUser(){var u=null;try{u=JSON.parse(localStorage.getItem('trendify_user'));}catch(e){}if(!u)return;userData=u;var ini=(u.name||'CR').split(' ').map(function(w){return w[0];}).join('').toUpperCase().slice(0,2);document.getElementById('sbAv').textContent=ini;document.getElementById('sbName').textContent=u.name||'Creator';var idDisplay=(u.email&&u.email.trim())||(u.username&&u.username.trim())||u.id||u._id||'';document.getElementById('sbEmail').textContent=idDisplay;if(u.role==='admin')document.getElementById('backBtn').style.display='inline-flex';}
-async function load(){all=await CreatorAPI.getPayouts();filtered=[...all];renderTable();}
+function statusBadge(s){var cls=s==='Paid'?'b-success':s==='Pending'?'b-pending':'b-failed';return '<span class="'+cls+'">'+s+'</span>';}
+function initUser(){var u=null;try{u=JSON.parse(localStorage.getItem('trendify_user'));}catch(e){}if(!u)return;var ini=(u.name||'CR').split(' ').map(function(w){return w[0];}).join('').toUpperCase().slice(0,2);document.getElementById('sbAv').textContent=ini;document.getElementById('sbName').textContent=u.name||'Creator';var idDisplay=(u.email&&u.email.trim())||(u.username&&u.username.trim())||u.id||u._id||'';document.getElementById('sbEmail').textContent=idDisplay;if(localStorage.getItem('_from_admin'))document.getElementById('backBtn').style.display='inline-flex';}
+function updateStats(){
+  document.getElementById('statTotal').textContent=all.length;
+  document.getElementById('statAmt').textContent=fmtAmt(all.reduce(function(s,r){return s+parseFloat(r.amount||0);},0));
+  document.getElementById('statPaid').textContent=all.filter(function(r){return r.status==='Paid';}).length;
+  document.getElementById('statPending').textContent=all.filter(function(r){return r.status==='Pending';}).length;
+}
+async function load(){
+  document.getElementById('loadErr').style.display='none';
+  try{
+    all=await CreatorAPI.getPayouts();
+    updateStats();filterTable();
+  }catch(e){
+    document.getElementById('loadErr').textContent='Error: '+e.message;
+    document.getElementById('loadErr').style.display='block';
+  }
+}
 function switchTab(tab,btn){activeTab=tab;document.querySelectorAll('.c-tab').forEach(function(b){b.classList.remove('active');});btn.classList.add('active');filterTable();}
 function filterTable(){
   var q=document.getElementById('searchInput').value.trim().toLowerCase();
-  var base=activeTab==='creator'?all.filter(function(r){return r.payout_type==='creator';}):all.filter(function(r){return r.payout_type!=='creator';});
-  filtered=q?base.filter(function(r){return (r.id||'').toLowerCase().includes(q)||((userData&&userData.name)||'').toLowerCase().includes(q)||((userData&&userData.email)||'').toLowerCase().includes(q);}):base;
+  var base=activeTab==='creator'?all.filter(function(r){return r.payout_type==='creator';}):activeTab==='referral'?all.filter(function(r){return r.payout_type==='referral';}):all.slice();
+  filtered=q?base.filter(function(r){return (r.id||'').toLowerCase().includes(q);}):base;
   page=1;renderTable();
 }
 function renderTable(){
@@ -85,31 +112,27 @@ function renderTable(){
   var slice=filtered.slice((page-1)*pp,page*pp);
   var tbody=document.getElementById('tbody');
   var empty=document.getElementById('empty');
-  document.getElementById('thead').innerHTML='<tr><th>Payout ID</th><th>User Name</th><th>Email</th><th>Phone</th><th>Amount</th><th>Status</th><th>Created At</th></tr>';
   if(!slice.length){tbody.innerHTML='';empty.style.display='block';return;}
   empty.style.display='none';
-  var name=(userData&&userData.name)||'—';
-  var email=(userData&&userData.email)||'—';
-  var phone=(userData&&userData.phone)||'—';
   tbody.innerHTML=slice.map(function(r){
-    var shortId=r.id&&r.id.length>20?r.id.slice(0,20)+'…':r.id||'—';
+    var shortId=r.id&&r.id.length>24?r.id.slice(0,24)+'…':r.id||'—';
+    var typeLabel=r.payout_type==='referral'?'<span class="b-wallet">Referral</span>':'<span class="b-wallet">Main</span>';
     return '<tr>'
       +'<td><div style="display:flex;align-items:center;gap:5px;font-family:var(--f-mono);font-size:12px;color:#7c3aed"><button class="c-copy" onclick="copy(\''+r.id+'\',this)">⧉</button>'+shortId+'</div></td>'
-      +'<td style="font-weight:600;color:var(--text)">'+name+'</td>'
-      +'<td style="color:var(--muted)">'+email+'</td>'
-      +'<td style="font-family:var(--f-mono);font-size:12px">'+phone+'</td>'
+      +'<td>'+typeLabel+'</td>'
       +'<td style="font-weight:700;color:var(--text)">'+fmtAmt(r.amount)+'</td>'
-      +'<td><span class="b-paid"><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="8" cy="8" r="6"/><path d="M5 8l2 2 4-4"/></svg>'+r.status+'</span></td>'
+      +'<td>'+statusBadge(r.status)+'</td>'
       +'<td style="white-space:nowrap;font-weight:600">'+fmt(r.created_at)+'</td></tr>';
   }).join('');
   renderPag(total);
 }
 function renderPag(total){var pg=document.getElementById('pagination');if(total<=1){pg.innerHTML='';return;}var h='<button class="c-pg" onclick="goPage('+(page-1)+')" '+(page===1?'disabled':'')+'>‹</button>';for(var i=1;i<=total;i++){if(total>7&&i>2&&i<total-1&&Math.abs(i-page)>1){if(i===3||i===total-2)h+='<span class="c-pg" style="cursor:default;opacity:.4">…</span>';continue;}h+='<button class="c-pg '+(i===page?'active':'')+'" onclick="goPage('+i+')">'+i+'</button>';}h+='<button class="c-pg" onclick="goPage('+(page+1)+')" '+(page===total?'disabled':'')+'>›</button>';pg.innerHTML=h;}
 function goPage(n){var pp=parseInt(document.getElementById('perPage').value);var total=Math.ceil(filtered.length/pp);if(n<1||n>total)return;page=n;renderTable();}
-function toggleSidebar(){document.getElementById('sidebar').classList.toggle('expanded');}
+function backToAdmin(){var tok=localStorage.getItem('_admin_token_backup');var usr=localStorage.getItem('_admin_user_backup');if(tok){localStorage.setItem('trendify_access_token',tok);localStorage.setItem('trendify_user',usr||'');}localStorage.removeItem('_from_admin');localStorage.removeItem('_admin_token_backup');localStorage.removeItem('_admin_user_backup');window.location.href='../admin/overview.html';}window.backToAdmin=backToAdmin;function toggleSidebar(){document.getElementById('sidebar').classList.toggle('expanded');}
 function toggleTheme(){document.body.classList.toggle('dark');}
 window.copy=copy;window.goPage=goPage;window.filterTable=filterTable;window.renderTable=renderTable;window.switchTab=switchTab;
 initUser();load();
+_timer=setInterval(load,30000);
 </script>
 </body>
 </html>
