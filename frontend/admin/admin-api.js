@@ -116,6 +116,19 @@
     getReferralEarnings: () => query('/referral-earnings?skip=0&limit=1000'),
     getPayoutWebhooks: () => query('/payout-webhooks?skip=0&limit=1000'),
 
+    verifyTransaction: async (txnId) => {
+      const token = getToken();
+      if (!token) return null;
+      const base = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+        ? 'http://localhost:8000/api' : 'https://trendify-pxkx.onrender.com/api';
+      const res = await fetch(`${base}/payments/transactions/${txnId}/verify`, {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' }
+      });
+      if (!res.ok) return null;
+      return res.json();
+    },
+
     _userCache: {},
     async getUserName(id) {
       if (!id) return '—';

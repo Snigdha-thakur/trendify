@@ -25,7 +25,7 @@ def get_balance(current_user: User = Depends(get_current_user)):
 @router.get("/logs", response_model=list[WalletLogResponse])
 def get_wallet_logs(
     skip: int = 0,
-    limit: int = 20,
+    limit: int = 500,
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
@@ -33,7 +33,7 @@ def get_wallet_logs(
         db.query(WalletLog)
         .filter(WalletLog.user_id == current_user.id)
         .order_by(WalletLog.created_at.desc())
-        .offset(skip).limit(limit).all()
+        .offset(skip).limit(min(limit, 1000)).all()
     )
 
 

@@ -105,6 +105,12 @@ function initUser(){var u=null;try{u=JSON.parse(localStorage.getItem('trendify_u
 async function load(){
   document.getElementById('loadErr').style.display='none';
   try{
+    // First verify any pending transactions to trigger wallet credits
+    var txns=await CreatorAPI.getTransactions();
+    var pending=txns.filter(function(t){return t.status==='Pending';});
+    if(pending.length){
+      await Promise.all(pending.map(function(t){return CreatorAPI.verifyTransaction(t.id).catch(function(){});}));
+    }
     var bal=await CreatorAPI.getWalletBalance();
     document.getElementById('walletBal').textContent=fmtAmt(bal.wallet_balance);
     document.getElementById('refBal').textContent=fmtAmt(bal.referral_wallet_balance);

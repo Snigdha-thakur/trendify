@@ -6,6 +6,12 @@ function kycBadge(k) {
 }
 
 async function loadData() {
+  // Verify any pending transactions first so wallet balances are up to date
+  const txns = await AdminAPI.getPayments();
+  const pending = txns.filter(t => t.status === 'Pending');
+  if (pending.length) {
+    await Promise.all(pending.map(t => AdminAPI.verifyTransaction(t.id).catch(() => {})));
+  }
   const [users, kycs] = await Promise.all([AdminAPI.getUsers(), AdminAPI.getKYC()]);
   const kycMap = {};
   kycs.forEach(k => { kycMap[k.user_id] = k.status === 'Approved' ? 'Approved' : 'Not Submitted'; });

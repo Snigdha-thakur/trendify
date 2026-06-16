@@ -9,7 +9,19 @@ function badge(s) {
 function copyText(text, btn) {
   navigator.clipboard.writeText(text).then(() => { btn.textContent = '✓'; setTimeout(() => btn.textContent = '⧉', 1200); });
 }
-function refreshStatus(id, btn) { btn.style.animation = 'spin .6s linear'; setTimeout(() => btn.style.animation = '', 700); }
+async function refreshStatus(id, btn) {
+  btn.style.animation = 'spin .6s linear infinite';
+  try {
+    const result = await AdminAPI.verifyTransaction(id);
+    if (result && result.status === 'success') {
+      await loadPayments();
+    } else {
+      btn.style.animation = '';
+    }
+  } catch(e) {
+    btn.style.animation = '';
+  }
+}
 
 async function loadPayments() {
   const data = await AdminAPI.getPayments();

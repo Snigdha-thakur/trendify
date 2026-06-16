@@ -135,6 +135,53 @@ def get_transaction(txn_id: str, db: Session = Depends(get_db)):
     return txn_dict
 
 
+@router.post("/transactions/{txn_id}/verify")
+async def verify_transaction(txn_id: str, db: Session = Depends(get_db)):
+    """Manually verify a payment status with Cashfree and credit wallet if successful."""
+    import httpx
+    from app.core.config import settings
+
+    txn = db.query(Transaction).filter(
+        (Transaction.id == txn_id) | (Transaction.cashfree_order_id == txn_id)
+    ).first()
+    if not txn:
+        raise HTTPException(status_code=404, detail="Transaction not found")
+
+    if txn.status == "Success":
+        return {"status": "already_success", "message": "Transaction already marked as successful"}
+
+    # Query Cashfree for the latest order status
+    env = (settings.CASHFREE_ENV or "TEST").upper()
+    base = "https://api.cashfree.com" if env == "PROD" else "https://sandbox.cashfree.com"
+    order_id = txn.cashfree_order_id or txn.id
+    headers = {
+        "x-client-id": settings.CASHFREE_APP_ID,
+        "x-client-secret": settings.CASHFREE_SECRET_KEY,
+        "x-api-version": "2023-08-01",
+    }
+
+    async with httpx.AsyncClient(timeout=15) as client:
+        resp = await client.get(f"{base}/pg/orders/{order_id}/payments", headers=headers)
+
+    if not resp.is_success:
+        raise HTTPException(status_code=502, detail="Could not reach Cashfree")
+
+    payments = resp.json()
+    paid = any(
+        p.get("payment_status") in ("SUCCESS", "PAID")
+        for p in (payments if isinstance(payments, list) else [])
+    )
+
+    if paid:
+        txn.status = "Success"
+        _credit_wallets(txn, db)
+        db.add(GatewayLog(transaction_id=txn.id, log_type="Verify"))
+        db.commit()
+        return {"status": "success", "message": "Payment verified and wallet credited"}
+
+    return {"status": txn.status.lower(), "message": "Payment not yet successful"}
+
+
 # ---------- internal helpers ----------
 
 def _credit_wallets(txn: Transaction, db: Session):

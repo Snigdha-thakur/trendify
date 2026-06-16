@@ -100,7 +100,7 @@ function initUser(){
   if(!u) return;
   var ini=(u.name||'CR').split(' ').map(function(w){return w[0];}).join('').toUpperCase().slice(0,2);
     document.getElementById('sbAv').textContent=ini;document.getElementById('sbName').textContent=u.name||'Creator';var idDisplay=(u.email&&u.email.trim())||(u.username&&u.username.trim())||u.id||u._id||'';document.getElementById('sbEmail').textContent=idDisplay;
-  if(u.role==='admin') document.getElementById('backBtn').style.display='inline-flex';
+  if(localStorage.getItem('_from_admin')) document.getElementById('backBtn').style.display='inline-flex';
 }
 async function loadDashboard(){
   var days=document.getElementById('dateFilter').value;
