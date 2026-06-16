@@ -1,6 +1,7 @@
 (function(){
-  let base = '/api';
+  let base = 'https://trendify-pxkx.onrender.com/api';
   if(location.hostname==='localhost'||location.hostname==='127.0.0.1') base='http://localhost:8000/api';
+  else if (window.__API_URL__) base = String(window.__API_URL__).replace(/\/+$|\s+$/g, '') + '/api';
   const KEY='trendify_access_token';
   function tok(){return localStorage.getItem(KEY);}
   async function req(method,url,body){

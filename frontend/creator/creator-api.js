@@ -1,9 +1,9 @@
 (function(){
-  let base = '/api';
+  let base = 'https://trendify-pxkx.onrender.com/api';
   if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') {
     base = 'http://localhost:8000/api';
-  } else if (location.origin && location.origin !== 'null') {
-    base = location.origin.replace(/\/+$/, '') + '/api';
+  } else if (window.__API_URL__) {
+    base = String(window.__API_URL__).replace(/\/+$|\s+$/g, '') + '/api';
   }
   const KEY='trendify_access_token';
   function tok(){return localStorage.getItem(KEY);}
@@ -26,6 +26,10 @@
     createProduct:(data)=>req('POST','/products/',data),
     updateProduct:(id,data)=>req('PUT',`/products/${id}`,data),
     deleteProduct:(id)=>req('DELETE',`/products/${id}`),
+    getCoupons:()=>req('GET','/coupons/my'),
+    createCoupon:(data)=>req('POST','/coupons/',data),
+    updateCoupon:(id,data)=>req('PUT',`/coupons/${id}`,data),
+    deleteCoupon:(id)=>req('DELETE',`/coupons/${id}`),
     getReferralEarnings:()=>req('GET','/wallets/referral-earnings'),
   };
 })();
