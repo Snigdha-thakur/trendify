@@ -20,10 +20,12 @@ def create_product(
     if current_user.role not in ("creator", "admin"):
         raise HTTPException(status_code=403, detail="Only creators can create products")
 
+    data_dict = data.model_dump(exclude_none=True)
+    data_dict.pop('status', None)  # status is always set to 'Under review' on creation
     product = DigitalProduct(
         creator_id=current_user.id,
-        **data.model_dump(exclude_none=True),
         status="Under review",
+        **data_dict,
     )
     db.add(product)
     db.commit()
@@ -100,7 +102,7 @@ def update_product(
     if product.creator_id != current_user.id and current_user.role != "admin":
         raise HTTPException(status_code=403, detail="Forbidden")
 
-    for field, value in data.model_dump(exclude_none=True).items():
+    for field, value in data.model_dump(exclude_unset=True).items():
         setattr(product, field, value)
     db.commit()
     db.refresh(product)

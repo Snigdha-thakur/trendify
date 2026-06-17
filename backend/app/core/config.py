@@ -19,7 +19,9 @@ class Settings(BaseSettings):
 
     CASHFREE_APP_ID: Optional[str] = None
     CASHFREE_SECRET_KEY: Optional[str] = None
-    CASHFREE_ENV: str = "TEST"  # TEST or PROD
+    CASHFREE_ENV: str = "TEST"
+
+    REFRESH_TOKEN_EXPIRE_DAYS: int = 30
 
     FRONTEND_URL: str = "https://trendifytechnology.vercel.app"
     BACKEND_URL: str = "https://trendify-pxkx.onrender.com"

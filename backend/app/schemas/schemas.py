@@ -68,8 +68,7 @@ class UserResponse(BaseModel):
     referral_wallet_balance: Optional[float]
     created_at: Optional[datetime]
 
-    class Config:
-        from_attributes = True
+    model_config = {"from_attributes": True}
 
 
 class UserUpdate(BaseModel):
@@ -102,8 +101,7 @@ class KYCResponse(BaseModel):
     status: str
     created_at: Optional[datetime]
 
-    class Config:
-        from_attributes = True
+    model_config = {"from_attributes": True}
 
 
 # Digital Product
@@ -206,8 +204,7 @@ class ProductResponse(BaseModel):
     webhook_key: Optional[str]
     created_at: Optional[datetime]
 
-    class Config:
-        from_attributes = True
+    model_config = {"from_attributes": True}
 
 
 class CouponCreate(BaseModel):
@@ -240,7 +237,7 @@ class CouponResponse(BaseModel):
     id: UUID
     creator_id: Optional[UUID]
     product_id: Optional[UUID]
-    product_name: Optional[str]
+    product_name: Optional[str] = None
     name: str
     code: str
     status: str
@@ -253,8 +250,7 @@ class CouponResponse(BaseModel):
     valid_until: Optional[date]
     created_at: Optional[datetime]
 
-    class Config:
-        from_attributes = True
+    model_config = {"from_attributes": True}
 
 
 # Transaction
@@ -286,8 +282,7 @@ class TransactionResponse(BaseModel):
     payment_link: Optional[str]
     created_at: Optional[datetime]
 
-    class Config:
-        from_attributes = True
+    model_config = {"from_attributes": True}
 
 
 # Payout
@@ -299,8 +294,7 @@ class PayoutResponse(BaseModel):
     payout_type: Optional[str]
     created_at: Optional[datetime]
 
-    class Config:
-        from_attributes = True
+    model_config = {"from_attributes": True}
 
 
 # Creator Payout
@@ -312,8 +306,7 @@ class CreatorPayoutResponse(BaseModel):
     status: str
     created_at: Optional[datetime]
 
-    class Config:
-        from_attributes = True
+    model_config = {"from_attributes": True}
 
 
 # Referral Earning
@@ -328,8 +321,7 @@ class ReferralEarningResponse(BaseModel):
     source: Optional[str]
     created_at: Optional[datetime]
 
-    class Config:
-        from_attributes = True
+    model_config = {"from_attributes": True}
 
 
 # Wallet Log
@@ -344,8 +336,7 @@ class WalletLogResponse(BaseModel):
     new_balance: Optional[float]
     created_at: Optional[datetime]
 
-    class Config:
-        from_attributes = True
+    model_config = {"from_attributes": True}
 
 
 # Payout Webhook
@@ -360,8 +351,7 @@ class PayoutWebhookResponse(BaseModel):
     is_active: Optional[bool]
     created_at: Optional[datetime]
 
-    class Config:
-        from_attributes = True
+    model_config = {"from_attributes": True}
 
 
 # Gateway Log
@@ -373,5 +363,4 @@ class GatewayLogResponse(BaseModel):
     log_type: Optional[str]
     created_at: Optional[datetime]
 
-    class Config:
-        from_attributes = True
+    model_config = {"from_attributes": True}

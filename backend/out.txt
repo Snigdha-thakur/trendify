@@ -1,0 +1,13 @@
+2026-06-17 15:05:36,582 INFO sqlalchemy.engine.Engine select pg_catalog.version()
+2026-06-17 15:05:36,582 INFO sqlalchemy.engine.Engine [raw sql] {}
+2026-06-17 15:05:37,081 INFO sqlalchemy.engine.Engine select current_schema()
+2026-06-17 15:05:37,082 INFO sqlalchemy.engine.Engine [raw sql] {}
+2026-06-17 15:05:37,710 INFO sqlalchemy.engine.Engine show standard_conforming_strings
+2026-06-17 15:05:37,710 INFO sqlalchemy.engine.Engine [raw sql] {}
+2026-06-17 15:05:38,276 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-06-17 15:05:38,282 INFO sqlalchemy.engine.Engine SELECT public.users.id AS public_users_id, public.users.name AS public_users_name, public.users.email AS public_users_email, public.users.phone AS public_users_phone, public.users.password_hash AS public_users_password_hash, public.users.role AS public_users_role, public.users.status AS public_users_status, public.users.referral_code AS public_users_referral_code, public.users.referred_by AS public_users_referred_by, public.users.wallet_balance AS public_users_wallet_balance, public.users.referral_wallet_balance AS public_users_referral_wallet_balance, public.users.address AS public_users_address, public.users.disclaimer AS public_users_disclaimer, public.users.instagram AS public_users_instagram, public.users.facebook AS public_users_facebook, public.users.youtube AS public_users_youtube, public.users.linkedin AS public_users_linkedin, public.users.created_at AS public_users_created_at 
+FROM public.users 
+ LIMIT %(param_1)s
+2026-06-17 15:05:38,317 INFO sqlalchemy.engine.Engine [generated in 0.03586s] {'param_1': 1}
+OK
+2026-06-17 15:05:38,931 INFO sqlalchemy.engine.Engine ROLLBACK

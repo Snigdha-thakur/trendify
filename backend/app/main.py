@@ -1,31 +1,37 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 from app.core.config import settings
 from app.core.db_migrations import ensure_coupons_table, ensure_digital_product_columns
 from app.api.routes import auth, users, payments, products, admin, wallets, coupons
+import traceback
 
 app = FastAPI(title=settings.API_TITLE, version=settings.API_VERSION)
 
-# Ensure product schema compatibility and coupon table readiness on startup in deployed environments.
-ensure_digital_product_columns()
-ensure_coupons_table()
-
 app.add_middleware(
     CORSMiddleware,
-    # Allow the configured frontend URL, common deploy hosts and localhost for development.
-    allow_origins=[
-        settings.FRONTEND_URL,
-        "http://localhost:3000",
-        "http://localhost:3001",
-        "http://localhost:5173",
-        "http://127.0.0.1:3001",
-        "http://127.0.0.1:5173"
-    ],
-    allow_origin_regex=r"https?://.*|http://localhost:\d+$|http://127\.0\.0\.1:\d+$",
-    allow_credentials=True,
+    allow_origins=["*"],
+    allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+@app.exception_handler(Exception)
+async def global_exception_handler(request: Request, exc: Exception):
+    tb = traceback.format_exc()
+    print(f"UNHANDLED ERROR on {request.method} {request.url}:\n{tb}")
+    return JSONResponse(
+        status_code=500,
+        content={"detail": str(exc), "traceback": tb},
+        headers={"Access-Control-Allow-Origin": "*"},
+    )
+
+# Ensure product schema compatibility and coupon table readiness on startup.
+try:
+    ensure_digital_product_columns()
+    ensure_coupons_table()
+except Exception as e:
+    print(f"[startup] DB migration warning: {e}")
 
 app.include_router(auth.router)
 app.include_router(users.router)

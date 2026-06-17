@@ -97,6 +97,29 @@
     getKYC: () => query('/kyc?skip=0&limit=1000'),
     updateKYCStatus: (id, status) => put(`/kyc/${id}?status=${status}`, {}),
     getProducts: () => query('/products?skip=0&limit=1000'),
+    updateProductStatus: async (id, status) => {
+      const token = getToken();
+      if (!token) throw new Error('No auth token');
+      const url = `${API_URL}/products/${id}/status?status=${encodeURIComponent(status)}`;
+      const res = await fetch(url, {
+        method: 'PUT',
+        headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({}),
+      });
+      if (!res.ok) { const t = await res.text(); throw new Error(t); }
+      return res.json();
+    },
+    updateProductWhitelabel: async (id, val) => {
+      const token = getToken();
+      if (!token) throw new Error('No auth token');
+      const res = await fetch(`${API_URL}/products/${id}/whitelabel`, {
+        method: 'PUT',
+        headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ whitelabeled: val }),
+      });
+      if (!res.ok) { const t = await res.text(); throw new Error(t); }
+      return res.json();
+    },
     createProduct: async (data, creatorId) => {
       const token = getToken();
       if (!token) throw new Error('No auth token');

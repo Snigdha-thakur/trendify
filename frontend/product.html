@@ -106,7 +106,7 @@
           <div class="field"><label for="buyerName">Full name</label><input type="text" id="buyerName" class="input" placeholder="Your name" required /></div>
           <div class="field"><label for="buyerEmail">Email address</label><input type="email" id="buyerEmail" class="input" placeholder="name@example.com" required /></div>
           <div class="field"><label for="buyerPhone">Phone number</label><input type="tel" id="buyerPhone" class="input" placeholder="Enter phone number" /></div>
-          <div class="field" id="amountField"><label for="buyerAmount">Payment amount</label><input type="number" id="buyerAmount" class="input" min="1" step="1" placeholder="Enter amount" required /></div>
+          <div class="field" id="amountField" style="display:none"><label for="buyerAmount">Payment amount</label><input type="number" id="buyerAmount" class="input" step="1" placeholder="Enter amount" /></div>
           <div class="field"><label for="buyerNote">Payment note</label><textarea id="buyerNote" class="textarea" placeholder="Optional note for the creator"></textarea></div>
           <button type="submit" class="btn btn-primary" id="checkoutButton"><span>Continue to payment</span><span class="spinner hidden" id="checkoutSpinner"></span></button>
           <div id="checkoutMessage" class="hidden"></div>
@@ -138,6 +138,8 @@
     const buyerName = document.getElementById('buyerName');
     const buyerEmail = document.getElementById('buyerEmail');
     const buyerPhone = document.getElementById('buyerPhone');
+    let product = null;
+    let fixedAmount = 0;
 
     function showMessage(message, isError = false) {
       checkoutMessage.textContent = message;
@@ -165,25 +167,33 @@
       try {
         const response = await fetch(`${baseApi}/products/${encodeURIComponent(productId)}`);
         if (!response.ok) throw new Error('Product not found');
-        const product = await response.json();
-        if (!product || !product.status || product.status !== 'Active') {
+        product = await response.json();
+        if (!product || product.status !== 'Active') {
           throw new Error('Product is not available for purchase.');
         }
 
+        const isCustomer = product.price_type === 'Customer Decided';
+        fixedAmount = isCustomer ? 0 : parseFloat(
+          product.offer_discount && product.discount_price ? product.discount_price : product.amount
+        ) || 0;
+
         document.getElementById('productName').textContent = product.name || 'Digital product';
-        document.getElementById('productCreator').textContent = product.creator_id ? 'Creator' : 'Creator';
-        document.getElementById('productStatus').textContent = product.status || 'Active';
-        document.getElementById('productPrice').textContent = product.amount ? '₹' + parseFloat(product.amount).toLocaleString('en-IN') : '₹0';
-        document.getElementById('productType').textContent = product.price_type === 'Customer Decided' ? 'Pay what you want' : 'Fixed price';
-        document.getElementById('productDescription').textContent = product.description || 'A payment page for the creator product.';
-        if (product.price_type === 'Customer Decided') {
+        document.getElementById('productCreator').textContent = product.creator_name || 'Creator';
+        document.getElementById('productStatus').textContent = product.status;
+        document.getElementById('productPrice').textContent = isCustomer ? 'Pay what you want' : ('₹' + fixedAmount.toLocaleString('en-IN'));
+        document.getElementById('productType').textContent = isCustomer ? 'Pay what you want' : 'Fixed price';
+        document.getElementById('productDescription').textContent = product.description || '';
+
+        if (isCustomer) {
           amountField.style.display = 'block';
           buyerAmount.required = true;
+          buyerAmount.setAttribute('min', '1');
           buyerAmount.value = '';
         } else {
           amountField.style.display = 'none';
           buyerAmount.required = false;
-          buyerAmount.value = product.amount || 0;
+          buyerAmount.removeAttribute('min');
+          buyerAmount.value = fixedAmount;
         }
         loadingProduct.classList.add('hidden');
         productContent.classList.remove('hidden');
@@ -201,9 +211,8 @@
       const name = buyerName.value.trim();
       const email = buyerEmail.value.trim();
       const phone = buyerPhone.value.trim();
-      const amount = productId && amountField.style.display === 'none'
-        ? parseFloat(document.getElementById('productPrice').textContent.replace(/[₹,]/g, ''))
-        : parseFloat(buyerAmount.value);
+      const isCustomer = product && product.price_type === 'Customer Decided';
+      const amount = isCustomer ? parseFloat(buyerAmount.value) : fixedAmount;
       if (!name || !email) {
         showMessage('Please enter your name and email.', true);
         return;

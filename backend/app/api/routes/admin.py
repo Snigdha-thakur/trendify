@@ -192,7 +192,19 @@ def admin_create_product(
     return product
 
 
-@router.put("/products/{product_id}/status")
+@router.put("/products/{product_id}/whitelabel")
+def update_product_whitelabel(
+    product_id: UUID, data: dict,
+    db: Session = Depends(get_db), _: User = Depends(require_admin),
+):
+    product = db.query(DigitalProduct).filter(DigitalProduct.id == product_id).first()
+    if not product:
+        raise HTTPException(status_code=404, detail="Product not found")
+    product.whitelabeled = bool(data.get("whitelabeled", False))
+    db.commit()
+    return {"message": "Whitelabel updated"}
+
+
 def update_product_status(
     product_id: UUID, status: str,
     db: Session = Depends(get_db), _: User = Depends(require_admin),

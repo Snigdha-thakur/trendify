@@ -6,10 +6,6 @@ const statusBadge = s => (s === 'Active' || s === 'active')
   ? '<span class="badge-kyc-approved" style="border-radius:4px">Active</span>'
   : '<span class="badge-under-review" style="border-radius:4px">Under Review</span>';
 
-const SUPABASE_URL = 'https://hzukzpxelruvdmporrak.supabase.co';
-const ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh6dWt6cHhlbHJ1dmRtcG9ycmFrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk3NjA5MjgsImV4cCI6MjA5NTMzNjkyOH0.9EQ7E6LKZc1lceSuy1h-jEX0QVkFifeBVjHqyHEAF3M';
-const getToken = () => { try { return JSON.parse(localStorage.getItem('trendify_session')).access_token; } catch { return ANON_KEY; } };
-
 async function loadData() {
   const [products, users] = await Promise.all([AdminAPI.getProducts(), AdminAPI.getUsers()]);
   const uMap = {};
@@ -30,32 +26,24 @@ async function loadData() {
 
 async function toggleStatus(id, currentStatus) {
   const newStatus = currentStatus === 'Active' ? 'Under review' : 'Active';
-  await fetch(SUPABASE_URL + '/rest/v1/digital_products?id=eq.' + id, {
-    method: 'PATCH',
-    headers: {
-      'apikey': ANON_KEY,
-      'Authorization': 'Bearer ' + getToken(),
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ status: newStatus }),
-  });
-  const item = allData.find(r => r.id === id);
-  if (item) item.status = newStatus;
-  const fitem = filtered.find(r => r.id === id);
-  if (fitem) fitem.status = newStatus;
-  renderTable();
+  try {
+    await AdminAPI.updateProductStatus(id, newStatus);
+    const item = allData.find(r => r.id === id);
+    if (item) item.status = newStatus;
+    const fitem = filtered.find(r => r.id === id);
+    if (fitem) fitem.status = newStatus;
+    renderTable();
+  } catch (e) {
+    alert('Failed to update status: ' + (e.message || e));
+  }
 }
 
 async function toggleWhitelabel(id, val) {
-  await fetch(SUPABASE_URL + '/rest/v1/digital_products?id=eq.' + id, {
-    method: 'PATCH',
-    headers: {
-      'apikey': ANON_KEY,
-      'Authorization': 'Bearer ' + getToken(),
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ whitelabeled: val }),
-  });
+  try {
+    await AdminAPI.updateProductWhitelabel(id, val);
+  } catch (e) {
+    console.error('Failed to update whitelabel:', e);
+  }
 }
 
 function renderTable() {
