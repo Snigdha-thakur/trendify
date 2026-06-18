@@ -2,7 +2,11 @@ from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from app.core.config import settings
-from app.core.db_migrations import ensure_coupons_table, ensure_digital_product_columns
+from app.core.db_migrations import (
+    ensure_coupons_table,
+    ensure_digital_product_columns,
+    ensure_platform_settings_table,
+)
 from app.api.routes import auth, users, payments, products, admin, wallets, coupons, realtime
 import traceback
 
@@ -30,6 +34,7 @@ async def global_exception_handler(request: Request, exc: Exception):
 try:
     ensure_digital_product_columns()
     ensure_coupons_table()
+    ensure_platform_settings_table()
 except Exception as e:
     print(f"[startup] DB migration warning: {e}")
 

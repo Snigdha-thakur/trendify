@@ -59,3 +59,17 @@ def ensure_coupons_table() -> None:
     with engine.connect() as conn:
         conn.execute(create_table_sql)
         conn.commit()
+
+
+def ensure_platform_settings_table() -> None:
+    create_table_sql = text(
+        """
+        CREATE TABLE IF NOT EXISTS public.platform_settings (
+            key TEXT PRIMARY KEY,
+            value TEXT NOT NULL
+        )
+        """
+    )
+    with engine.connect() as conn:
+        conn.execute(create_table_sql)
+        conn.commit()

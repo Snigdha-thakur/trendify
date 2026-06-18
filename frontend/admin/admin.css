@@ -1061,12 +1061,20 @@ body.light-theme .admin-breadcrumb { background: var(--void); }
     padding: 20px 0 0 !important;
     align-items: flex-start !important;
   }
+  .admin-main {
+    margin-left: 0 !important;
+  }
   /* On mobile, .collapsed means the sidebar is OPEN (slides in) */
   .admin-sidebar.collapsed {
     transform: translateX(0);
     width: 220px !important;
     padding: 20px 0 0 !important;
     align-items: flex-start !important;
+  }
+  .admin-sidebar,
+  .admin-sidebar.collapsed {
+    box-shadow: 0 20px 60px rgba(0,0,0,.25);
+    width: 220px !important;
   }
   /* Restore full text display on mobile open state */
   .admin-sidebar.collapsed .sb-label { display: block; }
@@ -1102,6 +1110,7 @@ body.light-theme .admin-breadcrumb { background: var(--void); }
   .admin-pagination { padding: 16px; flex-wrap: wrap; justify-content: center; }
 
   .admin-page-body { padding: 16px; }
+  .admin-shell { overflow-x: hidden; }
   .ov-header { flex-direction: column; align-items: flex-start; gap: 12px; }
   .stat-cards { grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
   .stat-card { padding: 16px; }

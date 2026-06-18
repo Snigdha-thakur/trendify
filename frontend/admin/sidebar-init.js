@@ -20,15 +20,33 @@ document.addEventListener('DOMContentLoaded', function() {
   // Apply sidebar collapse state from localStorage and set main margin
   var sb = document.getElementById('adminSidebar');
   var main = document.querySelector('.admin-main');
-  try {
-    var isCollapsed = localStorage.getItem('adminSidebarCollapsed') === 'true';
-    if (isCollapsed && sb) {
-      sb.classList.add('collapsed');
-      if (main) main.style.marginLeft = '56px';
-    } else if (main) {
-      main.style.marginLeft = '220px';
+  function updateMainMargin() {
+    if (!main) return;
+    if (window.innerWidth <= 768) {
+      main.style.marginLeft = '0';
+      return;
     }
-  } catch(e) {}
+    main.style.marginLeft = sb && sb.classList.contains('collapsed') ? '56px' : '220px';
+  }
+  function initSidebarState() {
+    if (!sb) return;
+    if (window.innerWidth <= 768) {
+      sb.classList.remove('collapsed');
+      var ov = document.getElementById('sbOverlay');
+      if (ov) ov.classList.remove('open');
+      return;
+    }
+    try {
+      var isCollapsed = localStorage.getItem('adminSidebarCollapsed') === 'true';
+      if (isCollapsed) sb.classList.add('collapsed');
+    } catch(e) {}
+  }
+  initSidebarState();
+  updateMainMargin();
+  window.addEventListener('resize', function() {
+    initSidebarState();
+    updateMainMargin();
+  });
 });
 
 function toggleSidebar() {
@@ -38,7 +56,11 @@ function toggleSidebar() {
   sb.classList.toggle('collapsed');
   // Update main content margin when sidebar toggles
   if (main) {
-    main.style.marginLeft = sb.classList.contains('collapsed') ? '56px' : '220px';
+    if (window.innerWidth <= 768) {
+      main.style.marginLeft = '0';
+    } else {
+      main.style.marginLeft = sb.classList.contains('collapsed') ? '56px' : '220px';
+    }
   }
   if (ov) ov.classList.toggle('open', sb.classList.contains('collapsed') && window.innerWidth <= 768);
   try { localStorage.setItem('adminSidebarCollapsed', sb.classList.contains('collapsed')); } catch(e){}
