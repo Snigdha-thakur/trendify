@@ -28,6 +28,7 @@
     createCoupon:(data)=>req('POST','/coupons/',data),
     updateCoupon:(id,data)=>req('PUT',`/coupons/${id}`,data),
     deleteCoupon:(id)=>req('DELETE',`/coupons/${id}`),
+    verifyTransaction:(id)=>req('POST',`/payments/transactions/${id}/verify`),
     getReferralEarnings:()=>req('GET','/wallets/referral-earnings'),
     getAudience:()=>req('GET','/payments/transactions'),
   };

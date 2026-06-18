@@ -6,12 +6,6 @@ function kycBadge(k) {
 }
 
 async function loadData() {
-  // Verify any pending transactions first so wallet balances are up to date
-  const txns = await AdminAPI.getPayments();
-  const pending = txns.filter(t => t.status === 'Pending');
-  if (pending.length) {
-    await Promise.all(pending.map(t => AdminAPI.verifyTransaction(t.id).catch(() => {})));
-  }
   const [users, kycs] = await Promise.all([AdminAPI.getUsers(), AdminAPI.getKYC()]);
   const kycMap = {};
   kycs.forEach(k => { kycMap[k.user_id] = k.status === 'Approved' ? 'Approved' : 'Not Submitted'; });
@@ -95,7 +89,12 @@ function filterTable() {
   currentPage = 1; selected.clear(); renderTable();
 }
 
-function toggleSidebar() { document.getElementById('adminSidebar').classList.toggle('collapsed'); }
+function toggleSidebar() {
+  const sb = document.getElementById('adminSidebar');
+  const ov = document.getElementById('sbOverlay');
+  sb.classList.toggle('collapsed');
+  if (ov) ov.classList.toggle('open', !sb.classList.contains('collapsed') && window.innerWidth <= 768);
+}
 function toggleTheme() { document.body.classList.toggle('light-theme'); }
 function toggleUserMenu() { event.stopPropagation(); document.getElementById('userPopup').classList.toggle('open'); }
 document.addEventListener('click', function(e) {
@@ -104,7 +103,10 @@ document.addEventListener('click', function(e) {
   if (popup && !popup.contains(e.target) && !user.contains(e.target)) popup.classList.remove('open');
 });
 
-AdminAPI.init().then(() => loadData());
+AdminAPI.init().then(() => {
+  loadData();
+  setInterval(loadData, 10000);
+});
 
 window.toggleSidebar = toggleSidebar;
 window.toggleTheme = toggleTheme;

@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from app.core.config import settings
 from app.core.db_migrations import ensure_coupons_table, ensure_digital_product_columns
-from app.api.routes import auth, users, payments, products, admin, wallets, coupons
+from app.api.routes import auth, users, payments, products, admin, wallets, coupons, realtime
 import traceback
 
 app = FastAPI(title=settings.API_TITLE, version=settings.API_VERSION)
@@ -40,6 +40,7 @@ app.include_router(products.router)
 app.include_router(coupons.router)
 app.include_router(admin.router)
 app.include_router(wallets.router)
+app.include_router(realtime.router)
 
 
 @app.get("/")

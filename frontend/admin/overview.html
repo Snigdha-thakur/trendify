@@ -20,7 +20,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,600;1,300;1,600&family=Syne:wght@400;700;800&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet"/>
 <link rel="stylesheet" href="../css/styles.css"/>
-<link rel="stylesheet" href="admin.css"/>
+<link rel="stylesheet" href="admin.css"/><script src="sidebar-init.js"></script>
 </head>
 <body>
 <div id="c"></div>
@@ -41,9 +41,14 @@
 </nav>
 
 <div class="admin-shell">
+<div class="sb-overlay" id="sbOverlay" onclick="toggleSidebar()"></div>
 
   <!-- SIDEBAR -->
   <aside class="admin-sidebar" id="adminSidebar">
+    <!-- Logo shown only when collapsed -->
+    <div class="sb-logo-rail">
+      <img src="../assets/logo.jpeg" alt="T" onerror="this.style.display='none'"/>
+    </div>
     <div class="sb-section">
       <span class="sb-label">Platform</span>
       <a class="sb-link active" href="overview.html">
@@ -155,10 +160,7 @@
 
     <!-- Breadcrumb -->
     <div class="admin-breadcrumb">
-      <button class="sb-toggle-btn" onclick="toggleSidebar()">
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><rect x="1" y="2" width="14" height="2" rx="1"/><rect x="1" y="7" width="14" height="2" rx="1"/><rect x="1" y="12" width="14" height="2" rx="1"/></svg>
-      </button>
-      <span class="bc-current">Admin Dashboard</span>
+        <span class="bc-parent">Admin Dashboard</span>
       <button class="theme-toggle-btn" onclick="toggleTheme()">☾</button>
     </div>
 

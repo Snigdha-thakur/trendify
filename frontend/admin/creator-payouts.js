@@ -43,7 +43,12 @@ function renderTable() {
 function renderPagination(t){const pg=document.getElementById('pagination');if(t<=1){pg.innerHTML='';return;}let h=`<button class="pg-btn" onclick="goPage(${currentPage-1})" ${currentPage===1?'disabled':''}>‹</button>`;for(let i=1;i<=t;i++){if(t>7&&i>2&&i<t-1&&Math.abs(i-currentPage)>1){if(i===3||i===t-2)h+=`<span class="pg-btn" style="cursor:default;opacity:.4">…</span>`;continue;}h+=`<button class="pg-btn ${i===currentPage?'active':''}" onclick="goPage(${i})">${i}</button>`;}h+=`<button class="pg-btn" onclick="goPage(${currentPage+1})" ${currentPage===t?'disabled':''}>›</button>`;pg.innerHTML=h;}
 function goPage(n){const p=parseInt(document.getElementById('perPage').value);const t=Math.ceil(filtered.length/p);if(n<1||n>t)return;currentPage=n;renderTable();}
 function filterTable(){const q=document.getElementById('searchInput').value.trim().toLowerCase();const s=document.getElementById('statusFilter')?document.getElementById('statusFilter').value:'';filtered=allData.filter(r=>(!q||r.id.toLowerCase().includes(q)||r.creator.toLowerCase().includes(q)||r.buyerEmail.toLowerCase().includes(q))&&(!s||r.status===s));currentPage=1;renderTable();}
-function toggleSidebar(){document.getElementById('adminSidebar').classList.toggle('collapsed');}
+function toggleSidebar() {
+  const sb = document.getElementById('adminSidebar');
+  const ov = document.getElementById('sbOverlay');
+  sb.classList.toggle('collapsed');
+  if (ov) ov.classList.toggle('open', !sb.classList.contains('collapsed') && window.innerWidth <= 768);
+}
 function toggleTheme(){document.body.classList.toggle('light-theme');}
 function toggleUserMenu(){event.stopPropagation();document.getElementById('userPopup').classList.toggle('open');}
 document.addEventListener('click',function(e){if(e.target.closest('.user-popup-item'))return;const p=document.getElementById('userPopup'),u=document.getElementById('sbUser');if(p&&!p.contains(e.target)&&!u.contains(e.target))p.classList.remove('open');});

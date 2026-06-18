@@ -48,6 +48,9 @@ def request_withdrawal(
     if amount_dec <= 0:
         raise HTTPException(status_code=400, detail="Amount must be > 0")
 
+    if payout_type == "main":
+        payout_type = "creator"
+
     if payout_type == "referral":
         balance = current_user.referral_wallet_balance or Decimal(0)
         if balance < amount_dec:

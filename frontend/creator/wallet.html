@@ -49,7 +49,7 @@
           <div><div style="font-size:12px;font-weight:700;color:#f2f0ff" id="sbName2"></div><div style="font-family:'DM Mono',monospace;font-size:10px;color:#9d99bb" id="sbEmail2"></div></div>
         </div>
         <div class="c-user-popup-divider"></div>
-        <a class="c-user-popup-item" href="../user/dashboard.html">
+        <a class="c-user-popup-item" href="account-settings.html">
           <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><circle cx="8" cy="5" r="3"/><path d="M2 14c0-3.3 2.7-6 6-6s6 2.7 6 6H2z"/></svg>
           Account Settings
         </a>
@@ -124,12 +124,6 @@ document.addEventListener('DOMContentLoaded',function(){var btn=document.getElem
 async function load(){
   document.getElementById('loadErr').style.display='none';
   try{
-    // First verify any pending transactions to trigger wallet credits
-    var txns=await CreatorAPI.getTransactions();
-    var pending=txns.filter(function(t){return t.status==='Pending';});
-    if(pending.length){
-      await Promise.all(pending.map(function(t){return CreatorAPI.verifyTransaction(t.id).catch(function(){});}));
-    }
     var bal=await CreatorAPI.getWalletBalance();
     document.getElementById('walletBal').textContent=fmtAmt(bal.wallet_balance);
     document.getElementById('refBal').textContent=fmtAmt(bal.referral_wallet_balance);
@@ -198,7 +192,27 @@ function toggleTheme(){document.body.classList.toggle('dark');}
 window.copy=copy;window.goPage=goPage;window.filterTable=filterTable;window.renderTable=renderTable;
 window.openWithdraw=openWithdraw;window.closeWithdraw=closeWithdraw;window.submitWithdraw=submitWithdraw;
 initUser();load();
-_timer=setInterval(load,30000);
+_timer=setInterval(load,10000);
+
+// WebSocket for real-time wallet updates
+(function(){
+  var wsBase=(location.hostname==='localhost'||location.hostname==='127.0.0.1')
+    ?'ws://localhost:8000':'wss://trendify-pxkx.onrender.com';
+  function connectWS(){
+    var token=localStorage.getItem('trendify_access_token');
+    if(!token) return;
+    var ws=new WebSocket(wsBase+'/api/realtime/ws/'+token);
+    ws.onmessage=function(e){
+      try{
+        var msg=JSON.parse(e.data);
+        if(msg.type==='wallet_update') load();
+      }catch(err){}
+    };
+    ws.onclose=function(){ setTimeout(connectWS,5000); };
+    ws.onerror=function(){ ws.close(); };
+  }
+  connectWS();
+})();
 </script>
 </body>
 </html>

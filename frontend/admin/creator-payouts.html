@@ -8,18 +8,20 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,600;1,300;1,600&family=Syne:wght@400;700;800&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet"/>
 <link rel="stylesheet" href="../css/styles.css"/>
-<link rel="stylesheet" href="admin.css"/>
+<link rel="stylesheet" href="admin.css"/><script src="sidebar-init.js"></script>
 </head>
 <body>
 <nav id="nav" class="s admin-nav">
-  <a href="../index.html" class="logo" aria-label="Trendify"><img src="../assets/logo.jpeg" alt="Trendify logo" class="site-logo" onerror="this.style.display=chr(39)none chr(39); this.parentElement.querySelector(chr(39).logo-text chr(39)).style.display=chr(39)inline-block chr(39)"/><span class="logo-text">Trendify</span></a>
+  
   <div class="na">
     <span style="font-family:var(--f-mono);font-size:10px;color:var(--smoke);letter-spacing:.08em;">Admin Panel</span>
     <a href="../signin.html" class="btn-nav-ghost">Sign out</a>
   </div>
 </nav>
 <div class="admin-shell">
+<div class="sb-overlay" id="sbOverlay" onclick="toggleSidebar()"></div>
   <aside class="admin-sidebar" id="adminSidebar">
+    <div class="sb-logo-rail"><img src="../assets/logo.jpeg" alt="T" onerror="this.style.display='none'"/></div>
     <div class="sb-section">
       <span class="sb-label">Platform</span>
       <a class="sb-link" href="overview.html"><svg class="sb-icon" viewBox="0 0 16 16" fill="currentColor"><rect x="1" y="1" width="6" height="6" rx="1"/><rect x="9" y="1" width="6" height="6" rx="1"/><rect x="1" y="9" width="6" height="6" rx="1"/><rect x="9" y="9" width="6" height="6" rx="1"/></svg>Overview</a>
@@ -60,7 +62,6 @@
   </aside>
   <main class="admin-main">
     <div class="admin-breadcrumb">
-      <button class="sb-toggle-btn" onclick="toggleSidebar()"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><rect x="1" y="2" width="14" height="2" rx="1"/><rect x="1" y="7" width="14" height="2" rx="1"/><rect x="1" y="12" width="14" height="2" rx="1"/></svg></button>
       <span class="bc-parent">Admin Dashboard</span><span class="bc-sep">›</span><span class="bc-current">Creator Payouts</span>
       <button class="theme-toggle-btn" onclick="toggleTheme()">☾</button>
     </div>

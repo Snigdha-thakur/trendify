@@ -101,7 +101,10 @@ const style = document.createElement('style');
 style.textContent = '@keyframes spin { to { transform: rotate(360deg); } }';
 document.head.appendChild(style);
 
-AdminAPI.init().then(() => loadPayments());
+AdminAPI.init().then(() => {
+  loadPayments();
+  setInterval(loadPayments, 10000);
+});
 
 window.toggleSidebar = toggleSidebar;
 window.toggleTheme = toggleTheme;

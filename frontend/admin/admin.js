@@ -68,7 +68,13 @@ function filterTable() {
   currentPage = 1; renderTable();
 }
 
-function toggleSidebar() { document.getElementById('adminSidebar').classList.toggle('collapsed'); }
+function toggleSidebar() {
+  const sb = document.getElementById('adminSidebar');
+  const ov = document.getElementById('sbOverlay');
+  sb.classList.toggle('collapsed');
+  if (ov) ov.classList.toggle('open', sb.classList.contains('collapsed') && window.innerWidth <= 768);
+  try { localStorage.setItem('adminSidebarCollapsed', sb.classList.contains('collapsed')); } catch(e){}
+}
 function toggleTheme() { document.body.classList.toggle('light-theme'); }
 function toggleUserMenu() { event.stopPropagation(); document.getElementById('userPopup').classList.toggle('open'); }
 document.addEventListener('click', function(e) {
@@ -76,5 +82,28 @@ document.addEventListener('click', function(e) {
   const popup = document.getElementById('userPopup'), user = document.getElementById('sbUser');
   if (popup && !popup.contains(e.target) && !user.contains(e.target)) popup.classList.remove('open');
 });
+
+// Wrap .sb-link text nodes in <span class="sb-link-text"> for CSS targeting
+function initSidebar() {
+  const sb = document.getElementById('adminSidebar');
+  if (!sb) return;
+  sb.querySelectorAll('.sb-link').forEach(function(link) {
+    Array.from(link.childNodes).forEach(function(node) {
+      if (node.nodeType === 3 && node.textContent.trim()) {
+        const span = document.createElement('span');
+        span.className = 'sb-link-text';
+        span.textContent = node.textContent.trim();
+        link.replaceChild(span, node);
+        // Set title for tooltip when collapsed
+        if (!link.title) link.title = span.textContent;
+      }
+    });
+  });
+  // Restore collapsed state from localStorage
+  try {
+    if (localStorage.getItem('adminSidebarCollapsed') === 'true') sb.classList.add('collapsed');
+  } catch(e){}
+}
+document.addEventListener('DOMContentLoaded', initSidebar);
 
 loadData();
