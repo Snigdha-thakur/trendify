@@ -13,7 +13,18 @@ from decimal import Decimal
 router = APIRouter(prefix="/api/payments", tags=["Payments"])
 
 
-def _get_commission_rate(db: Session) -> Decimal:
+def _get_commission_rate(db: Session, creator_id=None) -> Decimal:
+    # If a creator-specific fee is configured, use it first.
+    if creator_id:
+        creator = db.query(User).filter(User.id == creator_id).first()
+        if creator is not None:
+            try:
+                creator_fee = float(creator.platform_fee_pct or 0)
+                if creator_fee > 0:
+                    return Decimal(str(creator_fee)) / Decimal("100")
+            except (TypeError, ValueError):
+                pass
+
     row = db.query(PlatformSetting).filter(PlatformSetting.key == "platform_fee_pct").first()
     try:
         pct = float(row.value) if row else 10.0
@@ -32,7 +43,7 @@ async def initiate_payment(
         raise HTTPException(status_code=404, detail="Product not found or inactive")
 
     amount = Decimal(str(data.amount))
-    commission = (amount * _get_commission_rate(db)).quantize(Decimal("0.01"))
+    commission = (amount * _get_commission_rate(db, creator_id=product.creator_id)).quantize(Decimal("0.01"))
     creator_amount = amount - commission
 
     order_payload = {
