@@ -90,6 +90,9 @@ class KYCCreate(BaseModel):
     aadhar: Optional[str] = None
     pan: Optional[str] = None
     bank_type: Optional[str] = None
+    website: Optional[str] = None
+    phone: Optional[str] = None
+    email: Optional[str] = None
 
 
 class KYCResponse(BaseModel):
@@ -98,6 +101,9 @@ class KYCResponse(BaseModel):
     aadhar: Optional[str]
     pan: Optional[str]
     bank_type: Optional[str]
+    website: Optional[str]
+    phone: Optional[str]
+    email: Optional[str]
     status: str
     created_at: Optional[datetime]
 

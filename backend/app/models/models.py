@@ -51,6 +51,9 @@ class KYC(Base):
     aadhar = Column(Text)
     pan = Column(Text)
     bank_type = Column(Text)
+    website = Column(Text)
+    phone = Column(Text)
+    email = Column(Text)
     status = Column(Text, nullable=False, default="Pending")
     created_at = Column(TIMESTAMP(timezone=True), server_default=func.now())
 
@@ -164,7 +167,7 @@ class Payout(Base):
     id = Column(Text, primary_key=True)
     user_id = Column(UUID(as_uuid=True), ForeignKey("public.users.id"))
     amount = Column(Numeric, nullable=False)
-    status = Column(Text, nullable=False, default="Paid")
+    status = Column(Text, nullable=False, default="Pending")
     payout_type = Column(Text)
     created_at = Column(TIMESTAMP(timezone=True), server_default=func.now())
 

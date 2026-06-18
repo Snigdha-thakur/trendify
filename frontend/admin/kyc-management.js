@@ -15,7 +15,9 @@ async function loadData() {
     name: userMap[k.user_id] || '—',
     aadhar: k.aadhar || '—',
     pan: k.pan || '—',
-    bank: k.bank_type || '—',
+    website: k.website || '—',
+    phone: k.phone || '—',
+    email: k.email || '—',
     status: k.status || 'Pending',
   }));
   filtered = [...allKyc];
@@ -44,7 +46,9 @@ function renderTable() {
         <td><span style="font-weight:700;color:var(--white)">${r.name}</span></td>
         <td style="font-family:var(--f-mono);font-size:12px">${r.aadhar}</td>
         <td style="font-family:var(--f-mono);font-size:12px">${r.pan}</td>
-        <td style="font-size:13px;color:var(--smoke)">${r.bank}</td>
+        <td style="font-size:13px;color:var(--smoke)">${r.website}</td>
+        <td style="font-family:var(--f-mono);font-size:12px">${r.phone}</td>
+        <td style="color:var(--violet);font-size:12px">${r.email}</td>
         <td>${badge(r.status)}</td>
         <td>
           ${r.status !== 'Approved' ? `<button class="action-icon-btn" onclick="updateKYC('${r.id}','Approved')" style="font-size:11px;padding:4px 10px;color:var(--green)">Approve</button>` : ''}

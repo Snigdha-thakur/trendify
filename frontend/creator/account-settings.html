@@ -75,6 +75,7 @@
     <div class="c-tabs" style="margin-bottom:28px;">
       <button class="c-tab active" id="tabProfile" onclick="switchTab('profile')">Profile</button>
       <button class="c-tab" id="tabCreator" onclick="switchTab('creator')">Creator Settings</button>
+      <button class="c-tab" id="tabKyc" onclick="switchTab('kyc')">KYC Details</button>
     </div>
 
     <div id="profileError" style="display:none;margin-bottom:16px;padding:12px;border-radius:6px;background:rgba(232,103,74,.1);border:1px solid rgba(232,103,74,.25);color:#e8674a;font-size:13px;"></div>
@@ -166,6 +167,57 @@
           <button class="c-btn-primary" id="saveCreatorBtn" onclick="updateCreatorSettings()">
             <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 8l4 4 8-8"/></svg>
             Update Settings
+          </button>
+        </div>
+      </div>
+    </div>
+    <!-- KYC TAB -->
+    <div id="panelKyc" style="display:none;">
+      <div class="c-stat-card" style="max-width:680px;">
+        <div style="padding:0 0 20px;">
+          <div style="font-size:16px;font-weight:700;color:#f2f0ff;margin-bottom:4px;">KYC Details</div>
+          <div style="font-size:13px;color:#9d99bb;">Submit your KYC information. Admin will review and approve.</div>
+        </div>
+        <div id="kycStatus" style="display:none;margin-bottom:16px;padding:10px 14px;border-radius:6px;font-size:13px;font-weight:600;"></div>
+        <div class="c-field">
+          <label class="c-field-label">Aadhaar Number</label>
+          <div class="c-input-wrap">
+            <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" style="opacity:.45;flex-shrink:0"><rect x="1" y="3" width="14" height="10" rx="1"/><path d="M1 7h14"/></svg>
+            <input class="c-input" type="text" id="kycAadhar" placeholder="12-digit Aadhaar number" maxlength="12"/>
+          </div>
+        </div>
+        <div class="c-field">
+          <label class="c-field-label">PAN Number</label>
+          <div class="c-input-wrap">
+            <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" style="opacity:.45;flex-shrink:0"><rect x="1" y="3" width="14" height="10" rx="1"/><path d="M5 8h6"/></svg>
+            <input class="c-input" type="text" id="kycPan" placeholder="10-character PAN" maxlength="10" style="text-transform:uppercase"/>
+          </div>
+        </div>
+        <div class="c-field">
+          <label class="c-field-label">Website URL <span style="color:#9d99bb;font-weight:400;">(optional)</span></label>
+          <div class="c-input-wrap">
+            <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" style="opacity:.45;flex-shrink:0"><circle cx="8" cy="8" r="6"/><path d="M2 8h12M8 2a10 10 0 0 1 0 12M8 2a10 10 0 0 0 0 12"/></svg>
+            <input class="c-input" type="url" id="kycWebsite" placeholder="https://yourwebsite.com"/>
+          </div>
+        </div>
+        <div class="c-field">
+          <label class="c-field-label">Phone Number</label>
+          <div class="c-input-wrap">
+            <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" style="opacity:.45;flex-shrink:0"><path d="M3 2h3l1.5 3.5-2 1.2a9 9 0 0 0 3.8 3.8l1.2-2L14 10v3a1 1 0 0 1-1 1A11 11 0 0 1 2 3a1 1 0 0 1 1-1z"/></svg>
+            <input class="c-input" type="text" id="kycPhone" placeholder="Phone number"/>
+          </div>
+        </div>
+        <div class="c-field">
+          <label class="c-field-label">Email Address</label>
+          <div class="c-input-wrap">
+            <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" style="opacity:.45;flex-shrink:0"><rect x="1" y="4" width="14" height="9" rx="1"/><path d="M1 4l7 5 7-5"/></svg>
+            <input class="c-input" type="email" id="kycEmail" placeholder="Email for KYC"/>
+          </div>
+        </div>
+        <div style="display:flex;justify-content:flex-end;margin-top:8px;">
+          <button class="c-btn-primary" id="saveKycBtn" onclick="submitKyc()">
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 8l4 4 8-8"/></svg>
+            Submit KYC
           </button>
         </div>
       </div>
@@ -293,11 +345,76 @@ async function updateCreatorSettings(){
   btn.textContent='Update Settings'; btn.disabled=false;
 }
 
+async function loadKyc(){
+  try{
+    var res=await fetch(API_BASE+'/wallets/kyc',{headers:{'Authorization':'Bearer '+getToken()}});
+    if(res.status===404){
+      document.getElementById('kycStatus').style.display='none';
+      document.getElementById('kycAadhar').value='';
+      document.getElementById('kycPan').value='';
+      document.getElementById('kycWebsite').value='';
+      document.getElementById('kycPhone').value='';
+      document.getElementById('kycEmail').value='';
+      return;
+    }
+    if(!res.ok) throw new Error(res.statusText);
+    var k=await res.json();
+    document.getElementById('kycAadhar').value=k.aadhar||'';
+    document.getElementById('kycPan').value=k.pan||'';
+    document.getElementById('kycWebsite').value=k.website||'';
+    document.getElementById('kycPhone').value=k.phone||'';
+    document.getElementById('kycEmail').value=k.email||'';
+    var statusEl=document.getElementById('kycStatus');
+    if(k.status){
+      var badgeClass=k.status==='Approved'?'badge-kyc-approved':k.status==='Rejected'?'badge-failed':'badge-pending';
+      statusEl.innerHTML='<span class="'+badgeClass+'">Status: '+k.status+'</span>';
+      statusEl.style.display='block';
+    }else{
+      statusEl.style.display='none';
+    }
+  }catch(e){
+    console.error('Error loading KYC:',e);
+  }
+}
+
+async function submitKyc(){
+  var aadhar=document.getElementById('kycAadhar').value.trim();
+  var pan=document.getElementById('kycPan').value.trim();
+  var website=document.getElementById('kycWebsite').value.trim();
+  var phone=document.getElementById('kycPhone').value.trim();
+  var email=document.getElementById('kycEmail').value.trim();
+  if(!aadhar||!pan||!phone||!email){showMsg('error','Please fill all required fields.');return;}
+  var btn=document.getElementById('saveKycBtn');
+  btn.textContent='Submitting…'; btn.disabled=true;
+  try{
+    var res=await fetch(API_BASE+'/wallets/kyc',{
+      method:'POST',
+      headers:{'Authorization':'Bearer '+getToken(),'Content-Type':'application/json'},
+      body:JSON.stringify({aadhar:aadhar,pan:pan,website:website,phone:phone,email:email})
+    });
+    if(!res.ok) throw new Error(await res.text());
+    var k=await res.json();
+    document.getElementById('kycAadhar').value=k.aadhar||'';
+    document.getElementById('kycPan').value=k.pan||'';
+    document.getElementById('kycWebsite').value=k.website||'';
+    document.getElementById('kycPhone').value=k.phone||'';
+    document.getElementById('kycEmail').value=k.email||'';
+    var statusEl=document.getElementById('kycStatus');
+    statusEl.innerHTML='<span class="badge-pending">Status: Pending</span>';
+    statusEl.style.display='block';
+    showMsg('success','KYC submitted successfully. Awaiting admin approval.');
+  }catch(e){ showMsg('error','Failed to submit KYC: '+e.message); }
+  btn.textContent='Submit KYC'; btn.disabled=false;
+}
+
 function switchTab(tab){
   document.getElementById('tabProfile').classList.toggle('active', tab==='profile');
   document.getElementById('tabCreator').classList.toggle('active', tab==='creator');
+  document.getElementById('tabKyc').classList.toggle('active', tab==='kyc');
   document.getElementById('panelProfile').style.display=tab==='profile'?'':'none';
   document.getElementById('panelCreator').style.display=tab==='creator'?'':'none';
+  document.getElementById('panelKyc').style.display=tab==='kyc'?'':'none';
+  if(tab==='kyc'){loadKyc();}
 }
 
 function toggleUserMenu(e){ e.stopPropagation(); document.getElementById('userPopup').classList.toggle('open'); }

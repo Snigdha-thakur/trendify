@@ -94,6 +94,17 @@
     getPayments: () => query('/transactions?skip=0&limit=1000'),
     getCreatorPayouts: () => query('/creator-payouts?skip=0&limit=1000'),
     getPayouts: () => query('/payouts?skip=0&limit=1000'),
+    updatePayoutStatus: async (id, status) => {
+      const token = getToken();
+      if (!token) throw new Error('No auth token');
+      const res = await fetch(`${API_URL}/payouts/${id}/status?status=${encodeURIComponent(status)}`, {
+        method: 'PUT',
+        headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({}),
+      });
+      if (!res.ok) { const t = await res.text(); throw new Error(t); }
+      return res.json();
+    },
     getKYC: () => query('/kyc?skip=0&limit=1000'),
     updateKYCStatus: (id, status) => put(`/kyc/${id}?status=${status}`, {}),
     getProducts: () => query('/products?skip=0&limit=1000'),

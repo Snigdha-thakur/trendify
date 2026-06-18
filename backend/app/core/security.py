@@ -57,7 +57,7 @@ def decode_token(token: str) -> dict:
     # Try Supabase key without signature verification (we trust Supabase)
     try:
         payload = jwt.decode(
-            token, options={"verify_signature": False}, algorithms=[settings.ALGORITHM]
+            token, "", options={"verify_signature": False}, algorithms=[settings.ALGORITHM]
         )
         return payload
     except JWTError:

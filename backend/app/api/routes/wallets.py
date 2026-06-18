@@ -2,10 +2,10 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from uuid import UUID
 from app.core.database import get_db
-from app.models.models import User, WalletLog, Payout, ReferralEarning, PayoutWebhook
+from app.models.models import User, WalletLog, Payout, ReferralEarning, PayoutWebhook, KYC
 from app.schemas.schemas import (
     WalletLogResponse, PayoutResponse, ReferralEarningResponse,
-    PayoutWebhookCreate, PayoutWebhookResponse,
+    PayoutWebhookCreate, PayoutWebhookResponse, KYCCreate, KYCResponse,
 )
 from app.api.routes.users import get_current_user
 from decimal import Decimal
@@ -122,6 +122,34 @@ def get_referral_earnings(
         }
         for earn in earnings
     ]
+
+
+# KYC
+@router.get("/kyc", response_model=KYCResponse)
+def get_my_kyc(current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+    kyc = db.query(KYC).filter(KYC.user_id == current_user.id).first()
+    if not kyc:
+        raise HTTPException(status_code=404, detail="No KYC found")
+    return kyc
+
+
+@router.post("/kyc", response_model=KYCResponse)
+def submit_kyc(
+    data: KYCCreate,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    kyc = db.query(KYC).filter(KYC.user_id == current_user.id).first()
+    if kyc:
+        for field, value in data.model_dump(exclude_none=True).items():
+            setattr(kyc, field, value)
+        kyc.status = "Pending"
+    else:
+        kyc = KYC(user_id=current_user.id, status="Pending", **data.model_dump(exclude_none=True))
+        db.add(kyc)
+    db.commit()
+    db.refresh(kyc)
+    return kyc
 
 
 # Payout Webhooks

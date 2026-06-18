@@ -80,6 +80,7 @@ function goPage(n) {
   const totalPages = Math.ceil(filtered.length / perPage);
   if (n < 1 || n > totalPages) return;
   currentPage = n; renderTable();
+  document.querySelector('.admin-page-body').scrollTop = 0;
 }
 
 function filterTable() {
@@ -87,15 +88,6 @@ function filterTable() {
   filtered = q ? allPayments.filter(r => r.id.includes(q) || r.product.toLowerCase().includes(q) || r.email.toLowerCase().includes(q)) : [...allPayments];
   currentPage = 1; renderTable();
 }
-
-function toggleSidebar() { document.getElementById('adminSidebar').classList.toggle('collapsed'); }
-function toggleTheme() { document.body.classList.toggle('light-theme'); }
-function toggleUserMenu() { event.stopPropagation(); document.getElementById('userPopup').classList.toggle('open'); }
-document.addEventListener('click', function(e) {
-  if (e.target.closest('.user-popup-item')) return;
-  const popup = document.getElementById('userPopup'), user = document.getElementById('sbUser');
-  if (popup && !popup.contains(e.target) && !user.contains(e.target)) popup.classList.remove('open');
-});
 
 const style = document.createElement('style');
 style.textContent = '@keyframes spin { to { transform: rotate(360deg); } }';
@@ -106,9 +98,6 @@ AdminAPI.init().then(() => {
   setInterval(loadPayments, 10000);
 });
 
-window.toggleSidebar = toggleSidebar;
-window.toggleTheme = toggleTheme;
-window.toggleUserMenu = toggleUserMenu;
 window.filterTable = filterTable;
 window.renderTable = renderTable;
 window.goPage = goPage;

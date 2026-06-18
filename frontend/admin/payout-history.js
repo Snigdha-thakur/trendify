@@ -6,17 +6,42 @@ function copyText(text, btn) {
   navigator.clipboard.writeText(text).then(() => { btn.textContent = '✓'; setTimeout(() => btn.textContent = '⧉', 1200); });
 }
 
+function statusBadge(s) {
+  if (s === 'Paid') return `<span class="badge-paid">✓ Paid</span>`;
+  if (s === 'Rejected') return `<span class="badge-failed">✗ Rejected</span>`;
+  return `<span class="badge-pending">⊙ Pending</span>`;
+}
+
+function actionBtns(r) {
+  if (r.status === 'Paid') return `<span style="color:var(--smoke);font-size:12px;">—</span>`;
+  if (r.status === 'Rejected') return `<span style="color:var(--smoke);font-size:12px;">—</span>`;
+  return `
+    <button class="action-icon-btn" style="color:var(--green);font-size:11px;padding:4px 10px;" onclick="updatePayout('${r.rawId}','Paid')">Pay Now</button>
+    <button class="action-icon-btn" style="color:var(--ember);font-size:11px;padding:4px 10px;margin-left:4px;" onclick="updatePayout('${r.rawId}','Rejected')">Reject</button>
+  `;
+}
+
+async function updatePayout(id, status) {
+  try {
+    await AdminAPI.updatePayoutStatus(id, status);
+    const item = allPayouts.find(p => p.rawId === id);
+    if (item) item.status = status;
+    filterTable();
+  } catch(e) { alert('Failed to update payout: ' + e.message); }
+}
+
 async function loadData() {
   const [payouts, users] = await Promise.all([AdminAPI.getPayouts(), AdminAPI.getUsers()]);
   const userMap = {};
   users.forEach(u => { userMap[u.id] = { name: u.name || '—', email: u.email || '—', phone: u.phone || '—' }; });
   allPayouts = payouts.map(p => ({
+    rawId: p.id,
     id: p.id,
     name: (userMap[p.user_id] || {}).name || '—',
     email: (userMap[p.user_id] || {}).email || '—',
     phone: (userMap[p.user_id] || {}).phone || '—',
     amount: fmtAmt(p.amount),
-    status: p.status || 'Paid',
+    status: p.status || 'Pending',
     date: fmt(p.created_at),
   }));
   filtered = [...allPayouts];
@@ -40,8 +65,9 @@ function renderTable() {
         <td style="color:var(--violet)">${r.email}</td>
         <td style="font-family:var(--f-mono);font-size:12px">${r.phone}</td>
         <td style="font-family:var(--f-mono);font-weight:600;color:var(--white)">${r.amount}</td>
-        <td><span class="badge-paid">✓ Paid</span></td>
+        <td>${statusBadge(r.status)}</td>
         <td style="font-family:var(--f-mono);font-size:12px;white-space:nowrap">${r.date}</td>
+        <td>${actionBtns(r)}</td>
       </tr>`).join('');
   }
   renderPagination(totalPages);
@@ -95,3 +121,4 @@ window.filterTable = filterTable;
 window.renderTable = renderTable;
 window.goPage = goPage;
 window.copyText = copyText;
+window.updatePayout = updatePayout;

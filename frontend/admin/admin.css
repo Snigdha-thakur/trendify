@@ -1,6 +1,6 @@
 /* ── ADMIN LAYOUT OVERRIDES ── */
-html, body { cursor: none; }
-body { background-image: none; animation: none; }
+html { overflow: hidden !important; height: 100%; }
+body { overflow: hidden !important; height: 100%; background-image: none; animation: none; cursor: none; }
 /* Hide custom cursor elements in the admin view */
 #c, #cr { display: none !important; opacity: 0 !important; }
 #particles { display: none; }
@@ -27,7 +27,7 @@ body.h #cr{width:44px;height:44px}
   align-items: center;
   justify-content: space-between;
   gap: 18px;
-  position: sticky !important;
+  position: fixed !important;
   top: 0;
   left: 0;
   right: 0;
@@ -51,7 +51,12 @@ body.h #cr{width:44px;height:44px}
 /* ── SHELL ── */
 .admin-shell {
   display: flex;
-  min-height: calc(100svh - 72px);
+  position: fixed;
+  top: 72px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow: hidden;
 }
 
 /* ── SIDEBAR ── */
@@ -63,9 +68,8 @@ body.h #cr{width:44px;height:44px}
   display: flex;
   flex-direction: column;
   padding: 20px 0 0;
-  position: sticky;
-  top: 72px;
-  height: calc(100svh - 72px);
+  position: relative;
+  height: 100%;
   overflow-y: auto;
   overflow-x: hidden;
   transition: width .22s;
@@ -270,21 +274,30 @@ body.h #cr{width:44px;height:44px}
 
 /* ── MAIN CONTENT ── */
 .admin-main {
+  display: flex;
+  flex-direction: column;
   flex: 1;
   min-width: 0;
+  height: 100%;
   background: var(--void);
   padding: 0;
-  overflow-y: auto;
-  scrollbar-width: thin;
-  scrollbar-color: rgba(167,124,255,.2) transparent;
+  overflow: hidden;
 }
-.admin-main::-webkit-scrollbar { width: 4px; }
-.admin-main::-webkit-scrollbar-track { background: transparent; }
-.admin-main::-webkit-scrollbar-thumb {
+
+.admin-page-body {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 28px;
+}
+
+.admin-page-body::-webkit-scrollbar { width: 4px; }
+.admin-page-body::-webkit-scrollbar-track { background: transparent; }
+.admin-page-body::-webkit-scrollbar-thumb {
   background: rgba(167,124,255,.2);
   border-radius: 99px;
 }
-.admin-main::-webkit-scrollbar-thumb:hover { background: rgba(167,124,255,.45); }
+.admin-page-body::-webkit-scrollbar-thumb:hover { background: rgba(167,124,255,.45); }
 
 /* ── BREADCRUMB ── */
 .admin-breadcrumb {
@@ -1030,11 +1043,13 @@ body.light-theme .admin-breadcrumb { background: var(--void); }
 @media(max-width:768px){
   .admin-nav { padding: 0 16px !important; height: 56px; }
 
+  .admin-shell { top: 56px; }
+
   .admin-sidebar {
     position: fixed;
     left: 0;
     top: 56px;
-    height: calc(100vh - 56px);
+    height: calc(100dvh - 56px);
     z-index: 120;
     transform: translateX(-100%);
     transition: transform .22s;

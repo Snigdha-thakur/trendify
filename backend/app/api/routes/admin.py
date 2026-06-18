@@ -254,7 +254,7 @@ def update_payout_status(
     payout_id: str, status: str,
     db: Session = Depends(get_db), _: User = Depends(require_admin),
 ):
-    if status not in ("Paid", "Pending", "Failed"):
+    if status not in ("Paid", "Pending", "Rejected"):
         raise HTTPException(status_code=400, detail="Invalid status")
     payout = db.query(Payout).filter(Payout.id == payout_id).first()
     if not payout:
