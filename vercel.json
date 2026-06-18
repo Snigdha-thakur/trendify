@@ -40,7 +40,7 @@
       "destination": "/index.html"
     },
     {
-      "source": "/((?!.*\\.).*)",
+      "source": "/((?!.*\\.(js|css|png|jpg|jpeg|svg|ico|woff|woff2|ttf|json)).*)",
       "destination": "/index.html"
     }
   ]

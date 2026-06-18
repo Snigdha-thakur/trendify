@@ -52,6 +52,7 @@ export default defineConfig(({ mode }) => {
         'creator-website': './user/website-design.html',
         'creator-orders': './user/my-orders.html',
         'creator-refer-earn': './creator/refer-earn.html',
+        'creator-account-settings': './creator/account-settings.html',
         'privacy': './privacy.html',
         'terms': './terms.html',
         'refunds': './refunds.html',
