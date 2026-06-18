@@ -28,20 +28,6 @@
     {
       "source": "/api/:path*",
       "destination": "https://trendify-pxkx.onrender.com/api/:path*"
-    },
-    {
-      "source": "/:path*",
-      "has": [
-        {
-          "type": "query",
-          "key": "q"
-        }
-      ],
-      "destination": "/index.html"
-    },
-    {
-      "source": "/((?!.*\\.(js|css|png|jpg|jpeg|svg|ico|woff|woff2|ttf|json)).*)",
-      "destination": "/index.html"
     }
   ]
 }
