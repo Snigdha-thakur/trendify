@@ -46,6 +46,9 @@ function toggleSidebar() {
 
 function toggleTheme() { document.body.classList.toggle('light-theme'); }
 
+window.toggleSidebar = toggleSidebar;
+window.toggleTheme = toggleTheme;
+
 function toggleUserMenu(e) {
   if (e) e.stopPropagation();
   var popup = document.getElementById('userPopup');
