@@ -80,8 +80,9 @@ img{max-width:100%;height:auto;display:block}
 @media (max-width:768px){
   nav{height:auto;padding:12px 16px}
   .nv{gap:12px;justify-content:center}
-  .na{flex-wrap:wrap;justify-content:center}
-  .btn-nav,.btn-nav-ghost{padding:8px 16px;font-size:11px}
+  .na{flex-wrap:nowrap;justify-content:center;gap:6px}
+  .btn-nav,.btn-nav-ghost{padding:8px 16px;font-size:11px;white-space:nowrap}
+  .btn-nav-ghost{min-width:0}
   .hero-h1{font-size:clamp(42px,11vw,92px)}
   .hero-eyebrow{font-size:12px;gap:10px;margin-bottom:18px}
   .hero-z{padding-left:16px;padding-right:16px}

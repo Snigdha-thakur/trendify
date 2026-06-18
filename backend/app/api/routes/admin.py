@@ -232,7 +232,7 @@ def update_product_whitelabel(
     db.commit()
     return {"message": "Whitelabel updated"}
 
-
+@router.put("/products/{product_id}/status")
 def update_product_status(
     product_id: UUID, status: str,
     db: Session = Depends(get_db), _: User = Depends(require_admin),
