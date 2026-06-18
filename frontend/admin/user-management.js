@@ -59,9 +59,12 @@ function viewDetails(idx) {
   document.getElementById('editPasswordToggle').innerHTML = eyeOffIcon();
   document.getElementById('editRole').value = u.role || 'user';
   document.getElementById('editStatus').value = u.status || 'active';
+  document.getElementById('editPlatformFeePct').value = u.platform_fee_pct || '';
+  document.getElementById('editAffiliateMode').checked = u.affiliate_mode === true;
   document.getElementById('editUserError').textContent = '';
   document.getElementById('editSubmitBtn').disabled = false;
   document.getElementById('editSubmitBtn').innerHTML = '<svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" style="margin-right:5px"><path d="M13 2H5L2 5v9h12V2z"/><rect x="5" y="9" width="6" height="5"/><rect x="5" y="2" width="4" height="3"/></svg>Update User';
+  toggleCreatorFields();
   document.getElementById('editUserModal').style.display = 'flex';
 }
 
@@ -87,6 +90,16 @@ function generateEditPassword() {
   document.getElementById('editPassword').value = pwd;
   document.getElementById('editPassword').type = 'text';
   document.getElementById('editPasswordToggle').innerHTML = eyeIcon();
+}
+
+function toggleCreatorFields() {
+  const role = document.getElementById('editRole').value;
+  const section = document.getElementById('creatorFieldsSection');
+  if (role === 'creator') {
+    section.style.display = '';
+  } else {
+    section.style.display = 'none';
+  }
 }
 
 async function deleteUserFromEdit() {
@@ -117,10 +130,28 @@ async function submitEditUser() {
   err.textContent = '';
   if (!name) { err.textContent = 'Name is required.'; return; }
   if (!email) { err.textContent = 'Email is required.'; return; }
+  
+  // Validate creator-specific fields
+  if (role === 'creator') {
+    const platformFeePct = document.getElementById('editPlatformFeePct').value;
+    if (platformFeePct !== '' && (isNaN(platformFeePct) || platformFeePct < 0 || platformFeePct > 100)) {
+      err.textContent = 'Platform fee must be between 0 and 100.';
+      return;
+    }
+  }
+  
   btn.disabled = true;
   btn.textContent = 'Saving…';
   const payload = { name, phone: phone || null, role, status };
   if (password) payload.password = password;
+  
+  // Add creator-specific fields if role is creator
+  if (role === 'creator') {
+    const platformFeePct = document.getElementById('editPlatformFeePct').value;
+    if (platformFeePct !== '') payload.platform_fee_pct = parseFloat(platformFeePct);
+    payload.affiliate_mode = document.getElementById('editAffiliateMode').checked;
+  }
+  
   try {
     const updated = await AdminAPI.updateUser(id, payload);
     const idx = allUsers.findIndex(u => u.id === updated.id);

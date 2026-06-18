@@ -1,7 +1,8 @@
 let allPayments = [], filtered = [], currentPage = 1;
+let _rawPayments = [];
 
-function fmt(d) { return d ? new Date(d).toLocaleString('en-IN') : '—'; }
-function fmtAmt(a) { return '₹' + parseFloat(a || 0).toLocaleString('en-IN'); }
+function fmt(d) { return d ? new Date(d).toLocaleString('en-IN', {year:'numeric',month:'short',day:'numeric',hour:'2-digit',minute:'2-digit',second:'2-digit'}) : '—'; }
+function fmtAmt(a) { return '₹' + parseFloat(a || 0).toLocaleString('en-IN', {minimumFractionDigits:2,maximumFractionDigits:2}); }
 function badge(s) {
   const cls = s === 'Success' ? 'badge-success' : s === 'Pending' ? 'badge-pending' : 'badge-failed';
   return `<span class="${cls}">${s}</span>`;
@@ -25,9 +26,10 @@ async function refreshStatus(id, btn) {
 
 async function loadPayments() {
   const data = await AdminAPI.getPayments();
+  _rawPayments = data;
   allPayments = data.map(t => ({
     id: t.id,
-    product: t.product_id || '—',
+    product: t.product_name || t.product_id || '—',
     email: t.buyer_email || '—',
     status: t.status || 'Pending',
     gateway: t.gateway || 'Cashfree',
@@ -54,13 +56,57 @@ function renderTable() {
         <td><div class="txn-id-cell"><button class="copy-btn" onclick="copyText('${r.id}',this)">⧉</button>${r.id}</div></td>
         <td>${r.product}</td>
         <td><div style="display:flex;align-items:center;gap:6px"><button class="copy-btn" onclick="copyText('${r.email}',this)">⧉</button>${r.email}</div></td>
-        <td>${badge(r.status)}${r.status==='Pending'?`<button class="copy-btn refresh-btn" onclick="refreshStatus('${r.id}',this)" style="margin-left:4px">↻</button>`:''}</td>
+        <td style="cursor:pointer" onclick="showDetails('${r.id}')">${badge(r.status)}${r.status==='Pending'?`<button class="copy-btn refresh-btn" onclick="event.stopPropagation();refreshStatus('${r.id}',this)" style="margin-left:4px">↻</button>`:''}</td>
         <td style="color:var(--smoke);font-size:13px">${r.gateway}</td>
         <td style="font-family:var(--f-mono);font-weight:600;color:var(--white)">${r.amount}</td>
         <td style="font-family:var(--f-mono);font-size:12px;white-space:nowrap">${r.date}</td>
       </tr>`).join('');
   }
   renderPagination(totalPages);
+}
+
+function showDetails(txnId) {
+  const raw = _rawPayments.find(t => t.id === txnId);
+  if (!raw) return;
+
+  const commissionPct = raw.commission_amount && raw.amount
+    ? Math.round((raw.commission_amount / raw.amount) * 100)
+    : 0;
+
+  // Build custom form fields rows
+  let formFieldsHtml = '';
+
+  document.getElementById('pdContent').innerHTML = `
+    <div class="pd-section-title">Creator Details</div>
+    <div class="pd-row"><span class="pd-label">Name</span><span class="pd-val">${raw.creator_name || '—'}</span></div>
+    <div class="pd-row"><span class="pd-label">Email</span><span class="pd-val">${raw.creator_email || '—'}</span></div>
+    <div class="pd-row"><span class="pd-label">Phone Number</span><span class="pd-val">${raw.creator_phone || '—'}</span></div>
+
+    <div class="pd-divider"></div>
+    <div class="pd-section-title">Customer Details</div>
+    <div class="pd-row"><span class="pd-label">Name</span><span class="pd-val">${raw.buyer_name || '—'}</span></div>
+    <div class="pd-row"><span class="pd-label">Email</span><span class="pd-val">${raw.buyer_email || '—'}</span></div>
+    <div class="pd-row"><span class="pd-label">Phone Number</span><span class="pd-val">${raw.buyer_phone || '—'}</span></div>
+
+    ${formFieldsHtml}
+
+    <div class="pd-divider"></div>
+    <div class="pd-section-title">Payment Details</div>
+    <div class="pd-row"><span class="pd-label">Transaction Status</span><span class="pd-val">${badge(raw.status)}</span></div>
+    <div class="pd-row"><span class="pd-label">Gateway</span><span class="pd-val">${raw.gateway || 'Cashfree'}</span></div>
+    <div class="pd-row"><span class="pd-label">Amount Paid</span><span class="pd-val">${fmtAmt(raw.amount)}</span></div>
+    <div class="pd-row"><span class="pd-label">Payout Amount</span><span class="pd-val">${fmtAmt(raw.creator_amount ?? raw.amount)}</span></div>
+    <div class="pd-row"><span class="pd-label">Platform Fee (in %)</span><span class="pd-val">${commissionPct}%</span></div>
+    <div class="pd-row"><span class="pd-label">Platform Fee</span><span class="pd-val">${fmtAmt(raw.commission_amount ?? 0)}</span></div>
+    <div class="pd-row"><span class="pd-label">Gateway Reference</span><span class="pd-val pd-mono">${raw.cashfree_order_id || '—'}</span></div>
+    <div class="pd-row"><span class="pd-label">Order ID</span><span class="pd-val pd-mono">${raw.id}</span></div>
+    <div class="pd-row"><span class="pd-label">Date</span><span class="pd-val">${fmt(raw.created_at)}</span></div>
+  `;
+  document.getElementById('pdOverlay').classList.add('open');
+}
+
+function closePd() {
+  document.getElementById('pdOverlay').classList.remove('open');
 }
 
 function renderPagination(totalPages) {
@@ -90,7 +136,25 @@ function filterTable() {
 }
 
 const style = document.createElement('style');
-style.textContent = '@keyframes spin { to { transform: rotate(360deg); } }';
+style.textContent = `
+@keyframes spin { to { transform: rotate(360deg); } }
+.pd-overlay { display:none;position:fixed;inset:0;background:rgba(0,0,0,.65);backdrop-filter:blur(6px);z-index:999;align-items:center;justify-content:center; }
+.pd-overlay.open { display:flex; }
+.pd-modal { background:var(--panel);border:1px solid rgba(167,124,255,.2);border-radius:12px;width:90%;max-width:520px;max-height:82vh;display:flex;flex-direction:column;box-shadow:0 24px 64px rgba(0,0,0,.5); }
+.pd-modal-head { display:flex;align-items:center;justify-content:space-between;padding:20px 24px;border-bottom:1px solid rgba(167,124,255,.1); }
+.pd-modal-title { font-family:var(--f-sans);font-size:15px;font-weight:700;color:var(--white); }
+.pd-close { background:none;border:none;color:var(--smoke);font-size:20px;cursor:pointer;padding:2px 6px;border-radius:4px;line-height:1;transition:color .15s; }
+.pd-close:hover { color:var(--white); }
+.pd-body { overflow-y:auto;padding:20px 24px;flex:1; }
+.pd-body::-webkit-scrollbar{width:4px}.pd-body::-webkit-scrollbar-thumb{background:rgba(167,124,255,.25);border-radius:99px}
+.pd-section-title { font-family:var(--f-sans);font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--violet);margin:0 0 10px; }
+.pd-row { display:flex;justify-content:space-between;align-items:flex-start;gap:12px;padding:7px 0;border-bottom:1px solid rgba(167,124,255,.06); }
+.pd-row:last-of-type { border-bottom:none; }
+.pd-label { font-family:var(--f-sans);font-size:12px;color:var(--smoke);flex-shrink:0; }
+.pd-val { font-family:var(--f-sans);font-size:12px;color:var(--white);text-align:right;word-break:break-all; }
+.pd-mono { font-family:var(--f-mono);font-size:11px; }
+.pd-divider { height:1px;background:rgba(167,124,255,.1);margin:14px 0; }
+`;
 document.head.appendChild(style);
 
 AdminAPI.init().then(() => {
@@ -103,3 +167,5 @@ window.renderTable = renderTable;
 window.goPage = goPage;
 window.copyText = copyText;
 window.refreshStatus = refreshStatus;
+window.showDetails = showDetails;
+window.closePd = closePd;

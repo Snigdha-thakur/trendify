@@ -28,6 +28,9 @@ class User(Base):
     facebook = Column(Text)
     youtube = Column(Text)
     linkedin = Column(Text)
+    # Creator-specific fields
+    platform_fee_pct = Column(Numeric, default=0)
+    affiliate_mode = Column(Boolean, default=False)
     created_at = Column(TIMESTAMP(timezone=True), server_default=func.now())
 
     kyc = relationship("KYC", back_populates="user", uselist=False)
@@ -50,6 +53,8 @@ class KYC(Base):
     user_id = Column(UUID(as_uuid=True), ForeignKey("public.users.id"))
     aadhar = Column(Text)
     pan = Column(Text)
+    gst = Column(Text)
+    udyam = Column(Text)
     bank_type = Column(Text)
     website = Column(Text)
     phone = Column(Text)
@@ -247,6 +252,14 @@ class PayoutWebhook(Base):
     created_at = Column(TIMESTAMP(timezone=True), server_default=func.now())
 
     user = relationship("User", back_populates="payout_webhooks")
+
+
+class PlatformSetting(Base):
+    __tablename__ = "platform_settings"
+    __table_args__ = {"schema": "public"}
+
+    key = Column(Text, primary_key=True)
+    value = Column(Text, nullable=False)
 
 
 class GatewayLog(Base):

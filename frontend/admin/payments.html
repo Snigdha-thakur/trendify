@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,600;1,300;1,600&family=Syne:wght@400;700;800&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet"/>
 <link rel="stylesheet" href="../css/styles.css"/>
-<link rel="stylesheet" href="admin.css?v=3"/><script src="sidebar-init.js?v=3"></script>
+<link rel="stylesheet" href="admin.css?v=4"/><script src="sidebar-init.js?v=4"></script>
 </head>
 <body>
 
@@ -190,6 +190,17 @@
 
     </div>
   </main>
+</div>
+
+<!-- Payment Details Modal -->
+<div class="pd-overlay" id="pdOverlay" onclick="if(event.target===this)closePd()">
+  <div class="pd-modal">
+    <div class="pd-modal-head">
+      <span class="pd-modal-title">Payment Details</span>
+      <button class="pd-close" onclick="closePd()">✕</button>
+    </div>
+    <div class="pd-body" id="pdContent"></div>
+  </div>
 </div>
 
 <script type="module" src="../js/auth-api.js"></script>

@@ -3,7 +3,7 @@ from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlalchemy.orm import Session
 from uuid import UUID
 from app.core.database import get_db
-from app.models.models import Transaction, DigitalProduct, User, WalletLog, ReferralEarning, GatewayLog
+from app.models.models import Transaction, DigitalProduct, User, WalletLog, ReferralEarning, GatewayLog, PlatformSetting
 from app.schemas.schemas import TransactionCreate, TransactionResponse
 from app.api.routes.users import get_current_user
 from app.services.cashfree_service import CashfreeService
@@ -12,7 +12,14 @@ from decimal import Decimal
 
 router = APIRouter(prefix="/api/payments", tags=["Payments"])
 
-COMMISSION_RATE = Decimal("0.10")  # 10% platform commission
+
+def _get_commission_rate(db: Session) -> Decimal:
+    row = db.query(PlatformSetting).filter(PlatformSetting.key == "platform_fee_pct").first()
+    try:
+        pct = float(row.value) if row else 10.0
+    except (TypeError, ValueError):
+        pct = 10.0
+    return Decimal(str(pct)) / Decimal("100")
 
 
 @router.post("/initiate")
@@ -25,7 +32,7 @@ async def initiate_payment(
         raise HTTPException(status_code=404, detail="Product not found or inactive")
 
     amount = Decimal(str(data.amount))
-    commission = (amount * COMMISSION_RATE).quantize(Decimal("0.01"))
+    commission = (amount * _get_commission_rate(db)).quantize(Decimal("0.01"))
     creator_amount = amount - commission
 
     order_payload = {
@@ -109,11 +116,12 @@ async def cashfree_webhook(request: Request, db: Session = Depends(get_db)):
     return {"status": "ok"}
 
 
-@router.get("/transactions", response_model=list[TransactionResponse])
+@router.get("/transactions")
 def get_my_transactions(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
+    import json
     txns = (
         db.query(Transaction)
         .filter(Transaction.creator_id == current_user.id)
@@ -124,6 +132,12 @@ def get_my_transactions(
     for txn in txns:
         txn_dict = TransactionResponse.model_validate(txn).model_dump()
         txn_dict["product_name"] = txn.product.name if txn.product else None
+        txn_dict["form_fields"] = None
+        if txn.product and txn.product.form_fields:
+            try:
+                txn_dict["form_fields"] = json.loads(txn.product.form_fields)
+            except Exception:
+                pass
         result.append(txn_dict)
     return result
 

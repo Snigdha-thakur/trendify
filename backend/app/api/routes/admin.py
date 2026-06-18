@@ -7,7 +7,7 @@ from app.core.security import get_password_hash
 from app.models.models import (
     User, KYC, DigitalProduct, Transaction, Payout,
     CreatorPayout, ReferralEarning, WalletLog, WebhookLog,
-    PayoutWebhook, GatewayLog,
+    PayoutWebhook, GatewayLog, PlatformSetting,
 )
 from app.schemas.schemas import (
     UserResponse, UserUpdate, UserRegister, KYCResponse, ProductResponse,
@@ -20,6 +20,34 @@ from app.api.routes.users import get_current_user, require_admin
 from decimal import Decimal
 
 router = APIRouter(prefix="/api/admin", tags=["Admin"])
+
+
+# --- Platform Settings ---
+def _get_setting(db: Session, key: str, default: str) -> str:
+    row = db.query(PlatformSetting).filter(PlatformSetting.key == key).first()
+    return row.value if row else default
+
+
+@router.get("/settings")
+def get_platform_settings(db: Session = Depends(get_db), _: User = Depends(require_admin)):
+    return {"platform_fee_pct": float(_get_setting(db, "platform_fee_pct", "10"))}
+
+
+@router.put("/settings")
+def update_platform_settings(
+    data: dict,
+    db: Session = Depends(get_db), _: User = Depends(require_admin),
+):
+    fee = float(data.get("platform_fee_pct", 10))
+    if fee < 0 or fee > 100:
+        raise HTTPException(status_code=400, detail="Fee must be between 0 and 100")
+    row = db.query(PlatformSetting).filter(PlatformSetting.key == "platform_fee_pct").first()
+    if row:
+        row.value = str(fee)
+    else:
+        db.add(PlatformSetting(key="platform_fee_pct", value=str(fee)))
+    db.commit()
+    return {"platform_fee_pct": fee}
 
 
 # --- Dashboard ---
@@ -220,11 +248,12 @@ def update_product_status(
 
 
 # --- Transactions ---
-@router.get("/transactions", response_model=list[TransactionResponse])
+@router.get("/transactions")
 def list_transactions(
     skip: int = 0, limit: int = 20, status: str = None, since: str = None,
     db: Session = Depends(get_db), _: User = Depends(require_admin),
 ):
+    import json
     from datetime import datetime
     q = db.query(Transaction)
     if status:
@@ -234,7 +263,26 @@ def list_transactions(
             q = q.filter(Transaction.created_at >= datetime.fromisoformat(since.replace('Z', '+00:00')))
         except ValueError:
             pass
-    return q.order_by(Transaction.created_at.desc()).offset(skip).limit(limit).all()
+    txns = q.order_by(Transaction.created_at.desc()).offset(skip).limit(limit).all()
+    result = []
+    for t in txns:
+        d = TransactionResponse.model_validate(t).model_dump()
+        d["product_name"] = t.product.name if t.product else None
+        # creator info
+        creator = t.creator
+        d["creator_name"] = creator.name if creator else None
+        d["creator_email"] = creator.email if creator else None
+        d["creator_phone"] = creator.phone if creator else None
+        # custom form fields submitted by buyer (stored as JSON on product)
+        d["form_fields"] = None
+        if t.product and t.product.form_fields:
+            try:
+                d["form_fields"] = json.loads(t.product.form_fields)
+            except Exception:
+                d["form_fields"] = None
+        # payout / platform fee
+        result.append(d)
+    return result
 
 
 # --- Payouts ---

@@ -16,12 +16,30 @@ document.addEventListener('DOMContentLoaded', function() {
     var bcBtn = bc.querySelector('.sb-toggle-btn');
     if (bcBtn) bcBtn.remove();
   }
+  
+  // Apply sidebar collapse state from localStorage and set main margin
+  var sb = document.getElementById('adminSidebar');
+  var main = document.querySelector('.admin-main');
+  try {
+    var isCollapsed = localStorage.getItem('adminSidebarCollapsed') === 'true';
+    if (isCollapsed && sb) {
+      sb.classList.add('collapsed');
+      if (main) main.style.marginLeft = '56px';
+    } else if (main) {
+      main.style.marginLeft = '220px';
+    }
+  } catch(e) {}
 });
 
 function toggleSidebar() {
   var sb = document.getElementById('adminSidebar');
+  var main = document.querySelector('.admin-main');
   var ov = document.getElementById('sbOverlay');
   sb.classList.toggle('collapsed');
+  // Update main content margin when sidebar toggles
+  if (main) {
+    main.style.marginLeft = sb.classList.contains('collapsed') ? '56px' : '220px';
+  }
   if (ov) ov.classList.toggle('open', sb.classList.contains('collapsed') && window.innerWidth <= 768);
   try { localStorage.setItem('adminSidebarCollapsed', sb.classList.contains('collapsed')); } catch(e){}
 }

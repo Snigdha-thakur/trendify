@@ -88,7 +88,7 @@
 </div>
 <script src="/creator/creator-api.js?v=3"></script>
 <script>
-var all=[],filtered=[],page=1,_timer=null;
+var all=[],filtered=[],page=1,_timer=null,allData=[];
 function fmt(d){return d?new Date(d).toLocaleString('en-IN',{year:'numeric',month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}):'—';}
 function fmtAmt(a){return '₹'+parseFloat(a||0).toLocaleString('en-IN');}
 function statusBadge(s){return s==='Success'?'<span class="b-success">Success</span>':s==='Pending'?'<span class="b-pending">Pending</span>':'<span class="b-failed">'+(s||'Failed')+'</span>';}
@@ -108,6 +108,7 @@ async function load(){
   document.getElementById('loadErr').style.display='none';
   try{
     all=await CreatorAPI.getTransactions();
+    allData=all.slice();
     filtered=document.getElementById('searchInput').value.trim()?filtered:all.slice();
     filterTable();updateStats();
   }catch(e){
@@ -130,7 +131,7 @@ function renderTable(){
     return '<tr><td><div style="display:flex;align-items:center;gap:6px;font-family:var(--f-mono);font-size:12px;color:#7c3aed"><button class="c-copy" onclick="copy(\''+r.id+'\',this)">⧉</button>'+(r.id.length>20?r.id.slice(0,20)+'…':r.id)+'</div></td>'
       +'<td style="font-weight:500;color:var(--text)">'+(r.product_name||'Digital Product')+'</td>'
       +'<td style="font-size:12px;color:#9d99bb">'+(r.buyer_email||'—')+'</td>'
-      +'<td>'+statusBadge(r.status)+(needRefresh?' <button class="c-refresh-btn" onclick="refreshTxn(\''+r.id+'\',this)" title="Refresh status"><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 8a6 6 0 0 1 11-3M14 8a6 6 0 0 1-11 3"/><path d="M12 2v3h3M1 11v3h3"/></svg></button>':'')+'</td>'
+      +'<td style="cursor:pointer" onclick="showCDetails(\''+r.id+'\',allData)">'+statusBadge(r.status)+(needRefresh?' <button class="c-refresh-btn" onclick="event.stopPropagation();refreshTxn(\''+r.id+'\',this)" title="Refresh status"><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 8a6 6 0 0 1 11-3M14 8a6 6 0 0 1-11 3"/><path d="M12 2v3h3M1 11v3h3"/></svg></button>':'')+'</td>'
       +'<td style="font-weight:700;color:var(--text)">'+fmtAmt(r.amount)+'</td>'
       +'<td style="white-space:nowrap;font-weight:600">'+fmt(r.created_at)+'</td></tr>';
   }).join('');
@@ -148,10 +149,64 @@ function goPage(n){var pp=parseInt(document.getElementById('perPage').value);var
 async function refreshTxn(id,btn){btn.disabled=true;try{await load();}catch(e){}btn.disabled=false;}
 function backToAdmin(){var tok=localStorage.getItem('_admin_token_backup');var usr=localStorage.getItem('_admin_user_backup');if(tok){localStorage.setItem('trendify_access_token',tok);localStorage.setItem('trendify_user',usr||'');}localStorage.removeItem('_from_admin');localStorage.removeItem('_admin_token_backup');localStorage.removeItem('_admin_user_backup');window.location.href='../admin/overview.html';}window.backToAdmin=backToAdmin;function toggleSidebar(){document.getElementById('sidebar').classList.toggle('expanded');}
 function toggleTheme(){document.body.classList.toggle('dark');}
+function showCDetails(id, data) {
+  var raw = data.find(function(t){ return t.id === id; });
+  if (!raw) return;
+  function fa(a){ return '\u20b9'+parseFloat(a||0).toLocaleString('en-IN',{minimumFractionDigits:2,maximumFractionDigits:2}); }
+  function fd(d){ return d?new Date(d).toLocaleString('en-IN',{year:'numeric',month:'short',day:'numeric',hour:'2-digit',minute:'2-digit',second:'2-digit'}):'\u2014'; }
+  function sb(s){ return s==='Success'?'<span class="b-success">Success</span>':s==='Pending'?'<span class="b-pending">Pending</span>':'<span class="b-failed">'+(s||'Failed')+'</span>'; }
+  var commPct = raw.commission_amount && raw.amount ? Math.round((raw.commission_amount/raw.amount)*100) : 0;
+  var ffHtml = '';
+  if (raw.form_fields && Array.isArray(raw.form_fields) && raw.form_fields.length) {
+    ffHtml = '<div class="pd-section-title">Custom Form Fields</div>';
+    raw.form_fields.forEach(function(f){
+      ffHtml += '<div class="pd-row"><span class="pd-label">'+(f.label||f.name||f.key||'Field')+'</span><span class="pd-val">'+(f.value||'\u2014')+'</span></div>';
+    });
+  }
+  var html = '<div class="pd-section-title">Customer Details</div>'
+    +'<div class="pd-row"><span class="pd-label">Name</span><span class="pd-val">'+(raw.buyer_name||'\u2014')+'</span></div>'
+    +'<div class="pd-row"><span class="pd-label">Email</span><span class="pd-val">'+(raw.buyer_email||'\u2014')+'</span></div>'
+    +'<div class="pd-row"><span class="pd-label">Phone Number</span><span class="pd-val">'+(raw.buyer_phone||'\u2014')+'</span></div>'
+    +(ffHtml?'<div class="pd-divider"></div>'+ffHtml:'')
+    +'<div class="pd-divider"></div>'
+    +'<div class="pd-section-title">Payment Details</div>'
+    +'<div class="pd-row"><span class="pd-label">Transaction Status</span><span class="pd-val">'+sb(raw.status)+'</span></div>'
+    +'<div class="pd-row"><span class="pd-label">Gateway</span><span class="pd-val">'+(raw.gateway||'Cashfree')+'</span></div>'
+    +'<div class="pd-row"><span class="pd-label">Amount Paid</span><span class="pd-val">'+fa(raw.amount)+'</span></div>'
+    +'<div class="pd-row"><span class="pd-label">Payout Amount</span><span class="pd-val">'+fa(raw.creator_amount!=null?raw.creator_amount:raw.amount)+'</span></div>'
+    +'<div class="pd-row"><span class="pd-label">Platform Fee (in %)</span><span class="pd-val">'+commPct+'%</span></div>'
+    +'<div class="pd-row"><span class="pd-label">Platform Fee</span><span class="pd-val">'+fa(raw.commission_amount||0)+'</span></div>'
+    +'<div class="pd-row"><span class="pd-label">Gateway Reference</span><span class="pd-val pd-mono">'+(raw.cashfree_order_id||'\u2014')+'</span></div>'
+    +'<div class="pd-row"><span class="pd-label">Order ID</span><span class="pd-val pd-mono">'+raw.id+'</span></div>'
+    +'<div class="pd-row"><span class="pd-label">Date</span><span class="pd-val">'+fd(raw.created_at)+'</span></div>';
+  document.getElementById('cPdContent').innerHTML = html;
+  document.getElementById('cPdOverlay').style.display = 'flex';
+}
+function closeCPd(){ document.getElementById('cPdOverlay').style.display = 'none'; }
+window.showCDetails=showCDetails;window.closeCPd=closeCPd;
 window.copy=copy;window.goPage=goPage;window.filterTable=filterTable;window.renderTable=renderTable;window.refreshTxn=refreshTxn;
 initUser();load();
 _timer=setInterval(load,30000);
 </script>
+<!-- Payment Details Modal -->
+<div id="cPdOverlay" onclick="if(event.target===this)closeCPd()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.65);backdrop-filter:blur(6px);z-index:999;align-items:center;justify-content:center;">
+  <div style="background:#14142e;border:1px solid rgba(167,124,255,.2);border-radius:12px;width:90%;max-width:520px;max-height:82vh;display:flex;flex-direction:column;box-shadow:0 24px 64px rgba(0,0,0,.5);">
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:20px 24px;border-bottom:1px solid rgba(167,124,255,.1);">
+      <span style="font-size:15px;font-weight:700;color:#f2f0ff;">Payment Details</span>
+      <button onclick="closeCPd()" style="background:none;border:none;color:#9d99bb;font-size:20px;cursor:pointer;padding:2px 6px;border-radius:4px;line-height:1;">&#x2715;</button>
+    </div>
+    <div id="cPdContent" style="overflow-y:auto;padding:20px 24px;flex:1;"></div>
+  </div>
+</div>
+<style>
+#cPdContent .pd-section-title{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#a67cff;margin:0 0 10px;display:block;}
+#cPdContent .pd-row{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;padding:7px 0;border-bottom:1px solid rgba(167,124,255,.06);}
+#cPdContent .pd-row:last-of-type{border-bottom:none;}
+#cPdContent .pd-label{font-size:12px;color:#9d99bb;flex-shrink:0;}
+#cPdContent .pd-val{font-size:12px;color:#f2f0ff;text-align:right;word-break:break-all;}
+#cPdContent .pd-mono{font-family:'DM Mono',monospace;font-size:11px;}
+#cPdContent .pd-divider{height:1px;background:rgba(167,124,255,.1);margin:14px 0;}
+</style>
 </body>
 </html>
 

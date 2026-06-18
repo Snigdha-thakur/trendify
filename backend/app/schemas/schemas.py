@@ -66,6 +66,8 @@ class UserResponse(BaseModel):
     referred_by: Optional[UUID]
     wallet_balance: Optional[float]
     referral_wallet_balance: Optional[float]
+    platform_fee_pct: Optional[float] = 0
+    affiliate_mode: Optional[bool] = False
     created_at: Optional[datetime]
 
     model_config = {"from_attributes": True}
@@ -83,12 +85,16 @@ class UserUpdate(BaseModel):
     facebook: Optional[str] = None
     youtube: Optional[str] = None
     linkedin: Optional[str] = None
+    platform_fee_pct: Optional[float] = None
+    affiliate_mode: Optional[bool] = None
 
 
 # KYC
 class KYCCreate(BaseModel):
     aadhar: Optional[str] = None
     pan: Optional[str] = None
+    gst: Optional[str] = None
+    udyam: Optional[str] = None
     bank_type: Optional[str] = None
     website: Optional[str] = None
     phone: Optional[str] = None
@@ -100,6 +106,8 @@ class KYCResponse(BaseModel):
     user_id: Optional[UUID]
     aadhar: Optional[str]
     pan: Optional[str]
+    gst: Optional[str]
+    udyam: Optional[str]
     bank_type: Optional[str]
     website: Optional[str]
     phone: Optional[str]

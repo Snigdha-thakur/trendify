@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,600;1,300;1,600&family=Syne:wght@400;700;800&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet"/>
 <link rel="stylesheet" href="../css/styles.css"/>
-<link rel="stylesheet" href="admin.css?v=3"/><script src="sidebar-init.js?v=3"></script>
+<link rel="stylesheet" href="admin.css?v=4"/><script src="sidebar-init.js?v=4"></script>
 </head>
 <body>
 <div id="c"></div>
@@ -279,7 +279,7 @@
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
               <div class="au-field">
                 <label class="au-label">Role</label>
-                <select id="editRole" class="au-select">
+                <select id="editRole" class="au-select" onchange="toggleCreatorFields()">
                   <option value="user">User</option>
                   <option value="creator">Creator</option>
                   <option value="admin">Admin</option>
@@ -292,6 +292,23 @@
                   <option value="inactive">Inactive</option>
                   <option value="suspended">Suspended</option>
                 </select>
+              </div>
+            </div>
+            <!-- Creator-only fields -->
+            <div id="creatorFieldsSection" style="display:none;border-top:1px solid rgba(255,255,255,.1);padding-top:16px">
+              <div class="au-field">
+                <label class="au-label">Platform Fee (%)</label>
+                <div class="au-input-wrap">
+                  <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" style="opacity:.4;flex-shrink:0"><circle cx="8" cy="8" r="6"/><path d="M5.5 10.5l5-5M6 6h.01M10 10h.01"/></svg>
+                  <input id="editPlatformFeePct" class="au-input" type="number" min="0" max="100" step="0.1" placeholder="e.g. 10"/>
+                </div>
+              </div>
+              <div class="au-field" style="margin-top:12px">
+                <label class="au-label">Affiliate Mode</label>
+                <label style="display:flex;align-items:center;gap:10px;cursor:pointer;font-size:13px">
+                  <input type="checkbox" id="editAffiliateMode" style="width:18px;height:18px;cursor:pointer"/>
+                  <span>Enable affiliate earning</span>
+                </label>
               </div>
             </div>
             <div id="editUserError" class="au-error"></div>

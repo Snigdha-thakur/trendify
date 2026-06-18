@@ -15,6 +15,8 @@ async function loadData() {
     name: userMap[k.user_id] || '—',
     aadhar: k.aadhar || '—',
     pan: k.pan || '—',
+    gst: k.gst || '—',
+    udyam: k.udyam || '—',
     website: k.website || '—',
     phone: k.phone || '—',
     email: k.email || '—',
@@ -46,6 +48,8 @@ function renderTable() {
         <td><span style="font-weight:700;color:var(--white)">${r.name}</span></td>
         <td style="font-family:var(--f-mono);font-size:12px">${r.aadhar}</td>
         <td style="font-family:var(--f-mono);font-size:12px">${r.pan}</td>
+        <td style="font-family:var(--f-mono);font-size:12px">${r.gst}</td>
+        <td style="font-family:var(--f-mono);font-size:12px">${r.udyam}</td>
         <td style="font-size:13px;color:var(--smoke)">${r.website}</td>
         <td style="font-family:var(--f-mono);font-size:12px">${r.phone}</td>
         <td style="color:var(--violet);font-size:12px">${r.email}</td>
@@ -82,7 +86,7 @@ function filterTable() {
   const q = document.getElementById('searchInput').value.trim().toLowerCase();
   const s = document.getElementById('statusFilter') ? document.getElementById('statusFilter').value : '';
   filtered = allKyc.filter(r =>
-    (!q || r.name.toLowerCase().includes(q) || r.aadhar.includes(q) || r.pan.toLowerCase().includes(q)) &&
+    (!q || r.name.toLowerCase().includes(q) || r.aadhar.includes(q) || r.pan.toLowerCase().includes(q) || r.gst.toLowerCase().includes(q)) &&
     (!s || r.status === s)
   );
   currentPage = 1; renderTable();
