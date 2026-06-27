@@ -106,11 +106,19 @@ function toggleUserMenu(e) {
   var popup = document.getElementById('userPopup');
   if (popup) popup.classList.toggle('open');
 }
+window.toggleUserMenu = toggleUserMenu;
 
 // Ensure every admin page has a consistent bottom user block and popup
 function ensureSidebarUserMarkup() {
   var sb = document.getElementById('adminSidebar');
-  var sbBottom = document.querySelector('.sb-bottom');
+  var sbBottom = sb ? sb.querySelector('.sb-bottom') : null;
+  if (sb) {
+    var allBottoms = sb.querySelectorAll('.sb-bottom');
+    if (allBottoms.length > 1) {
+      for (var i = 1; i < allBottoms.length; i++) { allBottoms[i].remove(); }
+      sbBottom = allBottoms[0];
+    }
+  }
   // If admin sidebar exists but no sb-bottom, create one so we can normalize across pages
   if (!sbBottom && sb) {
     sbBottom = document.createElement('div'); sbBottom.className = 'sb-bottom'; sb.appendChild(sbBottom);
@@ -124,27 +132,47 @@ function ensureSidebarUserMarkup() {
     return;
   }
 
+  // Remove duplicate bottom users and duplicate popups
+  var bottomUsers = sbBottom.querySelectorAll('.sb-user');
+  if (bottomUsers.length > 1) {
+    for (var j = 1; j < bottomUsers.length; j++) bottomUsers[j].remove();
+  }
+  var popups = sbBottom.querySelectorAll('#userPopup');
+  if (popups.length > 1) {
+    for (var j = 1; j < popups.length; j++) popups[j].remove();
+    popup = popups[0];
+  }
+
   // Normalize main sb-user element
   var sbUser = sbBottom.querySelector('.sb-user');
   if (!sbUser) {
     sbUser = document.createElement('div');
     sbUser.className = 'sb-user';
     sbUser.id = 'sbUser';
-    sbUser.setAttribute('onclick', 'toggleUserMenu()');
     sbBottom.insertBefore(sbUser, sbBottom.firstChild);
   }
+  sbUser.onclick = function(e) { e.stopPropagation(); toggleUserMenu(); };
+
   // Build inner structure if missing
   if (!sbUser.querySelector('.sb-av')) {
     var av = document.createElement('div'); av.className = 'sb-av'; av.textContent = 'SB'; sbUser.appendChild(av);
   }
-  if (!sbUser.querySelector('.sb-user-info')) {
-    var info = document.createElement('div'); info.className = 'sb-user-info';
-    var name = document.createElement('div'); name.className = 'sb-name'; name.textContent = 'Admin';
-    var plan = document.createElement('div'); plan.className = 'sb-plan'; plan.textContent = '';
-    var phone = document.createElement('div'); phone.className = 'sb-meta sb-phone'; phone.textContent = '';
-    var addr = document.createElement('div'); addr.className = 'sb-meta sb-address'; addr.textContent = '';
-    info.appendChild(name); info.appendChild(plan); info.appendChild(phone); info.appendChild(addr);
-    sbUser.appendChild(info);
+  var userInfo = sbUser.querySelector('.sb-user-info');
+  if (!userInfo) {
+    userInfo = document.createElement('div'); userInfo.className = 'sb-user-info';
+    sbUser.appendChild(userInfo);
+  }
+  if (!userInfo.querySelector('.sb-name')) {
+    var name = document.createElement('div'); name.className = 'sb-name'; name.textContent = 'Admin'; userInfo.appendChild(name);
+  }
+  if (!userInfo.querySelector('.sb-plan')) {
+    var plan = document.createElement('div'); plan.className = 'sb-plan'; plan.textContent = ''; userInfo.appendChild(plan);
+  }
+  if (!userInfo.querySelector('.sb-phone')) {
+    var phone = document.createElement('div'); phone.className = 'sb-meta sb-phone'; phone.textContent = ''; userInfo.appendChild(phone);
+  }
+  if (!userInfo.querySelector('.sb-address')) {
+    var addr = document.createElement('div'); addr.className = 'sb-meta sb-address'; addr.textContent = ''; userInfo.appendChild(addr);
   }
 
   // Ensure chevron exists
@@ -156,33 +184,58 @@ function ensureSidebarUserMarkup() {
   // Normalize popup
   var popup = sbBottom.querySelector('#userPopup');
   if (!popup) {
+    popup = document.getElementById('userPopup');
+    if (popup && !sbBottom.contains(popup)) {
+      sbBottom.appendChild(popup);
+    }
+  }
+  if (!popup) {
     popup = document.createElement('div'); popup.className = 'user-popup'; popup.id = 'userPopup';
     sbBottom.appendChild(popup);
+  } else {
+    popup.className = 'user-popup';
+    popup.id = 'userPopup';
   }
-  // Ensure popup head
-  if (!popup.querySelector('.user-popup-head')) {
-    var head = document.createElement('div'); head.className = 'user-popup-head';
+
+  // Ensure popup head and actions
+  var popupHead = popup.querySelector('.user-popup-head');
+  if (!popupHead) {
+    popupHead = document.createElement('div'); popupHead.className = 'user-popup-head';
     var av2 = document.createElement('div'); av2.className = 'sb-av'; av2.textContent = 'SB';
     var info2 = document.createElement('div'); info2.className = 'sb-user-info';
-    var name2 = document.createElement('div'); name2.className = 'sb-name'; name2.textContent = 'Admin';
-    var plan2 = document.createElement('div'); plan2.className = 'sb-plan'; plan2.textContent = '';
-    var phone2 = document.createElement('div'); phone2.className = 'sb-meta sb-phone'; phone2.textContent = '';
-    var addr2 = document.createElement('div'); addr2.className = 'sb-meta sb-address'; addr2.textContent = '';
-    info2.appendChild(name2); info2.appendChild(plan2); info2.appendChild(phone2); info2.appendChild(addr2);
-    head.appendChild(av2); head.appendChild(info2);
-    popup.appendChild(head);
+    popupHead.appendChild(av2); popupHead.appendChild(info2);
+    popup.appendChild(popupHead);
   }
+  var popupInfo = popupHead.querySelector('.sb-user-info');
+  if (!popupInfo) {
+    popupInfo = document.createElement('div'); popupInfo.className = 'sb-user-info';
+    popupHead.appendChild(popupInfo);
+  }
+  if (!popupInfo.querySelector('.sb-name')) {
+    var name2 = document.createElement('div'); name2.className = 'sb-name'; name2.textContent = 'Admin'; popupInfo.appendChild(name2);
+  }
+  if (!popupInfo.querySelector('.sb-plan')) {
+    var plan2 = document.createElement('div'); plan2.className = 'sb-plan'; plan2.textContent = ''; popupInfo.appendChild(plan2);
+  }
+  if (!popupInfo.querySelector('.sb-phone')) {
+    var phone2 = document.createElement('div'); phone2.className = 'sb-meta sb-phone'; phone2.textContent = ''; popupInfo.appendChild(phone2);
+  }
+  if (!popupInfo.querySelector('.sb-address')) {
+    var addr2 = document.createElement('div'); addr2.className = 'sb-meta sb-address'; addr2.textContent = ''; popupInfo.appendChild(addr2);
+  }
+
   if (!popup.querySelector('.user-popup-divider')) {
     var div = document.createElement('div'); div.className = 'user-popup-divider'; popup.appendChild(div);
   }
-  // Ensure actions
-  if (!popup.querySelector('.user-popup-item[href="profile-settings.html"]')) {
-    // remove existing action links to avoid duplicates
-    Array.from(popup.querySelectorAll('.user-popup-item')).forEach(function(n){ if(n.getAttribute('href')!=='profile-settings.html' && n.getAttribute('href')!=='../signin.html') n.remove(); });
-    var a1 = document.createElement('a'); a1.className = 'user-popup-item'; a1.href = 'profile-settings.html'; a1.innerHTML = '<svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><circle cx="8" cy="5" r="3"/><path d="M2 14c0-3.3 2.7-6 6-6s6 2.7 6 6H2z"/></svg>Accounts Settings';
-    var a2 = document.createElement('a'); a2.className = 'user-popup-item'; a2.href = '../signin.html'; a2.innerHTML = '<svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M6 2H3a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3M10 11l3-3-3-3M13 8H6"/></svg>Log out';
-    popup.appendChild(a1); popup.appendChild(a2);
-  }
+  Array.from(popup.querySelectorAll('.user-popup-item')).forEach(function(n){ n.remove(); });
+  var action1 = document.createElement('a'); action1.className = 'user-popup-item'; action1.href = 'profile-settings.html'; action1.innerHTML = '<svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><circle cx="8" cy="5" r="3"/><path d="M2 14c0-3.3 2.7-6 6-6s6 2.7 6 6H2z"/></svg>Accounts Settings';
+  var action2 = document.createElement('a'); action2.className = 'user-popup-item'; action2.href = '../signin.html'; action2.innerHTML = '<svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M6 2H3a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3M10 11l3-3-3-3M13 8H6"/></svg>Log out';
+  popup.appendChild(action1); popup.appendChild(action2);
+
+  try {
+    var savedUser = JSON.parse(localStorage.getItem('trendify_user') || 'null');
+    if (savedUser) updateSidebarUser(savedUser);
+  } catch (e) {}
 }
 
 document.addEventListener('DOMContentLoaded', ensureSidebarUserMarkup);
