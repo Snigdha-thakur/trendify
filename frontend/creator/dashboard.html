@@ -70,9 +70,9 @@
     <div class="c-page-header">
       <h1 class="c-page-title">Analytics Dashboard</h1>
       <select class="c-date-sel" id="dateFilter" onchange="loadDashboard()">
+        <option value="today">Today</option>
         <option value="7">Last 7 Days</option>
         <option value="30">Last 30 Days</option>
-        <option value="90">Last 90 Days</option>
         <option value="all">All Time</option>
       </select>
     </div>
@@ -134,7 +134,13 @@ async function loadDashboard(){
   // filter by days
   var allTxns=txns.slice();
   if(days!=='all'){
-    var cutoff=Date.now()-parseInt(days)*86400000;
+    var cutoff;
+    if(days==='today'){
+      var d=new Date(); d.setHours(0,0,0,0); cutoff = d.getTime();
+    } else {
+      var parsed = parseInt(days);
+      cutoff = isNaN(parsed) ? 0 : Date.now()-parsed*86400000;
+    }
     txns=txns.filter(function(t){return new Date(t.created_at).getTime()>=cutoff;});
   }
   var successTxns=txns.filter(function(t){return t.status==='Success';});

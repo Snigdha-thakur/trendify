@@ -65,6 +65,20 @@ function updateSidebarUser(user) {
 }
 window.updateSidebarUser = updateSidebarUser;
 
+// Also populate creator sidebar IDs if present
+function updateCreatorSidebar(user){
+  if(!user) return;
+  var initials = (user.name || 'CR').split(' ').map(function(w){return w[0];}).join('').toUpperCase().slice(0,2);
+  var avs = document.querySelectorAll('.c-av, #sbAv, #sbAv2');
+  avs.forEach(function(el){ el.textContent = initials; });
+  var nameEls = document.querySelectorAll('#sbName, #sbName2');
+  nameEls.forEach(function(el){ el.textContent = user.name || 'Creator'; });
+  var emailEls = document.querySelectorAll('#sbEmail, #sbEmail2');
+  var idDisplay = (user.email && user.email.trim()) || (user.username && user.username.trim()) || user.id || user._id || '';
+  emailEls.forEach(function(el){ el.textContent = idDisplay; });
+}
+window.updateCreatorSidebar = updateCreatorSidebar;
+
 function toggleSidebar() {
   var sb = document.getElementById('adminSidebar');
   var main = document.querySelector('.admin-main');
@@ -95,8 +109,20 @@ function toggleUserMenu(e) {
 
 // Ensure every admin page has a consistent bottom user block and popup
 function ensureSidebarUserMarkup() {
+  var sb = document.getElementById('adminSidebar');
   var sbBottom = document.querySelector('.sb-bottom');
-  if (!sbBottom) return;
+  // If admin sidebar exists but no sb-bottom, create one so we can normalize across pages
+  if (!sbBottom && sb) {
+    sbBottom = document.createElement('div'); sbBottom.className = 'sb-bottom'; sb.appendChild(sbBottom);
+  }
+  if (!sbBottom) {
+    // maybe this is a creator page with different sidebar structure
+    var cSidebar = document.querySelector('.c-sidebar');
+    if (cSidebar) {
+      ensureCreatorSidebarUserMarkup(cSidebar);
+    }
+    return;
+  }
 
   // Normalize main sb-user element
   var sbUser = sbBottom.querySelector('.sb-user');
@@ -160,6 +186,49 @@ function ensureSidebarUserMarkup() {
 }
 
 document.addEventListener('DOMContentLoaded', ensureSidebarUserMarkup);
+
+// Creator-specific normalization
+function ensureCreatorSidebarUserMarkup(cSidebar){
+  if (!cSidebar) cSidebar = document.querySelector('.c-sidebar');
+  if (!cSidebar) return;
+  var sbBottom = cSidebar.querySelector('.c-sidebar-bottom');
+  if (!sbBottom) {
+    sbBottom = document.createElement('div'); sbBottom.className = 'c-sidebar-bottom'; cSidebar.appendChild(sbBottom);
+  }
+  // user block
+  var sbUser = sbBottom.querySelector('.c-sb-user');
+  if (!sbUser) {
+    sbUser = document.createElement('div'); sbUser.className = 'c-sb-user'; sbUser.id = 'sbUser'; sbUser.setAttribute('onclick','toggleUserMenu(event)');
+    var av = document.createElement('div'); av.className = 'c-av'; av.id = 'sbAv'; av.textContent='CR';
+    var info = document.createElement('div'); info.style.display='flex'; info.style.flexDirection='column';
+    var name = document.createElement('span'); name.className='c-sidebar-label'; name.id='sbName'; name.style.fontSize='12px'; name.style.fontWeight='600';
+    var email = document.createElement('span'); email.className='c-sb-email'; email.id='sbEmail'; email.style.fontSize='11px';
+    info.appendChild(name); info.appendChild(email);
+    sbUser.appendChild(av); sbUser.appendChild(info);
+    var chev = document.createElement('svg'); chev.setAttribute('style','margin-left:auto;opacity:.5;flex-shrink:0'); chev.setAttribute('width','12'); chev.setAttribute('height','12'); chev.setAttribute('viewBox','0 0 16 16'); chev.setAttribute('fill','currentColor'); chev.innerHTML='<path d="M4 6l4 4 4-4"/>';
+    sbUser.appendChild(chev);
+    sbBottom.appendChild(sbUser);
+  }
+  // popup
+  var popup = document.getElementById('userPopup');
+  if (!popup) {
+    popup = document.createElement('div'); popup.className='c-user-popup'; popup.id='userPopup';
+    var head = document.createElement('div'); head.className='c-user-popup-head';
+    var av2 = document.createElement('div'); av2.className='c-av'; av2.id='sbAv2'; av2.textContent='CR';
+    var info2 = document.createElement('div'); var name2 = document.createElement('div'); name2.id='sbName2'; name2.style.fontSize='12px'; name2.style.fontWeight='700'; var email2 = document.createElement('div'); email2.id='sbEmail2'; email2.style.fontSize='10px'; info2.appendChild(name2); info2.appendChild(email2);
+    head.appendChild(av2); head.appendChild(info2);
+    popup.appendChild(head);
+    var divider = document.createElement('div'); divider.className='c-user-popup-divider'; popup.appendChild(divider);
+    var a1 = document.createElement('a'); a1.className='c-user-popup-item'; a1.href='account-settings.html'; a1.innerHTML='<svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><circle cx="8" cy="5" r="3"/><path d="M2 14c0-3.3 2.7-6 6-6s6 2.7 6 6H2z"/></svg>Account Settings';
+    var a2 = document.createElement('button'); a2.className='c-user-popup-item'; a2.id='signOutBtn'; a2.innerHTML='<svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M6 2H3a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3M10 11l3-3-3-3M13 8H6"/></svg>Sign Out';
+    popup.appendChild(a1); popup.appendChild(a2);
+    sbBottom.appendChild(popup);
+    // sign out handler
+    a2.addEventListener('click', function(){ localStorage.removeItem('trendify_access_token'); localStorage.removeItem('trendify_user'); window.location.href='../signin.html'; });
+  }
+  // populate if user present
+  try { var u = JSON.parse(localStorage.getItem('trendify_user')||'null'); if(u){ updateCreatorSidebar(u); } } catch(e){}
+}
 
 // Normalize sidebar section labels (ensure PLATFORM is consistent)
 document.addEventListener('DOMContentLoaded', function() {

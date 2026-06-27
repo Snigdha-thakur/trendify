@@ -88,7 +88,15 @@
     getTransactions: (days) => {
       const base = '/transactions?skip=0&limit=1000';
       if (!days || days === 'all') return query(base);
-      const since = new Date(Date.now() - parseInt(days) * 86400000).toISOString();
+      // special-case 'today' to send since midnight local time
+      if (days === 'today') {
+        const d = new Date(); d.setHours(0,0,0,0);
+        const since = d.toISOString();
+        return query(base + '&since=' + since);
+      }
+      const parsed = parseInt(days);
+      if (isNaN(parsed)) return query(base);
+      const since = new Date(Date.now() - parsed * 86400000).toISOString();
       return query(base + '&since=' + since);
     },
     getPayments: () => query('/transactions?skip=0&limit=1000'),
