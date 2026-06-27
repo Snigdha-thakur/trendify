@@ -93,6 +93,88 @@ function toggleUserMenu(e) {
   if (popup) popup.classList.toggle('open');
 }
 
+// Ensure every admin page has a consistent bottom user block and popup
+function ensureSidebarUserMarkup() {
+  var sbBottom = document.querySelector('.sb-bottom');
+  if (!sbBottom) return;
+
+  // Normalize main sb-user element
+  var sbUser = sbBottom.querySelector('.sb-user');
+  if (!sbUser) {
+    sbUser = document.createElement('div');
+    sbUser.className = 'sb-user';
+    sbUser.id = 'sbUser';
+    sbUser.setAttribute('onclick', 'toggleUserMenu()');
+    sbBottom.insertBefore(sbUser, sbBottom.firstChild);
+  }
+  // Build inner structure if missing
+  if (!sbUser.querySelector('.sb-av')) {
+    var av = document.createElement('div'); av.className = 'sb-av'; av.textContent = 'SB'; sbUser.appendChild(av);
+  }
+  if (!sbUser.querySelector('.sb-user-info')) {
+    var info = document.createElement('div'); info.className = 'sb-user-info';
+    var name = document.createElement('div'); name.className = 'sb-name'; name.textContent = 'Admin';
+    var plan = document.createElement('div'); plan.className = 'sb-plan'; plan.textContent = '';
+    var phone = document.createElement('div'); phone.className = 'sb-meta sb-phone'; phone.textContent = '';
+    var addr = document.createElement('div'); addr.className = 'sb-meta sb-address'; addr.textContent = '';
+    info.appendChild(name); info.appendChild(plan); info.appendChild(phone); info.appendChild(addr);
+    sbUser.appendChild(info);
+  }
+
+  // Ensure chevron exists
+  if (!sbUser.querySelector('svg')) {
+    var svg = document.createElement('svg'); svg.setAttribute('style','margin-left:auto;opacity:.5;flex-shrink:0'); svg.setAttribute('width','12'); svg.setAttribute('height','12'); svg.setAttribute('viewBox','0 0 16 16'); svg.setAttribute('fill','currentColor'); svg.innerHTML = '<path d="M4 6l4 4 4-4"/>';
+    sbUser.appendChild(svg);
+  }
+
+  // Normalize popup
+  var popup = sbBottom.querySelector('#userPopup');
+  if (!popup) {
+    popup = document.createElement('div'); popup.className = 'user-popup'; popup.id = 'userPopup';
+    sbBottom.appendChild(popup);
+  }
+  // Ensure popup head
+  if (!popup.querySelector('.user-popup-head')) {
+    var head = document.createElement('div'); head.className = 'user-popup-head';
+    var av2 = document.createElement('div'); av2.className = 'sb-av'; av2.textContent = 'SB';
+    var info2 = document.createElement('div'); info2.className = 'sb-user-info';
+    var name2 = document.createElement('div'); name2.className = 'sb-name'; name2.textContent = 'Admin';
+    var plan2 = document.createElement('div'); plan2.className = 'sb-plan'; plan2.textContent = '';
+    var phone2 = document.createElement('div'); phone2.className = 'sb-meta sb-phone'; phone2.textContent = '';
+    var addr2 = document.createElement('div'); addr2.className = 'sb-meta sb-address'; addr2.textContent = '';
+    info2.appendChild(name2); info2.appendChild(plan2); info2.appendChild(phone2); info2.appendChild(addr2);
+    head.appendChild(av2); head.appendChild(info2);
+    popup.appendChild(head);
+  }
+  if (!popup.querySelector('.user-popup-divider')) {
+    var div = document.createElement('div'); div.className = 'user-popup-divider'; popup.appendChild(div);
+  }
+  // Ensure actions
+  if (!popup.querySelector('.user-popup-item[href="profile-settings.html"]')) {
+    // remove existing action links to avoid duplicates
+    Array.from(popup.querySelectorAll('.user-popup-item')).forEach(function(n){ if(n.getAttribute('href')!=='profile-settings.html' && n.getAttribute('href')!=='../signin.html') n.remove(); });
+    var a1 = document.createElement('a'); a1.className = 'user-popup-item'; a1.href = 'profile-settings.html'; a1.innerHTML = '<svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><circle cx="8" cy="5" r="3"/><path d="M2 14c0-3.3 2.7-6 6-6s6 2.7 6 6H2z"/></svg>Accounts Settings';
+    var a2 = document.createElement('a'); a2.className = 'user-popup-item'; a2.href = '../signin.html'; a2.innerHTML = '<svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M6 2H3a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3M10 11l3-3-3-3M13 8H6"/></svg>Log out';
+    popup.appendChild(a1); popup.appendChild(a2);
+  }
+}
+
+document.addEventListener('DOMContentLoaded', ensureSidebarUserMarkup);
+
+// Normalize sidebar section labels (ensure PLATFORM is consistent)
+document.addEventListener('DOMContentLoaded', function() {
+  try {
+    document.querySelectorAll('.sb-divider .sb-label, .sb-label').forEach(function(el) {
+      // Use uppercase for divider labels, title-case for inline labels
+      if (el.parentElement && el.parentElement.classList && el.parentElement.classList.contains('sb-divider')) {
+        el.textContent = 'PLATFORM';
+      } else {
+        el.textContent = 'Platform';
+      }
+    });
+  } catch (e) {}
+});
+
 document.addEventListener('click', function(e) {
   if (e.target.closest && e.target.closest('.user-popup-item')) return;
   var popup = document.getElementById('userPopup');
