@@ -36,7 +36,30 @@ function toggleSelectAll(cb) {
   renderTable();
 }
 function toggleRow(idx, cb) { cb.checked ? selected.add(idx) : selected.delete(idx); }
-function payAll() { alert('Pay All triggered for ' + (selected.size || filtered.length) + ' creators.'); }
+async function payAll() {
+  // Determine target users: selected ones, or all filtered if none selected
+  let targets;
+  if (selected.size > 0) {
+    targets = [...selected].map(idx => allWallets[idx]).filter(u => u && u.wallet_balance > 0);
+  } else {
+    targets = filtered.filter(u => u.wallet_balance > 0);
+  }
+  if (!targets.length) { alert('No users with wallet balance to pay.'); return; }
+  const names = targets.map(u => `${u.name} (${fmtAmt(u.wallet_balance)})`).join('\n');
+  if (!confirm(`Pay the following ${targets.length} user(s)?\n\n${names}`)) return;
+  const btn = document.getElementById('payAllBtn');
+  btn.disabled = true; btn.textContent = 'Paying…';
+  try {
+    const res = await AdminAPI.payWallets(targets.map(u => u.id));
+    alert(`✓ Successfully paid ${res.count} user(s).`);
+    selected.clear();
+    await loadData();
+  } catch(e) {
+    alert('Payment failed: ' + e.message);
+  } finally {
+    btn.disabled = false; btn.textContent = 'Pay All';
+  }
+}
 
 function renderTable() {
   const perPage = parseInt(document.getElementById('perPage').value);

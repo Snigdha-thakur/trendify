@@ -57,25 +57,29 @@ document.addEventListener('DOMContentLoaded', function() {
 function updateSidebarUser(user) {
   if (!user) return;
   var initials = (user.name || 'A').split(' ').map(function(w) { return w[0]; }).join('').toUpperCase().slice(0, 2);
+  var nameText = user.name || 'Admin';
+  var emailText = (user.email && user.email.trim()) || (user.username && user.username.trim()) || user.id || user._id || '';
+  var phoneText = user.phone && user.phone.trim() ? user.phone.trim() : '';
+  var addressText = user.address && user.address.trim() ? user.address.trim() : '';
+
   document.querySelectorAll('.sb-av').forEach(function(el) { el.textContent = initials; });
-  document.querySelectorAll('.sb-name').forEach(function(el) { el.textContent = user.name || 'Admin'; });
-  document.querySelectorAll('.sb-plan').forEach(function(el) { el.textContent = (user.email && user.email.trim()) || (user.username && user.username.trim()) || user.id || user._id || ''; });
-  document.querySelectorAll('.sb-phone').forEach(function(el) { el.textContent = user.phone && user.phone.trim() ? user.phone.trim() : 'Phone not added'; });
-  document.querySelectorAll('.sb-address').forEach(function(el) { el.textContent = user.address && user.address.trim() ? user.address.trim() : 'Address not added'; });
+  document.querySelectorAll('.sb-name').forEach(function(el) { el.textContent = nameText; });
+  document.querySelectorAll('.sb-plan').forEach(function(el) { el.textContent = emailText; });
+  document.querySelectorAll('.sb-phone').forEach(function(el) { el.textContent = phoneText; el.style.display = phoneText ? '' : 'none'; });
+  document.querySelectorAll('.sb-address').forEach(function(el) { el.textContent = addressText; el.style.display = addressText ? '' : 'none'; });
+
+  document.querySelectorAll('.c-av, #sbAv, #sbAv2').forEach(function(el) { el.textContent = initials; });
+  document.querySelectorAll('#sbName, #sbName2').forEach(function(el) { el.textContent = nameText; });
+  document.querySelectorAll('#sbEmail, #sbEmail2').forEach(function(el) { el.textContent = emailText; });
+  document.querySelectorAll('.c-sb-phone').forEach(function(el) { el.textContent = phoneText; });
+  document.querySelectorAll('.c-sb-address').forEach(function(el) { el.textContent = addressText; });
 }
 window.updateSidebarUser = updateSidebarUser;
 
 // Also populate creator sidebar IDs if present
 function updateCreatorSidebar(user){
   if(!user) return;
-  var initials = (user.name || 'CR').split(' ').map(function(w){return w[0];}).join('').toUpperCase().slice(0,2);
-  var avs = document.querySelectorAll('.c-av, #sbAv, #sbAv2');
-  avs.forEach(function(el){ el.textContent = initials; });
-  var nameEls = document.querySelectorAll('#sbName, #sbName2');
-  nameEls.forEach(function(el){ el.textContent = user.name || 'Creator'; });
-  var emailEls = document.querySelectorAll('#sbEmail, #sbEmail2');
-  var idDisplay = (user.email && user.email.trim()) || (user.username && user.username.trim()) || user.id || user._id || '';
-  emailEls.forEach(function(el){ el.textContent = idDisplay; });
+  updateSidebarUser(user);
 }
 window.updateCreatorSidebar = updateCreatorSidebar;
 
@@ -83,18 +87,28 @@ function toggleSidebar() {
   var sb = document.getElementById('adminSidebar');
   var main = document.querySelector('.admin-main');
   var ov = document.getElementById('sbOverlay');
-  sb.classList.toggle('collapsed');
-  // Update main content margin when sidebar toggles
-  if (main) {
-    if (window.innerWidth <= 768) {
-      main.style.marginLeft = '0';
-    } else {
-      main.style.marginLeft = sb.classList.contains('collapsed') ? '56px' : '220px';
-    }
+  if (window.innerWidth <= 768) {
+    // On mobile: collapsed = sidebar is visible/open
+    sb.classList.toggle('collapsed');
+    if (ov) ov.classList.toggle('open', sb.classList.contains('collapsed'));
+  } else {
+    sb.classList.toggle('collapsed');
+    if (ov) ov.classList.remove('open');
+    if (main) main.style.marginLeft = sb.classList.contains('collapsed') ? '56px' : '220px';
+    try { localStorage.setItem('adminSidebarCollapsed', sb.classList.contains('collapsed')); } catch(e){}
   }
-  if (ov) ov.classList.toggle('open', sb.classList.contains('collapsed') && window.innerWidth <= 768);
-  try { localStorage.setItem('adminSidebarCollapsed', sb.classList.contains('collapsed')); } catch(e){}
 }
+
+function closeSidebarOnMobile() {
+  if (window.innerWidth > 768) return;
+  var sb = document.getElementById('adminSidebar');
+  var ov = document.getElementById('sbOverlay');
+  if (sb && sb.classList.contains('collapsed')) {
+    sb.classList.remove('collapsed');
+    if (ov) ov.classList.remove('open');
+  }
+}
+window.closeSidebarOnMobile = closeSidebarOnMobile;
 
 function toggleTheme() { document.body.classList.toggle('light-theme'); }
 
@@ -102,9 +116,10 @@ window.toggleSidebar = toggleSidebar;
 window.toggleTheme = toggleTheme;
 
 function toggleUserMenu(e) {
-  if (e) e.stopPropagation();
+  if (e && typeof e.stopPropagation === 'function') e.stopPropagation();
   var popup = document.getElementById('userPopup');
-  if (popup) popup.classList.toggle('open');
+  if (!popup) return;
+  popup.classList.toggle('open');
 }
 window.toggleUserMenu = toggleUserMenu;
 
@@ -164,7 +179,6 @@ function ensureSidebarUserMarkup() {
   var popups = sbBottom.querySelectorAll('#userPopup');
   if (popups.length > 1) {
     for (var j = 1; j < popups.length; j++) popups[j].remove();
-    popup = popups[0];
   }
 
   // Normalize main sb-user element
@@ -175,7 +189,7 @@ function ensureSidebarUserMarkup() {
     sbUser.id = 'sbUser';
     sbBottom.insertBefore(sbUser, sbBottom.firstChild);
   }
-  sbUser.onclick = function(e) { e.stopPropagation(); toggleUserMenu(); };
+  sbUser.onclick = function(e) { e.stopPropagation(); toggleUserMenu(e); };
 
   // Build inner structure if missing
   if (!sbUser.querySelector('.sb-av')) {
@@ -200,8 +214,8 @@ function ensureSidebarUserMarkup() {
   }
 
   // Ensure chevron exists
-  if (!sbUser.querySelector('svg')) {
-    var svg = document.createElement('svg'); svg.setAttribute('style','margin-left:auto;opacity:.5;flex-shrink:0'); svg.setAttribute('width','12'); svg.setAttribute('height','12'); svg.setAttribute('viewBox','0 0 16 16'); svg.setAttribute('fill','currentColor'); svg.innerHTML = '<path d="M4 6l4 4 4-4"/>';
+  if (!sbUser.querySelector('.sb-chevron')) {
+    var svg = document.createElement('svg'); svg.className = 'sb-chevron'; svg.setAttribute('width','12'); svg.setAttribute('height','12'); svg.setAttribute('viewBox','0 0 16 16'); svg.setAttribute('fill','currentColor'); svg.innerHTML = '<path d="M4 6l4 4 4-4"/>';
     sbUser.appendChild(svg);
   }
 
@@ -248,13 +262,15 @@ function ensureSidebarUserMarkup() {
     var addr2 = document.createElement('div'); addr2.className = 'sb-meta sb-address'; addr2.textContent = ''; popupInfo.appendChild(addr2);
   }
 
-  if (!popup.querySelector('.user-popup-divider')) {
-    var div = document.createElement('div'); div.className = 'user-popup-divider'; popup.appendChild(div);
-  }
-  Array.from(popup.querySelectorAll('.user-popup-item')).forEach(function(n){ n.remove(); });
-  var action1 = document.createElement('a'); action1.className = 'user-popup-item'; action1.href = 'profile-settings.html'; action1.innerHTML = '<svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><circle cx="8" cy="5" r="3"/><path d="M2 14c0-3.3 2.7-6 6-6s6 2.7 6 6H2z"/></svg>Accounts Settings';
-  var action2 = document.createElement('a'); action2.className = 'user-popup-item'; action2.href = '../signin.html'; action2.innerHTML = '<svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M6 2H3a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3M10 11l3-3-3-3M13 8H6"/></svg>Log out';
-  popup.appendChild(action1); popup.appendChild(action2);
+  // Sign-out handler for popup Sign Out link
+  popup.querySelectorAll('.user-popup-item[href="../signin.html"]').forEach(function(el) {
+    el.addEventListener('click', function(e) {
+      e.preventDefault();
+      localStorage.removeItem('trendify_access_token');
+      localStorage.removeItem('trendify_user');
+      window.location.href = '../signin.html';
+    });
+  });
 
   try {
     var savedUser = JSON.parse(localStorage.getItem('trendify_user') || 'null');
@@ -264,6 +280,14 @@ function ensureSidebarUserMarkup() {
 
 document.addEventListener('DOMContentLoaded', ensureSidebarUserMarkup);
 
+// Close popup on outside click
+document.addEventListener('click', function(e) {
+  var popup = document.getElementById('userPopup');
+  if (!popup || !popup.classList.contains('open')) return;
+  if (e.target && e.target.closest && (e.target.closest('#sbUser') || e.target.closest('#userPopup'))) return;
+  popup.classList.remove('open');
+});
+
 // Creator-specific normalization
 function ensureCreatorSidebarUserMarkup(cSidebar){
   if (!cSidebar) cSidebar = document.querySelector('.c-sidebar');
@@ -271,6 +295,15 @@ function ensureCreatorSidebarUserMarkup(cSidebar){
   var sbBottom = cSidebar.querySelector('.c-sidebar-bottom');
   if (!sbBottom) {
     sbBottom = document.createElement('div'); sbBottom.className = 'c-sidebar-bottom'; cSidebar.appendChild(sbBottom);
+  }
+  // remove any duplicate creator sidebar user blocks/popup already in the DOM
+  var creatorBottomUsers = sbBottom.querySelectorAll('.c-sb-user');
+  if (creatorBottomUsers.length > 1) {
+    for (var c = 1; c < creatorBottomUsers.length; c++) creatorBottomUsers[c].remove();
+  }
+  var creatorPopups = sbBottom.querySelectorAll('.c-user-popup');
+  if (creatorPopups.length > 1) {
+    for (var c2 = 1; c2 < creatorPopups.length; c2++) creatorPopups[c2].remove();
   }
   // user block
   var sbUser = sbBottom.querySelector('.c-sb-user');
@@ -280,19 +313,21 @@ function ensureCreatorSidebarUserMarkup(cSidebar){
     var info = document.createElement('div'); info.style.display='flex'; info.style.flexDirection='column';
     var name = document.createElement('span'); name.className='c-sidebar-label'; name.id='sbName'; name.style.fontSize='12px'; name.style.fontWeight='600';
     var email = document.createElement('span'); email.className='c-sb-email'; email.id='sbEmail'; email.style.fontSize='11px';
-    info.appendChild(name); info.appendChild(email);
+    var phone = document.createElement('span'); phone.className='c-sb-email c-sb-phone'; phone.style.fontSize='10px'; phone.textContent='Phone not added';
+    var address = document.createElement('span'); address.className='c-sb-email c-sb-address'; address.style.fontSize='10px'; address.textContent='Address not added';
+    info.appendChild(name); info.appendChild(email); info.appendChild(phone); info.appendChild(address);
     sbUser.appendChild(av); sbUser.appendChild(info);
     var chev = document.createElement('svg'); chev.setAttribute('style','margin-left:auto;opacity:.5;flex-shrink:0'); chev.setAttribute('width','12'); chev.setAttribute('height','12'); chev.setAttribute('viewBox','0 0 16 16'); chev.setAttribute('fill','currentColor'); chev.innerHTML='<path d="M4 6l4 4 4-4"/>';
     sbUser.appendChild(chev);
     sbBottom.appendChild(sbUser);
   }
   // popup
-  var popup = document.getElementById('userPopup');
+  var popup = sbBottom.querySelector('.c-user-popup');
   if (!popup) {
     popup = document.createElement('div'); popup.className='c-user-popup'; popup.id='userPopup';
     var head = document.createElement('div'); head.className='c-user-popup-head';
     var av2 = document.createElement('div'); av2.className='c-av'; av2.id='sbAv2'; av2.textContent='CR';
-    var info2 = document.createElement('div'); var name2 = document.createElement('div'); name2.id='sbName2'; name2.style.fontSize='12px'; name2.style.fontWeight='700'; var email2 = document.createElement('div'); email2.id='sbEmail2'; email2.style.fontSize='10px'; info2.appendChild(name2); info2.appendChild(email2);
+    var info2 = document.createElement('div'); var name2 = document.createElement('div'); name2.id='sbName2'; name2.style.fontSize='12px'; name2.style.fontWeight='700'; var email2 = document.createElement('div'); email2.id='sbEmail2'; email2.style.fontSize='10px'; var phone2 = document.createElement('div'); phone2.className='c-sb-phone'; phone2.style.fontSize='10px'; phone2.textContent='Phone not added'; var address2 = document.createElement('div'); address2.className='c-sb-address'; address2.style.fontSize='10px'; address2.textContent='Address not added'; info2.appendChild(name2); info2.appendChild(email2); info2.appendChild(phone2); info2.appendChild(address2);
     head.appendChild(av2); head.appendChild(info2);
     popup.appendChild(head);
     var divider = document.createElement('div'); divider.className='c-user-popup-divider'; popup.appendChild(divider);
@@ -307,26 +342,7 @@ function ensureCreatorSidebarUserMarkup(cSidebar){
   try { var u = JSON.parse(localStorage.getItem('trendify_user')||'null'); if(u){ updateCreatorSidebar(u); } } catch(e){}
 }
 
-// Normalize sidebar section labels (ensure PLATFORM is consistent)
-document.addEventListener('DOMContentLoaded', function() {
-  try {
-    document.querySelectorAll('.sb-divider .sb-label, .sb-label').forEach(function(el) {
-      // Use uppercase for divider labels, title-case for inline labels
-      if (el.parentElement && el.parentElement.classList && el.parentElement.classList.contains('sb-divider')) {
-        el.textContent = 'PLATFORM';
-      } else {
-        el.textContent = 'Platform';
-      }
-    });
-  } catch (e) {}
-});
-
-document.addEventListener('click', function(e) {
-  if (e.target.closest && e.target.closest('.user-popup-item')) return;
-  var popup = document.getElementById('userPopup');
-  var user = document.getElementById('sbUser');
-  if (popup && user && !popup.contains(e.target) && !user.contains(e.target)) popup.classList.remove('open');
-});
+// Sidebar section labels kept as-is in HTML
 
 // Wrap .sb-link text nodes in <span class="sb-link-text"> for CSS targeting + tooltip
 function initSidebar() {
@@ -381,3 +397,16 @@ function updateSidebarIcons() {
 
 document.addEventListener('DOMContentLoaded', initSidebar);
 document.addEventListener('DOMContentLoaded', updateSidebarIcons);
+
+// Auto-close sidebar on mobile when a nav link is clicked
+document.addEventListener('DOMContentLoaded', function() {
+  var sb = document.getElementById('adminSidebar');
+  if (!sb) return;
+  sb.addEventListener('click', function(e) {
+    var link = e.target.closest('.sb-link');
+    if (link) closeSidebarOnMobile();
+  });
+  // Also close when overlay is tapped
+  var ov = document.getElementById('sbOverlay');
+  if (ov) ov.addEventListener('click', function() { closeSidebarOnMobile(); });
+});

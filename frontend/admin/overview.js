@@ -35,8 +35,9 @@ async function loadStats() {
 
 async function loadTransactions(days) {
   try {
-    const data = await AdminAPI.getTransactions(days);
-    console.log('Transactions loaded:', data);
+    const [data, products] = await Promise.all([AdminAPI.getTransactions(days), AdminAPI.getProducts()]);
+    const productMap = {};
+    (products || []).forEach(p => { productMap[p.id] = p.name || p.title || p.id; });
     
     if (!data || data.length === 0) {
       allTxns = [];
@@ -50,7 +51,7 @@ async function loadTransactions(days) {
     allTxns = data.map((t, i) => ({
       id: t.id,
     creator: names[i],
-    product: t.product_id ? t.product_id.slice(0, 8) + '…' : '—',
+    product: t.product_id ? (productMap[t.product_id] || t.product_id.slice(0, 8) + '…') : '—',
     amount: fmtAmt(t.amount),
     status: t.status || 'Pending',
     date: fmt(t.created_at),

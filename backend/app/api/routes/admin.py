@@ -285,6 +285,40 @@ def list_transactions(
     return result
 
 
+# --- Pay Wallets (bulk payout from wallet balance) ---
+@router.post("/pay-wallets")
+def pay_wallets(
+    data: dict,
+    db: Session = Depends(get_db), _: User = Depends(require_admin),
+):
+    import uuid as _uuid
+    user_ids = data.get("user_ids", [])
+    if not user_ids:
+        raise HTTPException(status_code=400, detail="No user IDs provided")
+    results = []
+    for uid in user_ids:
+        try:
+            user = db.query(User).filter(User.id == uid).first()
+            if not user or not user.wallet_balance or user.wallet_balance <= 0:
+                continue
+            amount = user.wallet_balance
+            payout = Payout(
+                id=str(_uuid.uuid4()),
+                user_id=user.id,
+                amount=amount,
+                status="Paid",
+                payout_type="creator",
+            )
+            db.add(payout)
+            user.wallet_balance = Decimal('0')
+            db.commit()
+            results.append({"user_id": str(user.id), "amount": float(amount), "payout_id": payout.id})
+        except Exception as e:
+            db.rollback()
+            continue
+    return {"paid": results, "count": len(results)}
+
+
 # --- Payouts ---
 @router.get("/payouts", response_model=list[PayoutResponse])
 def list_payouts(

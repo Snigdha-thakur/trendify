@@ -158,6 +158,18 @@
     getReferralEarnings: () => query('/referral-earnings?skip=0&limit=1000'),
     getPayoutWebhooks: () => query('/payout-webhooks?skip=0&limit=1000'),
 
+    payWallets: async (userIds) => {
+      const token = getToken();
+      if (!token) throw new Error('No auth token');
+      const res = await fetch(`${API_URL}/pay-wallets`, {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ user_ids: userIds }),
+      });
+      if (!res.ok) { const t = await res.text(); throw new Error(t); }
+      return res.json();
+    },
+
     verifyTransaction: async (txnId) => {
       const token = getToken();
       if (!token) return null;
