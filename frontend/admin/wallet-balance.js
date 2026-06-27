@@ -93,7 +93,7 @@ function toggleSidebar() {
   const sb = document.getElementById('adminSidebar');
   const ov = document.getElementById('sbOverlay');
   sb.classList.toggle('collapsed');
-  if (ov) ov.classList.toggle('open', !sb.classList.contains('collapsed') && window.innerWidth <= 768);
+  if (ov) ov.classList.toggle('open', sb.classList.contains('collapsed') && window.innerWidth <= 768);
 }
 function toggleTheme() { document.body.classList.toggle('light-theme'); }
 function toggleUserMenu() { event.stopPropagation(); document.getElementById('userPopup').classList.toggle('open'); }
