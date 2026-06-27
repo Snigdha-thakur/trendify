@@ -57,11 +57,16 @@
     <div class="sb-bottom">
       <div class="sb-user" id="sbUser" onclick="toggleUserMenu()">
         <div class="sb-av">SB</div>
-        <div><div class="sb-name">Soumya Barddhan Panda</div><div class="sb-plan">soumyaofficial2004@gmail.com</div></div>
+        <div class="sb-user-info">
+          <div class="sb-name">Soumya Barddhan Panda</div>
+          <div class="sb-plan">soumyaofficial2004@gmail.com</div>
+          <div class="sb-meta sb-phone">+91 9876543210</div>
+          <div class="sb-meta sb-address">Cuttack, Odisha</div>
+        </div>
         <svg style="margin-left:auto;opacity:.5;flex-shrink:0" width="12" height="12" viewBox="0 0 16 16" fill="currentColor"><path d="M4 6l4 4 4-4"/></svg>
       </div>
       <div class="user-popup" id="userPopup">
-        <div class="user-popup-head"><div class="sb-av">SB</div><div><div class="sb-name">Soumya Barddhan Panda</div><div class="sb-plan">soumyaofficial2004@gmail.com</div></div></div>
+        <div class="user-popup-head"><div class="sb-av">SB</div><div class="sb-user-info"><div class="sb-name">Soumya Barddhan Panda</div><div class="sb-plan">soumyaofficial2004@gmail.com</div><div class="sb-meta sb-phone">+91 9876543210</div><div class="sb-meta sb-address">Cuttack, Odisha</div></div></div>
         <div class="user-popup-divider"></div>
         <a class="user-popup-item" href="profile-settings.html">
           <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><circle cx="8" cy="5" r="3"/><path d="M2 14c0-3.3 2.7-6 6-6s6 2.7 6 6H2z"/></svg>
@@ -154,10 +159,6 @@
               <label class="ps-label">Address</label>
               <textarea class="ps-input ps-textarea" id="adminAddress"></textarea>
             </div>
-            <div class="ps-field">
-              <label class="ps-label">Disclaimer</label>
-              <textarea class="ps-input ps-textarea" id="adminDisclaimer" placeholder="Enter disclaimer"></textarea>
-            </div>
             <div class="ps-grid-2">
               <div class="ps-field">
                 <label class="ps-label">Instagram Link</label>
@@ -211,10 +212,14 @@ async function initAuthGuard() {
   const user = TrendifyAuth.requireAuth('../signin.html');
   if (!user) return;
   if (user.role !== 'admin') { window.location.href = '../signin.html'; return; }
-  const initials = (user.name || 'A').split(' ').map(w => w[0]).join('').toUpperCase().slice(0,2);
-  document.querySelectorAll('.sb-av').forEach(el => el.textContent = initials);
-  document.querySelectorAll('.sb-name').forEach(el => el.textContent = user.name || 'Admin');
-  document.querySelectorAll('.sb-plan').forEach(el => el.textContent = user.email || '');
+  if (window.updateSidebarUser) {
+    window.updateSidebarUser(user);
+  } else {
+    const initials = (user.name || 'A').split(' ').map(w => w[0]).join('').toUpperCase().slice(0,2);
+    document.querySelectorAll('.sb-av').forEach(el => el.textContent = initials);
+    document.querySelectorAll('.sb-name').forEach(el => el.textContent = user.name || 'Admin');
+    document.querySelectorAll('.sb-plan').forEach(el => el.textContent = user.email || '');
+  }
 }
 initAuthGuard();
 
@@ -257,11 +262,14 @@ async function loadProfile() {
 
     // Save to localStorage and update UI
     localStorage.setItem('trendify_user', JSON.stringify(user));
-    // Update sidebar display
-    const initials = (user.name || 'A').split(' ').map(w => w[0]).join('').toUpperCase().slice(0,2);
-    document.querySelectorAll('.sb-av').forEach(el => el.textContent = initials);
-    document.querySelectorAll('.sb-name').forEach(el => el.textContent = user.name || 'Admin');
-    document.querySelectorAll('.sb-plan').forEach(el => el.textContent = (user.email&&user.email.trim())||(user.username&&user.username.trim())||user.id||user._id||'');
+    if (window.updateSidebarUser) {
+      window.updateSidebarUser(user);
+    } else {
+      const initials = (user.name || 'A').split(' ').map(w => w[0]).join('').toUpperCase().slice(0,2);
+      document.querySelectorAll('.sb-av').forEach(el => el.textContent = initials);
+      document.querySelectorAll('.sb-name').forEach(el => el.textContent = user.name || 'Admin');
+      document.querySelectorAll('.sb-plan').forEach(el => el.textContent = (user.email&&user.email.trim())||(user.username&&user.username.trim())||user.id||user._id||'');
+    }
 
     // Populate profile fields
     const profileName = document.getElementById('profileName');
@@ -276,7 +284,6 @@ async function loadProfile() {
     const adminEmail = document.getElementById('adminEmail');
     const adminPhone = document.getElementById('adminPhone');
     const adminAddress = document.getElementById('adminAddress');
-    const adminDisclaimer = document.getElementById('adminDisclaimer');
     const adminInstagram = document.getElementById('adminInstagram');
     const adminFacebook = document.getElementById('adminFacebook');
     const adminYoutube = document.getElementById('adminYoutube');
@@ -285,7 +292,6 @@ async function loadProfile() {
     if (adminEmail) adminEmail.value = user.email || '';
     if (adminPhone) adminPhone.value = user.phone || '';
     if (adminAddress) adminAddress.value = user.address || '';
-    if (adminDisclaimer) adminDisclaimer.value = user.disclaimer || '';
     if (adminInstagram) adminInstagram.value = user.instagram || '';
     if (adminFacebook) adminFacebook.value = user.facebook || '';
     if (adminYoutube) adminYoutube.value = user.youtube || '';
@@ -321,7 +327,6 @@ async function loadProfile() {
     const adminEmail = document.getElementById('adminEmail');
     const adminPhone = document.getElementById('adminPhone');
     const adminAddress = document.getElementById('adminAddress');
-    const adminDisclaimer = document.getElementById('adminDisclaimer');
     const adminInstagram = document.getElementById('adminInstagram');
     const adminFacebook = document.getElementById('adminFacebook');
     const adminYoutube = document.getElementById('adminYoutube');
@@ -329,7 +334,6 @@ async function loadProfile() {
     if (adminEmail) adminEmail.value = user.email || '';
     if (adminPhone) adminPhone.value = user.phone || '';
     if (adminAddress) adminAddress.value = user.address || '';
-    if (adminDisclaimer) adminDisclaimer.value = user.disclaimer || '';
     if (adminInstagram) adminInstagram.value = user.instagram || '';
     if (adminFacebook) adminFacebook.value = user.facebook || '';
     if (adminYoutube) adminYoutube.value = user.youtube || '';
@@ -381,16 +385,19 @@ async function updateProfile(evt) {
         referral_wallet_balance: updated.referral_wallet_balance,
         referral_code: updated.referral_code,
         address: updated.address,
-        disclaimer: updated.disclaimer,
         instagram: updated.instagram,
         facebook: updated.facebook,
         youtube: updated.youtube,
         linkedin: updated.linkedin,
       };
       localStorage.setItem('trendify_user', JSON.stringify(userData));
-      document.querySelectorAll('.sb-name').forEach(el => el.textContent = name);
-      const initials = name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0,2);
-      document.querySelectorAll('.sb-av').forEach(el => el.textContent = initials);
+      if (window.updateSidebarUser) {
+        window.updateSidebarUser(userData);
+      } else {
+        document.querySelectorAll('.sb-name').forEach(el => el.textContent = name);
+        const initials = name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0,2);
+        document.querySelectorAll('.sb-av').forEach(el => el.textContent = initials);
+      }
       btn.textContent = '✓ Saved';
       btn.style.background = 'var(--green)';
       setTimeout(() => { btn.textContent = 'Update Profile'; btn.style.background = ''; btn.disabled = false; }, 2000);
@@ -411,7 +418,6 @@ async function updateAdminSettings(evt) {
   
   const phone = document.getElementById('adminPhone').value.trim();
   const address = document.getElementById('adminAddress').value.trim();
-  const disclaimer = document.getElementById('adminDisclaimer').value.trim();
   const instagram = document.getElementById('adminInstagram').value.trim();
   const facebook = document.getElementById('adminFacebook').value.trim();
   const youtube = document.getElementById('adminYoutube').value.trim();
@@ -432,7 +438,7 @@ async function updateAdminSettings(evt) {
         'Authorization': 'Bearer ' + token, 
         'Content-Type': 'application/json' 
       },
-      body: JSON.stringify({ phone, address, disclaimer, instagram, facebook, youtube, linkedin }),
+      body: JSON.stringify({ phone, address, instagram, facebook, youtube, linkedin }),
     });
     if (res.ok) {
       const updated = await res.json();
@@ -447,7 +453,6 @@ async function updateAdminSettings(evt) {
         referral_wallet_balance: updated.referral_wallet_balance,
         referral_code: updated.referral_code,
         address: updated.address,
-        disclaimer: updated.disclaimer,
         instagram: updated.instagram,
         facebook: updated.facebook,
         youtube: updated.youtube,

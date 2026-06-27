@@ -17,6 +17,11 @@ document.addEventListener('DOMContentLoaded', function() {
     if (bcBtn) bcBtn.remove();
   }
   
+  try {
+    var savedUser = JSON.parse(localStorage.getItem('trendify_user') || 'null');
+    if (savedUser) updateSidebarUser(savedUser);
+  } catch (e) {}
+
   // Apply sidebar collapse state from localStorage and set main margin
   var sb = document.getElementById('adminSidebar');
   var main = document.querySelector('.admin-main');
@@ -48,6 +53,17 @@ document.addEventListener('DOMContentLoaded', function() {
     updateMainMargin();
   });
 });
+
+function updateSidebarUser(user) {
+  if (!user) return;
+  var initials = (user.name || 'A').split(' ').map(function(w) { return w[0]; }).join('').toUpperCase().slice(0, 2);
+  document.querySelectorAll('.sb-av').forEach(function(el) { el.textContent = initials; });
+  document.querySelectorAll('.sb-name').forEach(function(el) { el.textContent = user.name || 'Admin'; });
+  document.querySelectorAll('.sb-plan').forEach(function(el) { el.textContent = (user.email && user.email.trim()) || (user.username && user.username.trim()) || user.id || user._id || ''; });
+  document.querySelectorAll('.sb-phone').forEach(function(el) { el.textContent = user.phone && user.phone.trim() ? user.phone.trim() : 'Phone not added'; });
+  document.querySelectorAll('.sb-address').forEach(function(el) { el.textContent = user.address && user.address.trim() ? user.address.trim() : 'Address not added'; });
+}
+window.updateSidebarUser = updateSidebarUser;
 
 function toggleSidebar() {
   var sb = document.getElementById('adminSidebar');

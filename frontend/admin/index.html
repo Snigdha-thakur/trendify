@@ -113,9 +113,11 @@
     <div class="sb-bottom">
       <div class="sb-user" id="sbUser" onclick="toggleUserMenu()">
         <div class="sb-av">SB</div>
-        <div>
+        <div class="sb-user-info">
           <div class="sb-name">Soumya Barddhan Panda</div>
           <div class="sb-plan">soumyaofficial2004@gmail.com</div>
+          <div class="sb-meta sb-phone">+91 9876543210</div>
+          <div class="sb-meta sb-address">Cuttack, Odisha</div>
         </div>
         <svg style="margin-left:auto;opacity:.5;flex-shrink:0" width="12" height="12" viewBox="0 0 16 16" fill="currentColor"><path d="M4 6l4 4 4-4"/></svg>
       </div>
@@ -123,9 +125,11 @@
       <div class="user-popup" id="userPopup">
         <div class="user-popup-head">
           <div class="sb-av">SB</div>
-          <div>
+          <div class="sb-user-info">
             <div class="sb-name">Soumya Barddhan Panda</div>
             <div class="sb-plan">soumyaofficial2004@gmail.com</div>
+            <div class="sb-meta sb-phone">+91 9876543210</div>
+            <div class="sb-meta sb-address">Cuttack, Odisha</div>
           </div>
         </div>
         <div class="user-popup-divider"></div>
@@ -205,10 +209,14 @@
     const user = TrendifyAuth.requireAuth('../signin.html');
     if (!user) return;
     if (user.role !== 'admin') { window.location.href = '../signin.html'; return; }
-    const initials = (user.name || 'A').split(' ').map(w => w[0]).join('').toUpperCase().slice(0,2);
-    document.querySelectorAll('.sb-av').forEach(el => el.textContent = initials);
-    document.querySelectorAll('.sb-name').forEach(el => el.textContent = user.name || 'Admin');
-    document.querySelectorAll('.sb-plan').forEach(el => el.textContent = (user.email&&user.email.trim())||(user.username&&user.username.trim())||user.id||user._id||'');
+    if (window.updateSidebarUser) {
+      window.updateSidebarUser(user);
+    } else {
+      const initials = (user.name || 'A').split(' ').map(w => w[0]).join('').toUpperCase().slice(0,2);
+      document.querySelectorAll('.sb-av').forEach(el => el.textContent = initials);
+      document.querySelectorAll('.sb-name').forEach(el => el.textContent = user.name || 'Admin');
+      document.querySelectorAll('.sb-plan').forEach(el => el.textContent = (user.email&&user.email.trim())||(user.username&&user.username.trim())||user.id||user._id||'');
+    }
   }
   initPage();
 

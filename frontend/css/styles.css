@@ -104,7 +104,9 @@ button,a{white-space:normal}
   .hv-row{flex-wrap:wrap;gap:10px}
   .eco-wrap,.chap,.pay-inner{padding-left:16px;padding-right:16px}
   .chap-l,.chap-r{padding:40px 20px}
-  .v-flow{flex-direction:column;align-items:flex-start}
+  .v-flow{flex-direction:row;align-items:center;justify-content:center;gap:6px;flex-wrap:nowrap;padding:12px 14px;overflow-x:auto}
+  .vf-n{font-size:10px;min-width:0;flex:1 1 0}
+  .vf-arr{width:14px;flex-shrink:0}
   .belt{padding:16px 0}
   .bi{padding:0 24px;font-size:9px}
 }
@@ -128,6 +130,10 @@ button,a{white-space:normal}
   .chap-l,.chap-r{padding:32px 18px}
   .bi{padding:0 20px}
   .pay-stat,.pp-foot,.v-stream,.v-settle{flex-wrap:wrap;gap:8px}
+  .btn-nav,.btn-nav-ghost{white-space:normal;line-height:1.2;min-height:44px;display:flex;align-items:center;justify-content:center}
+  .v-flow{padding:10px 12px;gap:4px}
+  .vf-n{font-size:9px}
+  .vf-arr{width:10px}
 }
 
 @media (max-width:480px){
