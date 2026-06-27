@@ -110,6 +110,30 @@ window.toggleUserMenu = toggleUserMenu;
 
 // Ensure every admin page has a consistent bottom user block and popup
 function ensureSidebarUserMarkup() {
+  // Remove any page-level sidebar bottom or popup that are not inside the
+  // canonical `#adminSidebar` to prevent duplicate user blocks.
+  try {
+    var adminEl = document.getElementById('adminSidebar');
+    document.querySelectorAll('.sb-bottom').forEach(function(el){
+      if (!adminEl || !adminEl.contains(el)) el.remove();
+    });
+    document.querySelectorAll('.sb-user').forEach(function(el){
+      if (!adminEl || !adminEl.contains(el)) el.remove();
+    });
+    // Ensure there's only one element with id userPopup and keep the one
+    // inside adminSidebar when possible.
+    var allPopups = Array.prototype.slice.call(document.querySelectorAll('#userPopup'));
+    if (allPopups.length > 1) {
+      for (var k = 0; k < allPopups.length; k++) {
+        var p = allPopups[k];
+        if (adminEl && adminEl.contains(p)) continue;
+        p.remove();
+      }
+      // refresh list and remove any remaining extras (keep first)
+      allPopups = Array.prototype.slice.call(document.querySelectorAll('#userPopup'));
+      for (var r = 1; r < allPopups.length; r++) allPopups[r].remove();
+    }
+  } catch(e) {}
   var sb = document.getElementById('adminSidebar');
   var sbBottom = sb ? sb.querySelector('.sb-bottom') : null;
   if (sb) {
