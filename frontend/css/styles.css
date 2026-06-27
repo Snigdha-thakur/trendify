@@ -43,6 +43,16 @@ body{
 /* Make images responsive */
 img{max-width:100%;height:auto;display:block}
 
+/* Mobile-safe text wrapping and overflow handling */
+p,li,span,a,button,div,h1,h2,h3,h4,h5,h6{
+  max-width:100%;
+  overflow-wrap:anywhere;
+  word-break:break-word;
+  -webkit-hyphens:auto;
+  hyphens:auto;
+}
+button,a{white-space:normal}
+
 /* Reduce/disable heavy animations on touch devices to improve performance */
 .touch-device .hl, .touch-device #particles, .touch-device #prog, .touch-device .belt-track{display:none !important}
 .touch-device *:not(.logo):not(.logo-text):not(.site-logo){animation: none !important; transition: none !important}
@@ -103,30 +113,36 @@ img{max-width:100%;height:auto;display:block}
   .logo-text{font-size:15px;max-width:180px}
   .nv{width:100%;justify-content:center;gap:10px}
   .btn-nav,.btn-nav-ghost{display:block;width:100%;text-align:center}
-  .hero-h1{font-size:clamp(32px,14vw,64px)}
-  .hero-eyebrow{gap:8px;margin-bottom:14px}
+  .hero-h1{font-size:clamp(36px,13vw,64px);line-height:0.9;max-width:100%}
+  .hero-eyebrow{gap:8px;margin-bottom:14px;line-height:1.6;white-space:normal;justify-content:center;text-align:center}
   .hero-z{padding-left:14px;padding-right:14px}
-  .hero-cta-col{width:100%;align-items:center}
+  .hero-cta-col{width:100%;align-items:stretch}
+  .hero-cta-col .btn-a,.hero-cta-col .btn-b{width:100%;justify-content:center;text-align:center}
   .hero-visual{margin-top:20px}
   .hv-body{grid-template-columns:1fr}
   .hv-side{padding:18px}
+  .hv-row{flex-wrap:wrap;gap:6px;align-items:flex-start}
+  .hv-row-r{margin-left:auto}
   .eco-fig{grid-template-columns:1fr;gap:20px}
   .v-pay-card,.v-comm{padding:18px}
   .chap-l,.chap-r{padding:32px 18px}
   .bi{padding:0 20px}
+  .pay-stat,.pp-foot,.v-stream,.v-settle{flex-wrap:wrap;gap:8px}
 }
 
 @media (max-width:480px){
-  .hero-h1{font-size:clamp(28px,16vw,52px)}
-  .hero-eyebrow{font-size:11px;gap:8px}
-  .hero-sub{font-size:13px}
+  .hero-h1{font-size:clamp(32px,12vw,56px);line-height:0.88}
+  .hero-eyebrow{font-size:10px;gap:8px;letter-spacing:0.14em}
+  .hero-sub{font-size:13px;line-height:1.7}
   .hero-z{padding-left:12px;padding-right:12px}
-  .hero-stats{padding:24px 0}
+  .hero-stats{padding:24px 0;grid-template-columns:1fr}
   .hv-chart-bars{height:48px}
   .v-pc-desc,.v-comm-c,.eco-body,.mf-sub{font-size:13px}
   .bi{padding:0 16px;font-size:9px}
   .belt{padding:14px 0}
   .chap-l,.chap-r{padding:28px 16px}
+  .btn-a{padding:14px 24px;font-size:11px}
+  .btn-nav,.btn-nav-ghost{padding:10px 12px;font-size:10px}
 }
 
 @media (max-width:375px){
@@ -134,11 +150,11 @@ img{max-width:100%;height:auto;display:block}
 }
 
 @media (max-width:360px){
-  .hero-h1{font-size:clamp(24px,18vw,48px)}
-  .hero-eyebrow{gap:6px}
-  .hero-sub{font-size:12px}
+  .hero-h1{font-size:clamp(28px,10vw,44px);line-height:0.86}
+  .hero-eyebrow{gap:6px;letter-spacing:0.12em}
+  .hero-sub{font-size:12px;line-height:1.65}
   .hero-z{padding-left:10px;padding-right:10px}
-  .btn-nav,.btn-nav-ghost{padding:10px 12px}
+  .btn-nav,.btn-nav-ghost{padding:10px 12px;font-size:9px}
   .bi{padding:0 12px}
 }
 
