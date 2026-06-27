@@ -398,6 +398,28 @@ function updateSidebarIcons() {
 document.addEventListener('DOMContentLoaded', initSidebar);
 document.addEventListener('DOMContentLoaded', updateSidebarIcons);
 
+// Normalize sidebar links to absolute paths to avoid relative path issues
+document.addEventListener('DOMContentLoaded', function() {
+  try {
+    var sb = document.getElementById('adminSidebar');
+    if (!sb) return;
+    sb.querySelectorAll('.sb-link').forEach(function(link) {
+      var href = (link.getAttribute('href') || '').trim();
+      if (!href) return;
+      // If already absolute or external, leave as-is
+      if (href.startsWith('/') || href.startsWith('http')) return;
+      // Ensure admin pages resolve under /admin/
+      var normalized = href.replace(/^\.\/?/, '');
+      if (!normalized.startsWith('admin/')) normalized = 'admin/' + normalized;
+      // Add leading slash
+      normalized = '/' + normalized;
+      link.setAttribute('href', normalized);
+      // Update title for tooltip if present
+      if (!link.title) link.title = normalized;
+    });
+  } catch (e) { console.warn('normalize sidebar links failed', e); }
+});
+
 // Auto-close sidebar on mobile when a nav link is clicked
 document.addEventListener('DOMContentLoaded', function() {
   var sb = document.getElementById('adminSidebar');
