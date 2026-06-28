@@ -1210,7 +1210,7 @@ footer .ft-grid{align-items:start}
   .pr-col{padding:40px 28px}
   .pr-col.ft{border-left:none;border-right:none}
   .pr-amt{font-size:clamp(40px,10vw,56px)}
-  .pr-btn{white-space:normal;word-break:break-word;line-height:1.4;padding:14px 10px}
+  .pr-btn{white-space:normal;word-break:break-word;line-height:1.4;padding:14px 10px;letter-spacing:.02em;font-size:11px}
 
   /* FINALE */
   #finale{padding:80px 0 60px}
