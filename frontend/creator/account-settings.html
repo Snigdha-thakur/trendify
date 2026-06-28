@@ -325,6 +325,9 @@ async function updateProfile(){
     if(!res.ok) throw new Error(await res.text());
     var u=await res.json();
     localStorage.setItem('trendify_user',JSON.stringify(u));
+    if (window.updateCreatorSidebar) {
+      window.updateCreatorSidebar(u);
+    }
     var ini=name.split(' ').map(function(w){return w[0];}).join('').toUpperCase().slice(0,2);
     document.getElementById('sbAv').textContent=ini;
     document.getElementById('sbAv2').textContent=ini;
@@ -355,6 +358,9 @@ async function updateCreatorSettings(){
     if(!res.ok) throw new Error(await res.text());
     var u=await res.json();
     localStorage.setItem('trendify_user',JSON.stringify(u));
+    if (window.updateCreatorSidebar) {
+      window.updateCreatorSidebar(u);
+    }
     showMsg('success','Creator settings updated successfully.');
   }catch(e){ showMsg('error','Failed to update settings: '+e.message); }
   btn.textContent='Update Settings'; btn.disabled=false;

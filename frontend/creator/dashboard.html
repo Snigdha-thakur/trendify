@@ -44,8 +44,6 @@
         <div class="c-av" id="sbAv">CR</div>
         <div style="display:flex;flex-direction:column;">
           <span class="c-sidebar-label" id="sbName" style="font-size:12px;font-weight:600;"></span>
-          <span class="c-sb-email" id="sbEmail" style="font-size:11px;"></span>
-          <span class="c-sb-phone" style="font-size:10px;color:#9d99bb;"></span>
           <span class="c-sb-address" style="font-size:10px;color:#9d99bb;"></span>
         </div>
         <svg style="margin-left:auto;opacity:.5;flex-shrink:0" width="12" height="12" viewBox="0 0 16 16" fill="currentColor"><path d="M4 6l4 4 4-4"/></svg>
@@ -119,11 +117,9 @@ function initUser(){
   var ini=(u.name||'CR').split(' ').map(function(w){return w[0];}).join('').toUpperCase().slice(0,2);
   document.getElementById('sbAv').textContent=ini;
   document.getElementById('sbName').textContent=u.name||'Creator';
-  var idDisplay=(u.email&&u.email.trim())||(u.username&&u.username.trim())||u.id||u._id||'';
-  document.getElementById('sbEmail').textContent=idDisplay;
   document.getElementById('sbAv2').textContent=ini;
   document.getElementById('sbName2').textContent=u.name||'Creator';
-  document.getElementById('sbEmail2').textContent=idDisplay;
+  document.getElementById('sbEmail2').textContent=(u.email&&u.email.trim())||(u.username&&u.username.trim())||u.id||u._id||'';
   document.querySelectorAll('.c-sb-phone').forEach(function(el){el.textContent=u.phone&&u.phone.trim()?u.phone.trim():'';});
   document.querySelectorAll('.c-sb-address').forEach(function(el){el.textContent=u.address&&u.address.trim()?u.address.trim():'';});
   if(localStorage.getItem('_from_admin')) document.getElementById('backBtn').style.display='inline-flex';

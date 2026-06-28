@@ -53,6 +53,13 @@ class UserLoginResponse(BaseModel):
     user: UserProfile
 
 
+class ContactInfo(BaseModel):
+    name: Optional[str] = "Trendify Admin"
+    email: Optional[str] = ""
+    phone: Optional[str] = ""
+    address: Optional[str] = ""
+
+
 # User
 class UserResponse(BaseModel):
     id: UUID

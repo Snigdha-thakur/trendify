@@ -43,16 +43,6 @@ body{
 /* Make images responsive */
 img{max-width:100%;height:auto;display:block}
 
-/* Mobile-safe text wrapping and overflow handling */
-p,li,span,a,button,div,h1,h2,h3,h4,h5,h6{
-  max-width:100%;
-  overflow-wrap:anywhere;
-  word-break:break-word;
-  -webkit-hyphens:auto;
-  hyphens:auto;
-}
-button,a{white-space:normal}
-
 /* Reduce/disable heavy animations on touch devices to improve performance */
 .touch-device .hl, .touch-device #particles, .touch-device #prog, .touch-device .belt-track{display:none !important}
 .touch-device *:not(.logo):not(.logo-text):not(.site-logo){animation: none !important; transition: none !important}
@@ -104,9 +94,7 @@ button,a{white-space:normal}
   .hv-row{flex-wrap:wrap;gap:10px}
   .eco-wrap,.chap,.pay-inner{padding-left:16px;padding-right:16px}
   .chap-l,.chap-r{padding:40px 20px}
-  .v-flow{flex-direction:row;align-items:center;justify-content:center;gap:6px;flex-wrap:nowrap;padding:12px 14px;overflow-x:auto}
-  .vf-n{font-size:10px;min-width:0;flex:1 1 0}
-  .vf-arr{width:14px;flex-shrink:0}
+  .v-flow{flex-direction:column;align-items:flex-start}
   .belt{padding:16px 0}
   .bi{padding:0 24px;font-size:9px}
 }
@@ -115,40 +103,30 @@ button,a{white-space:normal}
   .logo-text{font-size:15px;max-width:180px}
   .nv{width:100%;justify-content:center;gap:10px}
   .btn-nav,.btn-nav-ghost{display:block;width:100%;text-align:center}
-  .hero-h1{font-size:clamp(36px,13vw,64px);line-height:0.9;max-width:100%}
-  .hero-eyebrow{gap:8px;margin-bottom:14px;line-height:1.6;white-space:normal;justify-content:center;text-align:center}
+  .hero-h1{font-size:clamp(32px,14vw,64px)}
+  .hero-eyebrow{gap:8px;margin-bottom:14px}
   .hero-z{padding-left:14px;padding-right:14px}
-  .hero-cta-col{width:100%;align-items:stretch}
-  .hero-cta-col .btn-a,.hero-cta-col .btn-b{width:100%;justify-content:center;text-align:center}
+  .hero-cta-col{width:100%;align-items:center}
   .hero-visual{margin-top:20px}
   .hv-body{grid-template-columns:1fr}
   .hv-side{padding:18px}
-  .hv-row{flex-wrap:wrap;gap:6px;align-items:flex-start}
-  .hv-row-r{margin-left:auto}
   .eco-fig{grid-template-columns:1fr;gap:20px}
   .v-pay-card,.v-comm{padding:18px}
   .chap-l,.chap-r{padding:32px 18px}
   .bi{padding:0 20px}
-  .pay-stat,.pp-foot,.v-stream,.v-settle{flex-wrap:wrap;gap:8px}
-  .btn-nav,.btn-nav-ghost{white-space:normal;line-height:1.2;min-height:44px;display:flex;align-items:center;justify-content:center}
-  .v-flow{padding:10px 12px;gap:4px}
-  .vf-n{font-size:9px}
-  .vf-arr{width:10px}
 }
 
 @media (max-width:480px){
-  .hero-h1{font-size:clamp(32px,12vw,56px);line-height:0.88}
-  .hero-eyebrow{font-size:10px;gap:8px;letter-spacing:0.14em}
-  .hero-sub{font-size:13px;line-height:1.7}
+  .hero-h1{font-size:clamp(28px,16vw,52px)}
+  .hero-eyebrow{font-size:11px;gap:8px}
+  .hero-sub{font-size:13px}
   .hero-z{padding-left:12px;padding-right:12px}
-  .hero-stats{padding:24px 0;grid-template-columns:1fr}
+  .hero-stats{padding:24px 0}
   .hv-chart-bars{height:48px}
   .v-pc-desc,.v-comm-c,.eco-body,.mf-sub{font-size:13px}
   .bi{padding:0 16px;font-size:9px}
   .belt{padding:14px 0}
   .chap-l,.chap-r{padding:28px 16px}
-  .btn-a{padding:14px 24px;font-size:11px}
-  .btn-nav,.btn-nav-ghost{padding:10px 12px;font-size:10px}
 }
 
 @media (max-width:375px){
@@ -156,11 +134,11 @@ button,a{white-space:normal}
 }
 
 @media (max-width:360px){
-  .hero-h1{font-size:clamp(28px,10vw,44px);line-height:0.86}
-  .hero-eyebrow{gap:6px;letter-spacing:0.12em}
-  .hero-sub{font-size:12px;line-height:1.65}
+  .hero-h1{font-size:clamp(24px,18vw,48px)}
+  .hero-eyebrow{gap:6px}
+  .hero-sub{font-size:12px}
   .hero-z{padding-left:10px;padding-right:10px}
-  .btn-nav,.btn-nav-ghost{padding:10px 12px;font-size:9px}
+  .btn-nav,.btn-nav-ghost{padding:10px 12px}
   .bi{padding:0 12px}
 }
 
@@ -1083,7 +1061,7 @@ footer{
   border-top:1px solid var(--rim);padding:80px 0 48px;
   background:linear-gradient(180deg,rgba(13,11,30,.92) 0%,rgba(6,6,15,.95) 100%);
 }
-.ft-grid{max-width:var(--max-w);margin:0 auto;padding:0 var(--pad-x);display:grid;grid-template-columns:2.5fr 1fr 1fr;gap:80px;margin-bottom:72px}
+.ft-grid{max-width:var(--max-w);margin:0 auto;padding:0 var(--pad-x);display:grid;grid-template-columns:2.5fr 1fr 1fr 1fr;gap:80px;margin-bottom:72px}
 .ft-logo{
   font-family:var(--f-sans);font-size:18px;font-weight:800;
   background:linear-gradient(135deg,#fff 20%,var(--violet));
@@ -1103,8 +1081,14 @@ footer{
 .ft-links{list-style:none;display:flex;flex-direction:column;gap:12px}
 .ft-links a{font-size:13px;color:var(--smoke);text-decoration:none;transition:color .2s,padding-left .2s}
 .ft-links a:hover{color:#fff;padding-left:6px}
-.ft-bot{max-width:var(--max-w);margin:0 auto;padding:32px var(--pad-x) 0;border-top:1px solid var(--rim);display:flex;justify-content:space-between;align-items:center;font-size:11px;color:var(--smoke)}
-.ft-bot span:last-child{font-family:var(--f-mono);letter-spacing:.06em}
+.ft-bot{max-width:var(--max-w);margin:0 auto;padding:32px var(--pad-x) 0;border-top:1px solid var(--rim);display:flex;justify-content:center;align-items:center;font-size:11px;color:var(--smoke)}
+footer .ft-grid{align-items:start}
+.footer-contact-info{display:grid;gap:8px}
+.footer-contact-info > div{font-size:13px;color:var(--smoke);line-height:1.7}
+.footer-contact-info > #footerContactName{font-size:15px;font-weight:700;color:#fff}
+
+/* remove old Contact Us section styles */
+.contact-us, .contact-us-inner, .contact-admin-info, .contact-admin-info > div, .contact-admin-info > #contactAdminName, .contact-admin-info > #contactAdminHint { display: none !important; }
 
 @media(max-width:1300px){
   :root{--pad-x:40px}

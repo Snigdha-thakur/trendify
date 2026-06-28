@@ -1,3 +1,4 @@
+from datetime import datetime
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from sqlalchemy import func
@@ -52,16 +53,41 @@ def update_platform_settings(
 
 # --- Dashboard ---
 @router.get("/stats")
-def get_stats(db: Session = Depends(get_db), _: User = Depends(require_admin)):
-    total_users = db.query(func.count(User.id)).scalar()
-    total_products = db.query(func.count(DigitalProduct.id)).scalar()
-    total_txns = db.query(func.count(Transaction.id)).scalar()
-    total_revenue = db.query(func.coalesce(func.sum(Transaction.amount), 0)).filter(
-        Transaction.status == "Success"
-    ).scalar()
+def get_stats(
+    db: Session = Depends(get_db),
+    _: User = Depends(require_admin),
+    since: str | None = None,
+):
+    query = db.query(Transaction)
+    if since:
+        try:
+            cutoff = datetime.fromisoformat(since.replace('Z', '+00:00'))
+        except Exception:
+            raise HTTPException(status_code=400, detail="Invalid since parameter")
+        query = query.filter(Transaction.created_at >= cutoff)
+
+    if since:
+        total_creators = db.query(func.count(func.distinct(Transaction.creator_id))).filter(Transaction.creator_id != None, Transaction.created_at >= cutoff).scalar()
+        total_users = db.query(func.count(func.distinct(Transaction.buyer_email))).filter(Transaction.buyer_email != None, Transaction.created_at >= cutoff).scalar()
+        total_products = db.query(func.count(func.distinct(Transaction.product_id))).filter(Transaction.product_id != None, Transaction.created_at >= cutoff).scalar()
+        total_txns = query.count()
+        total_revenue = db.query(func.coalesce(func.sum(Transaction.amount), 0)).filter(
+            Transaction.status == "Success",
+            Transaction.created_at >= cutoff,
+        ).scalar()
+    else:
+        total_creators = db.query(func.count(User.id)).filter(User.role == 'creator').scalar()
+        total_users = db.query(func.count(User.id)).scalar()
+        total_products = db.query(func.count(DigitalProduct.id)).scalar()
+        total_txns = query.count()
+        total_revenue = db.query(func.coalesce(func.sum(Transaction.amount), 0)).filter(
+            Transaction.status == "Success"
+        ).scalar()
+
     pending_kyc = db.query(func.count(KYC.id)).filter(KYC.status == "Pending").scalar()
 
     return {
+        "total_creators": total_creators,
         "total_users": total_users,
         "total_products": total_products,
         "total_transactions": total_txns,
@@ -283,40 +309,6 @@ def list_transactions(
         # payout / platform fee
         result.append(d)
     return result
-
-
-# --- Pay Wallets (bulk payout from wallet balance) ---
-@router.post("/pay-wallets")
-def pay_wallets(
-    data: dict,
-    db: Session = Depends(get_db), _: User = Depends(require_admin),
-):
-    import uuid as _uuid
-    user_ids = data.get("user_ids", [])
-    if not user_ids:
-        raise HTTPException(status_code=400, detail="No user IDs provided")
-    results = []
-    for uid in user_ids:
-        try:
-            user = db.query(User).filter(User.id == uid).first()
-            if not user or not user.wallet_balance or user.wallet_balance <= 0:
-                continue
-            amount = user.wallet_balance
-            payout = Payout(
-                id=str(_uuid.uuid4()),
-                user_id=user.id,
-                amount=amount,
-                status="Paid",
-                payout_type="creator",
-            )
-            db.add(payout)
-            user.wallet_balance = Decimal('0')
-            db.commit()
-            results.append({"user_id": str(user.id), "amount": float(amount), "payout_id": payout.id})
-        except Exception as e:
-            db.rollback()
-            continue
-    return {"paid": results, "count": len(results)}
 
 
 # --- Payouts ---

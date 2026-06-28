@@ -810,6 +810,7 @@ body.light-theme .admin-breadcrumb { background: var(--void); }
   border-radius: 5px;
   display: inline-flex;
   align-items: center;
+  white-space: nowrap;
   transition: color .15s, border-color .15s;
 }
 .action-icon-btn:hover { color: var(--white); border-color: rgba(167,124,255,.4); }
@@ -1163,6 +1164,7 @@ body.light-theme .admin-breadcrumb { background: var(--void); }
 @media(max-width:480px){
   .stat-cards { grid-template-columns: 1fr 1fr; }
   .admin-table th, .admin-table td { padding: 10px 10px; font-size: 12px; }
+  .admin-table td:last-child { white-space: nowrap; }
   .rp-tabs { overflow-x: auto; }
   .rp-tab { padding: 8px 14px; font-size: 12px; white-space: nowrap; }
 }

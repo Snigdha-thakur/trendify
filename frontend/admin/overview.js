@@ -10,9 +10,9 @@ function copyText(text, btn) {
   navigator.clipboard.writeText(text).then(() => { btn.textContent = '✓'; setTimeout(() => btn.textContent = '⧉', 1200); });
 }
 
-async function loadStats() {
+async function loadStats(days = 'all') {
   try {
-    const stats = await AdminAPI.getStats();
+    const stats = await AdminAPI.getStats(days);
     console.log('Stats loaded:', stats);
     
     if (!stats) {
@@ -118,10 +118,11 @@ function filterTable() {
 
 function applyDateFilter() {
   const days = document.getElementById('dateFilter').value;
+  loadStats(days);
   loadTransactions(days);
 }
 
-loadStats();
+loadStats('all');
 loadTransactions('all');
 
 window.filterTable = filterTable;

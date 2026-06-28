@@ -464,6 +464,9 @@ async function updateAdminSettings(evt) {
         linkedin: updated.linkedin,
       };
       localStorage.setItem('trendify_user', JSON.stringify(userData));
+      if (window.updateSidebarUser) {
+        window.updateSidebarUser(userData);
+      }
       btn.textContent = '✓ Saved';
       btn.style.background = 'var(--green)';
       setTimeout(() => { btn.textContent = 'Update Profile'; btn.style.background = ''; btn.disabled = false; }, 2000);

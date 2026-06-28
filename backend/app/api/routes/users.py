@@ -4,7 +4,7 @@ from typing import Optional
 from app.core.database import get_db
 from app.core.security import decode_token, get_password_hash
 from app.models.models import User, KYC
-from app.schemas.schemas import UserResponse, UserUpdate, KYCCreate, KYCResponse
+from app.schemas.schemas import UserResponse, UserUpdate, KYCCreate, KYCResponse, ContactInfo
 
 router = APIRouter(prefix="/api/users", tags=["Users"])
 
@@ -34,6 +34,24 @@ def require_admin(current_user: User = Depends(get_current_user)) -> User:
 @router.get("/me", response_model=UserResponse)
 def get_me(current_user: User = Depends(get_current_user)):
     return current_user
+
+
+@router.get("/admin-contact", response_model=ContactInfo)
+def get_admin_contact(db: Session = Depends(get_db)):
+    admin = (
+        db.query(User)
+        .filter(User.role == "admin")
+        .order_by(User.created_at.asc())
+        .first()
+    )
+    if not admin:
+        raise HTTPException(status_code=404, detail="Admin contact not found")
+    return ContactInfo(
+        name=admin.name or "Trendify Admin",
+        email=admin.email or "",
+        phone=admin.phone or "",
+        address=admin.address or "",
+    )
 
 
 @router.put("/me", response_model=UserResponse)

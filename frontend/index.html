@@ -7,6 +7,11 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,600;0,700;1,300;1,600;1,700&family=Syne:wght@400;700;800&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="css/styles.css"/>
+<script>
+  if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.protocol === 'file:') {
+    window.__API_URL__ = 'http://localhost:8000';
+  }
+</script>
 </head>
 <body>
 
@@ -543,14 +548,125 @@
         <a href="#" class="ft-s">ig</a>
       </div>
     </div>
-    <div><div class="ft-col-h">Company</div><ul class="ft-links"><li><a href="#">About</a></li><li><a href="#">Blog</a></li><li><a href="#">Careers</a></li><li><a href="#">Press</a></li><li><a href="#">Contact</a></li></ul></div>
+    <div><div class="ft-col-h">Company</div><ul class="ft-links"><li><a href="#">About</a></li><li><a href="#">Blog</a></li><li><a href="#">Careers</a></li><li><a href="#">Press</a></li></ul></div>
+    <div><div class="ft-col-h">Contact</div><div class="footer-contact-info"><div id="footerContactEmail">Email: not available</div><div id="footerContactPhone">Phone: not available</div><div id="footerContactAddress">Address: not available</div></div></div>
     <div><div class="ft-col-h">Legal</div><ul class="ft-links"><li><a href="privacy.html">Privacy</a></li><li><a href="terms.html">Terms</a></li><li><a href="refunds.html">Refunds</a></li></ul></div>
   </div>
   <div class="ft-bot">
-    <span>Trendify Technologies ®</span>
-    <span>India's Creator Platform</span>
+    <span>© 2026 Trendify Technologies. All Rights Reserved</span>
   </div>
 </footer>
+<script>
+function initMainContactWidget() {
+  var emailEl = document.getElementById('footerContactEmail');
+  var phoneEl = document.getElementById('footerContactPhone');
+  var addressEl = document.getElementById('footerContactAddress');
+  if (!emailEl || !phoneEl || !addressEl) return;
+
+  function setContact(contact) {
+    emailEl.textContent = contact.email ? 'Email: ' + contact.email : 'Email: not available';
+    phoneEl.textContent = contact.phone ? 'Phone: ' + contact.phone : 'Phone: not available';
+    addressEl.textContent = contact.address ? 'Address: ' + contact.address : 'Address: not available';
+  }
+
+  var storedAdminContact = null;
+  try {
+    var user = JSON.parse(localStorage.getItem('trendify_user') || 'null');
+    if (user && user.role === 'admin') {
+      storedAdminContact = {
+        email: user.email || '',
+        phone: user.phone || '',
+        address: user.address || '',
+      };
+      console.debug('footer: storedAdminContact from localStorage', storedAdminContact);
+      setContact(storedAdminContact);
+    }
+  } catch (e) {
+    storedAdminContact = null;
+    console.debug('footer: failed to parse trendify_user', e);
+  }
+
+  async function fetchAdminContact(url) {
+    try {
+      console.debug('footer: fetching admin contact from', url);
+      var res = await fetch(url);
+      var contentType = String(res.headers.get('content-type') || '');
+      console.debug('footer: fetch status', res.status, contentType);
+      if (!res.ok) {
+        return { error: 'status:' + res.status, status: res.status };
+      }
+      if (!contentType.includes('application/json')) {
+        var text = await res.text();
+        console.warn('footer: admin contact response not JSON', url, contentType, text.slice(0, 300));
+        return { error: 'not-json', status: res.status, text };
+      }
+      var contact = await res.json();
+      console.debug('footer: admin contact response', contact);
+      return { contact };
+    } catch (e) {
+      console.warn('footer: admin contact fetch error', url, e);
+      return { error: e.message, exception: e };
+    }
+  }
+
+  async function refresh() {
+    var apiBase = '';
+    if (typeof window.__API_URL__ !== 'undefined' && window.__API_URL__) {
+      apiBase = String(window.__API_URL__).trim().replace(/\/+$/g, '');
+    } else if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.protocol === 'file:') {
+      apiBase = 'http://localhost:8000';
+    }
+    var adminContactEndpoint = apiBase ? apiBase + '/api/users/admin-contact' : '/api/users/admin-contact';
+
+    var attempt = await fetchAdminContact(adminContactEndpoint);
+    if (attempt.contact) {
+      var contact = attempt.contact;
+      if (storedAdminContact) {
+        contact.email = contact.email || storedAdminContact.email;
+        contact.phone = contact.phone || storedAdminContact.phone;
+        contact.address = contact.address || storedAdminContact.address;
+      }
+      setContact(contact);
+      return;
+    }
+
+    if (apiBase && apiBase !== 'http://localhost:8000') {
+      var fallbackUrl = 'http://localhost:8000/api/users/admin-contact';
+      console.debug('footer: retrying admin contact from fallback', fallbackUrl);
+      attempt = await fetchAdminContact(fallbackUrl);
+      if (attempt.contact) {
+        var contact = attempt.contact;
+        if (storedAdminContact) {
+          contact.email = contact.email || storedAdminContact.email;
+          contact.phone = contact.phone || storedAdminContact.phone;
+          contact.address = contact.address || storedAdminContact.address;
+        }
+        setContact(contact);
+        return;
+      }
+    }
+
+    if (storedAdminContact) {
+      setContact({
+        email: storedAdminContact.email,
+        phone: storedAdminContact.phone,
+        address: storedAdminContact.address,
+      });
+    }
+  }
+
+  refresh();
+  window.addEventListener('storage', function(event) {
+    if (event.key === 'trendify_user') refresh();
+  });
+  window.addEventListener('focus', refresh);
+}
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initMainContactWidget);
+} else {
+  initMainContactWidget();
+}
+</script>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>

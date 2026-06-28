@@ -194,11 +194,24 @@
       return name;
     },
 
-    async getStats() {
-      const stats = await query('/stats');
+    async getStats(days) {
+      let url = '/stats';
+      if (days && days !== 'all') {
+        if (days === 'today') {
+          const d = new Date(); d.setHours(0,0,0,0);
+          url += '?since=' + encodeURIComponent(d.toISOString());
+        } else {
+          const parsed = parseInt(days);
+          if (!isNaN(parsed)) {
+            const since = new Date(Date.now() - parsed * 86400000).toISOString();
+            url += '?since=' + encodeURIComponent(since);
+          }
+        }
+      }
+      const stats = await query(url);
       if (!stats || typeof stats !== 'object') return { creators: 0, totalUsers: 0, totalTxns: 0, totalProducts: 0, totalRevenue: 0, platformCommission: 0 };
       return {
-        creators: stats.total_users || 0,
+        creators: stats.total_creators || 0,
         totalUsers: stats.total_users || 0,
         totalTxns: stats.total_transactions || 0,
         totalProducts: stats.total_products || 0,
