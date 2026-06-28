@@ -1,4 +1,5 @@
 let allTxns = [], filtered = [], currentPage = 1;
+let allTxnsRaw = [];
 
 function fmt(d) { return d ? new Date(d).toLocaleString('en-IN') : '—'; }
 function fmtAmt(a) { return '₹' + parseFloat(a || 0).toLocaleString('en-IN'); }
@@ -13,13 +14,7 @@ function copyText(text, btn) {
 async function loadStats(days = 'all') {
   try {
     const stats = await AdminAPI.getStats(days);
-    console.log('Stats loaded:', stats);
-    
-    if (!stats) {
-      console.error('No stats returned from API');
-      return;
-    }
-    
+    if (!stats) return;
     document.getElementById('statCreators').textContent = (stats.creators || 0).toLocaleString('en-IN');
     document.getElementById('statUsers').textContent = (stats.totalUsers || 0).toLocaleString('en-IN');
     document.getElementById('statTxns').textContent = (stats.totalTxns || 0).toLocaleString('en-IN');
@@ -33,38 +28,52 @@ async function loadStats(days = 'all') {
   }
 }
 
-async function loadTransactions(days) {
+function getCutoff(days) {
+  if (!days || days === 'all') return null;
+  if (days === 'today') { const d = new Date(); d.setHours(0,0,0,0); return d; }
+  const parsed = parseInt(days);
+  if (!isNaN(parsed)) return new Date(Date.now() - parsed * 86400000);
+  return null;
+}
+
+async function loadTransactions() {
   try {
-    const [data, products] = await Promise.all([AdminAPI.getTransactions(days), AdminAPI.getProducts()]);
+    const [data, products] = await Promise.all([AdminAPI.getTransactions('all'), AdminAPI.getProducts()]);
     const productMap = {};
     (products || []).forEach(p => { productMap[p.id] = p.name || p.title || p.id; });
-    
-    if (!data || data.length === 0) {
-      allTxns = [];
-      filtered = [];
-      renderTable();
-      return;
-    }
-    
-    // Resolve creator names
-    const names = await Promise.all(data.map(t => AdminAPI.getUserName(t.creator_id)));
-    allTxns = data.map((t, i) => ({
+
+    if (!data || data.length === 0) { allTxnsRaw = []; applyTxnFilter(); return; }
+
+    const userIds = [...new Set(data.map(t => t.creator_id).filter(Boolean))];
+    const names = await Promise.all(userIds.map(id => AdminAPI.getUserName(id)));
+    const nameMap = {};
+    userIds.forEach((id, i) => { nameMap[id] = names[i]; });
+
+    allTxnsRaw = data.map(t => ({
       id: t.id,
-    creator: names[i],
-    product: t.product_id ? (productMap[t.product_id] || t.product_id.slice(0, 8) + '…') : '—',
-    amount: fmtAmt(t.amount),
-    status: t.status || 'Pending',
-    date: fmt(t.created_at),
-  }));
+      creator: nameMap[t.creator_id] || '—',
+      product: t.product_id ? (productMap[t.product_id] || t.product_id.slice(0, 8) + '…') : '—',
+      amount: fmtAmt(t.amount),
+      status: t.status || 'Pending',
+      date: fmt(t.created_at),
+      created_at: t.created_at,
+    }));
+    applyTxnFilter();
+  } catch (error) {
+    console.error('Error loading transactions:', error);
+    allTxnsRaw = []; applyTxnFilter();
+  }
+}
+
+function applyTxnFilter() {
+  const days = document.getElementById('dateFilter').value;
+  const cutoff = getCutoff(days);
+  allTxns = cutoff
+    ? allTxnsRaw.filter(t => t.created_at && new Date(t.created_at) >= cutoff)
+    : [...allTxnsRaw];
   filtered = [...allTxns];
   currentPage = 1;
   renderTable();
-  } catch (error) {
-    console.error('Error loading transactions:', error);
-    allTxns = [];
-    filtered = [];
-    renderTable();
-  }
 }
 
 function renderTable() {
@@ -119,11 +128,11 @@ function filterTable() {
 function applyDateFilter() {
   const days = document.getElementById('dateFilter').value;
   loadStats(days);
-  loadTransactions(days);
+  applyTxnFilter();
 }
 
 loadStats('all');
-loadTransactions('all');
+loadTransactions();
 
 window.filterTable = filterTable;
 window.renderTable = renderTable;

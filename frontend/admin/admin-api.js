@@ -59,7 +59,7 @@
       if (!getToken()) { window.location.href = '../signin.html'; }
     },
 
-    getUsers: () => query('/users?skip=0&limit=1000'),
+    getUsers: () => query('/users?skip=0&limit=5000'),
     updateUserStatus: (id, status) => put(`/users/${id}`, { status }),
     updateUser: (id, data) => put(`/users/${id}`, data),
     deleteUser: async (id) => {
