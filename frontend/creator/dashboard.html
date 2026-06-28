@@ -44,14 +44,11 @@
         <div class="c-av" id="sbAv">CR</div>
         <div style="display:flex;flex-direction:column;">
           <span class="c-sidebar-label" id="sbName" style="font-size:12px;font-weight:600;"></span>
-          <span class="c-sb-address" style="font-size:10px;color:#9d99bb;"></span>
-        </div>
+          </div>
         <svg style="margin-left:auto;opacity:.5;flex-shrink:0" width="12" height="12" viewBox="0 0 16 16" fill="currentColor"><path d="M4 6l4 4 4-4"/></svg>
       </div>
       <div class="c-user-popup" id="userPopup">
-        <div class="c-user-popup-head">
-          <div class="c-av" id="sbAv2">CR</div>
-          <div><div style="font-size:12px;font-weight:700;color:#f2f0ff" id="sbName2"></div><div style="font-family:'DM Mono',monospace;font-size:10px;color:#9d99bb" id="sbEmail2"></div><div class="c-sb-phone" style="font-family:'DM Mono',monospace;font-size:10px;color:#9d99bb"></div><div class="c-sb-address" style="font-family:'DM Mono',monospace;font-size:10px;color:#9d99bb"></div></div>
+        <div class="c-user-popup-head"><div class="c-av" id="sbAv2">CR</div><div><div style="font-size:12px;font-weight:700;color:#f2f0ff" id="sbName2"></div><div style="font-family:'DM Mono',monospace;font-size:10px;color:#9d99bb" id="sbEmail2"></div></div>
         </div>
         <div class="c-user-popup-divider"></div>
         <a class="c-user-popup-item" href="account-settings.html">
@@ -119,9 +116,7 @@ function initUser(){
   document.getElementById('sbName').textContent=u.name||'Creator';
   document.getElementById('sbAv2').textContent=ini;
   document.getElementById('sbName2').textContent=u.name||'Creator';
-  document.getElementById('sbEmail2').textContent=(u.email&&u.email.trim())||(u.username&&u.username.trim())||u.id||u._id||'';
-  document.querySelectorAll('.c-sb-phone').forEach(function(el){el.textContent=u.phone&&u.phone.trim()?u.phone.trim():'';});
-  document.querySelectorAll('.c-sb-address').forEach(function(el){el.textContent=u.address&&u.address.trim()?u.address.trim():'';});
+  document.getElementById('sbEmail2').textContent=(u.email&&u.email.trim())||(u.username&&u.username.trim())||u.id||u._id||'';});});
   if(localStorage.getItem('_from_admin')) document.getElementById('backBtn').style.display='inline-flex';
 }
 function toggleUserMenu(e){e.stopPropagation();var popup=document.getElementById('userPopup');var u=document.getElementById('sbUser');if(!popup.classList.contains('open')){var r=u.getBoundingClientRect();popup.style.left=r.left+'px';popup.style.bottom=(window.innerHeight-r.top+8)+'px';popup.style.width=r.width+'px';}popup.classList.toggle('open');}

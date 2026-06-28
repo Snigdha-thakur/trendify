@@ -59,20 +59,14 @@ function updateSidebarUser(user) {
   var initials = (user.name || 'A').split(' ').map(function(w) { return w[0]; }).join('').toUpperCase().slice(0, 2);
   var nameText = user.name || 'Admin';
   var emailText = (user.email && user.email.trim()) || (user.username && user.username.trim()) || user.id || user._id || '';
-  var phoneText = user.phone && user.phone.trim() ? user.phone.trim() : '';
-  var addressText = user.address && user.address.trim() ? user.address.trim() : '';
 
   document.querySelectorAll('.sb-av').forEach(function(el) { el.textContent = initials; });
   document.querySelectorAll('.sb-name').forEach(function(el) { el.textContent = nameText; });
   document.querySelectorAll('.sb-plan').forEach(function(el) { el.textContent = emailText; });
-  document.querySelectorAll('.sb-phone').forEach(function(el) { el.textContent = phoneText; el.style.display = phoneText ? '' : 'none'; });
-  document.querySelectorAll('.sb-address').forEach(function(el) { el.textContent = addressText; el.style.display = addressText ? '' : 'none'; });
 
   document.querySelectorAll('.c-av, #sbAv, #sbAv2').forEach(function(el) { el.textContent = initials; });
   document.querySelectorAll('#sbName, #sbName2').forEach(function(el) { el.textContent = nameText; });
   document.querySelectorAll('#sbEmail, #sbEmail2').forEach(function(el) { el.textContent = emailText; });
-  document.querySelectorAll('.c-sb-phone').forEach(function(el) { el.textContent = phoneText; });
-  document.querySelectorAll('.c-sb-address').forEach(function(el) { el.textContent = addressText; });
 }
 window.updateSidebarUser = updateSidebarUser;
 
@@ -206,12 +200,6 @@ function ensureSidebarUserMarkup() {
   if (!userInfo.querySelector('.sb-plan')) {
     var plan = document.createElement('div'); plan.className = 'sb-plan'; plan.textContent = ''; userInfo.appendChild(plan);
   }
-  if (!userInfo.querySelector('.sb-phone')) {
-    var phone = document.createElement('div'); phone.className = 'sb-meta sb-phone'; phone.textContent = ''; userInfo.appendChild(phone);
-  }
-  if (!userInfo.querySelector('.sb-address')) {
-    var addr = document.createElement('div'); addr.className = 'sb-meta sb-address'; addr.textContent = ''; userInfo.appendChild(addr);
-  }
 
   // Ensure chevron exists
   if (!sbUser.querySelector('.sb-chevron')) {
@@ -254,12 +242,6 @@ function ensureSidebarUserMarkup() {
   }
   if (!popupInfo.querySelector('.sb-plan')) {
     var plan2 = document.createElement('div'); plan2.className = 'sb-plan'; plan2.textContent = ''; popupInfo.appendChild(plan2);
-  }
-  if (!popupInfo.querySelector('.sb-phone')) {
-    var phone2 = document.createElement('div'); phone2.className = 'sb-meta sb-phone'; phone2.textContent = ''; popupInfo.appendChild(phone2);
-  }
-  if (!popupInfo.querySelector('.sb-address')) {
-    var addr2 = document.createElement('div'); addr2.className = 'sb-meta sb-address'; addr2.textContent = ''; popupInfo.appendChild(addr2);
   }
 
   // Sign-out handler for popup Sign Out link
@@ -313,9 +295,7 @@ function ensureCreatorSidebarUserMarkup(cSidebar){
     var info = document.createElement('div'); info.style.display='flex'; info.style.flexDirection='column';
     var name = document.createElement('span'); name.className='c-sidebar-label'; name.id='sbName'; name.style.fontSize='12px'; name.style.fontWeight='600';
     var email = document.createElement('span'); email.className='c-sb-email'; email.id='sbEmail'; email.style.fontSize='11px';
-    var phone = document.createElement('span'); phone.className='c-sb-email c-sb-phone'; phone.style.fontSize='10px'; phone.textContent='Phone not added';
-    var address = document.createElement('span'); address.className='c-sb-email c-sb-address'; address.style.fontSize='10px'; address.textContent='Address not added';
-    info.appendChild(name); info.appendChild(email); info.appendChild(phone); info.appendChild(address);
+    info.appendChild(name); info.appendChild(email);
     sbUser.appendChild(av); sbUser.appendChild(info);
     var chev = document.createElement('svg'); chev.setAttribute('style','margin-left:auto;opacity:.5;flex-shrink:0'); chev.setAttribute('width','12'); chev.setAttribute('height','12'); chev.setAttribute('viewBox','0 0 16 16'); chev.setAttribute('fill','currentColor'); chev.innerHTML='<path d="M4 6l4 4 4-4"/>';
     sbUser.appendChild(chev);
@@ -327,7 +307,7 @@ function ensureCreatorSidebarUserMarkup(cSidebar){
     popup = document.createElement('div'); popup.className='c-user-popup'; popup.id='userPopup';
     var head = document.createElement('div'); head.className='c-user-popup-head';
     var av2 = document.createElement('div'); av2.className='c-av'; av2.id='sbAv2'; av2.textContent='CR';
-    var info2 = document.createElement('div'); var name2 = document.createElement('div'); name2.id='sbName2'; name2.style.fontSize='12px'; name2.style.fontWeight='700'; var email2 = document.createElement('div'); email2.id='sbEmail2'; email2.style.fontSize='10px'; var phone2 = document.createElement('div'); phone2.className='c-sb-phone'; phone2.style.fontSize='10px'; phone2.textContent='Phone not added'; var address2 = document.createElement('div'); address2.className='c-sb-address'; address2.style.fontSize='10px'; address2.textContent='Address not added'; info2.appendChild(name2); info2.appendChild(email2); info2.appendChild(phone2); info2.appendChild(address2);
+    var info2 = document.createElement('div'); var name2 = document.createElement('div'); name2.id='sbName2'; name2.style.fontSize='12px'; name2.style.fontWeight='700'; var email2 = document.createElement('div'); email2.id='sbEmail2'; email2.style.fontSize='10px'; info2.appendChild(name2); info2.appendChild(email2);
     head.appendChild(av2); head.appendChild(info2);
     popup.appendChild(head);
     var divider = document.createElement('div'); divider.className='c-user-popup-divider'; popup.appendChild(divider);

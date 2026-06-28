@@ -59,20 +59,14 @@ function updateSidebarUser(user) {
   var initials = (user.name || 'A').split(' ').map(function(w) { return w[0]; }).join('').toUpperCase().slice(0, 2);
   var nameText = user.name || 'Admin';
   var emailText = (user.email && user.email.trim()) || (user.username && user.username.trim()) || user.id || user._id || '';
-  var phoneText = user.phone && user.phone.trim() ? user.phone.trim() : '';
-  var addressText = user.address && user.address.trim() ? user.address.trim() : '';
 
   document.querySelectorAll('.sb-av').forEach(function(el) { el.textContent = initials; });
   document.querySelectorAll('.sb-name').forEach(function(el) { el.textContent = nameText; });
   document.querySelectorAll('.sb-plan').forEach(function(el) { el.textContent = emailText; });
-  document.querySelectorAll('.sb-phone').forEach(function(el) { el.textContent = phoneText; el.style.display = phoneText ? '' : 'none'; });
-  document.querySelectorAll('.sb-address').forEach(function(el) { el.textContent = addressText; el.style.display = addressText ? '' : 'none'; });
 
   document.querySelectorAll('.c-av, #sbAv, #sbAv2').forEach(function(el) { el.textContent = initials; });
   document.querySelectorAll('#sbName, #sbName2').forEach(function(el) { el.textContent = nameText; });
   document.querySelectorAll('#sbEmail, #sbEmail2').forEach(function(el) { el.textContent = emailText; });
-  document.querySelectorAll('.c-sb-phone').forEach(function(el) { el.textContent = phoneText; });
-  document.querySelectorAll('.c-sb-address').forEach(function(el) { el.textContent = addressText; });
 }
 window.updateSidebarUser = updateSidebarUser;
 
@@ -206,12 +200,6 @@ function ensureSidebarUserMarkup() {
   if (!userInfo.querySelector('.sb-plan')) {
     var plan = document.createElement('div'); plan.className = 'sb-plan'; plan.textContent = ''; userInfo.appendChild(plan);
   }
-  if (!userInfo.querySelector('.sb-phone')) {
-    var phone = document.createElement('div'); phone.className = 'sb-meta sb-phone'; phone.textContent = ''; userInfo.appendChild(phone);
-  }
-  if (!userInfo.querySelector('.sb-address')) {
-    var addr = document.createElement('div'); addr.className = 'sb-meta sb-address'; addr.textContent = ''; userInfo.appendChild(addr);
-  }
 
   // Ensure chevron exists
   if (!sbUser.querySelector('.sb-chevron')) {
@@ -254,12 +242,6 @@ function ensureSidebarUserMarkup() {
   }
   if (!popupInfo.querySelector('.sb-plan')) {
     var plan2 = document.createElement('div'); plan2.className = 'sb-plan'; plan2.textContent = ''; popupInfo.appendChild(plan2);
-  }
-  if (!popupInfo.querySelector('.sb-phone')) {
-    var phone2 = document.createElement('div'); phone2.className = 'sb-meta sb-phone'; phone2.textContent = ''; popupInfo.appendChild(phone2);
-  }
-  if (!popupInfo.querySelector('.sb-address')) {
-    var addr2 = document.createElement('div'); addr2.className = 'sb-meta sb-address'; addr2.textContent = ''; popupInfo.appendChild(addr2);
   }
 
   // Sign-out handler for popup Sign Out link
