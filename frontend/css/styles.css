@@ -94,7 +94,7 @@ img{max-width:100%;height:auto;display:block}
   .hv-row{flex-wrap:wrap;gap:10px}
   .eco-wrap,.chap,.pay-inner{padding-left:16px;padding-right:16px}
   .chap-l,.chap-r{padding:40px 20px}
-  .v-flow{flex-direction:column;align-items:flex-start}
+  .v-flow{flex-direction:row;align-items:center;flex-wrap:nowrap;justify-content:center}
   .belt{padding:16px 0}
   .bi{padding:0 24px;font-size:9px}
 }
@@ -102,7 +102,7 @@ img{max-width:100%;height:auto;display:block}
 @media (max-width:640px){
   .logo-text{font-size:15px;max-width:180px}
   .nv{width:100%;justify-content:center;gap:10px}
-  .btn-nav,.btn-nav-ghost{display:block;width:100%;text-align:center}
+  .btn-nav,.btn-nav-ghost{display:inline-flex;width:auto;text-align:center;white-space:nowrap;font-size:10px;padding:7px 10px}
   .hero-h1{font-size:clamp(32px,14vw,64px)}
   .hero-eyebrow{gap:8px;margin-bottom:14px}
   .hero-z{padding-left:14px;padding-right:14px}
@@ -1186,7 +1186,10 @@ footer .ft-grid{align-items:start}
   .chap.flip .chap-r{border-right:none;border-left:none;border-top:1px solid var(--rim)}
   .chap-h{font-size:clamp(28px,8vw,44px)}
   .v-pay-grid{grid-template-columns:1fr 1fr}
-  .v-flow{flex-wrap:wrap;justify-content:center;gap:12px}
+  .v-flow{flex-wrap:nowrap;justify-content:center;gap:8px}
+  .vf-n{font-size:9px;flex:1;min-width:0}
+  .vf-n strong{font-size:10px}
+  .vf-arr{width:16px}
 
   /* PAYMENTS */
   #payments{padding:80px 0}
