@@ -167,7 +167,7 @@
   </div>
 </div>
 
-<script src="/creator/creator-api.js?v=3"></script>
+<script src="creator-api.js"></script>
 <script>
 var all=[],filtered=[],page=1,products=[],editingCouponId=null;
 function initUser(){var u=null;try{u=JSON.parse(localStorage.getItem('trendify_user'));}catch(e){}if(!u)return;var ini=(u.name||'CR').split(' ').map(function(w){return w[0];}).join('').toUpperCase().slice(0,2);document.getElementById('sbAv').textContent=ini;document.getElementById('sbName').textContent=u.name||'Creator';var idDisplay=(u.email&&u.email.trim())||(u.username&&u.username.trim())||u.id||u._id||'';document.getElementById('sbEmail').textContent=idDisplay;document.getElementById('sbAv2').textContent=ini;document.getElementById('sbName2').textContent=u.name||'Creator';document.getElementById('sbEmail2').textContent=idDisplay;});});if(localStorage.getItem('_from_admin'))document.getElementById('backBtn').style.display='inline-flex';}

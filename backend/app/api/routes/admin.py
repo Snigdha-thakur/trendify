@@ -333,7 +333,31 @@ def update_payout_status(
     payout = db.query(Payout).filter(Payout.id == payout_id).first()
     if not payout:
         raise HTTPException(status_code=404, detail="Payout not found")
+    old_status = payout.status
     payout.status = status
+    # Refund wallet when rejecting a pending payout
+    if status == "Rejected" and old_status == "Pending":
+        user = db.query(User).filter(User.id == payout.user_id).first()
+        if user:
+            amount = payout.amount or Decimal(0)
+            if payout.payout_type == "referral":
+                old_bal = user.referral_wallet_balance or Decimal(0)
+                user.referral_wallet_balance = old_bal + amount
+                wallet_type = "Referral Wallet"
+                new_bal = user.referral_wallet_balance
+            else:
+                old_bal = user.wallet_balance or Decimal(0)
+                user.wallet_balance = old_bal + amount
+                wallet_type = "Main Wallet"
+                new_bal = user.wallet_balance
+            db.add(WalletLog(
+                user_id=user.id,
+                wallet_type=wallet_type,
+                type="Credit",
+                existing_balance=old_bal,
+                amount=amount,
+                new_balance=new_bal,
+            ))
     db.commit()
     return {"message": f"Payout marked as {status}"}
 
