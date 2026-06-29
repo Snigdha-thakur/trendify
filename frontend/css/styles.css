@@ -1061,7 +1061,12 @@ footer{
   border-top:1px solid var(--rim);padding:80px 0 48px;
   background:linear-gradient(180deg,rgba(13,11,30,.92) 0%,rgba(6,6,15,.95) 100%);
 }
-.ft-grid{max-width:var(--max-w);margin:0 auto;padding:0 var(--pad-x);display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px 60px;margin-bottom:72px}
+.ft-grid{max-width:var(--max-w);margin:0 auto;padding:0 var(--pad-x);margin-bottom:48px}
+.ft-top-row{display:flex;justify-content:center;gap:80px;margin-bottom:56px}
+.ft-top-row > div{min-width:120px}
+.ft-contact-row{border-top:1px solid var(--rim);padding-top:48px;margin-bottom:0;display:flex;justify-content:center}
+.ft-contact-row > div{min-width:320px}
+.footer-contact-info{justify-items:start}
 .ft-logo{
   font-family:var(--f-sans);font-size:18px;font-weight:800;
   background:linear-gradient(135deg,#fff 20%,var(--violet));
@@ -1077,15 +1082,27 @@ footer{
   transition:border-color .2s,color .2s,background .2s;
 }
 .ft-s:hover{border-color:var(--violet);color:#fff;background:rgba(123,94,167,.15)}
-.ft-col-h{font-family:var(--f-mono);font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--smoke);margin-bottom:20px}
-.ft-links{list-style:none;display:flex;flex-direction:column;gap:12px}
-.ft-links a{font-size:13px;color:var(--smoke);text-decoration:none;transition:color .2s,padding-left .2s}
+.ft-col-h{font-family:var(--f-sans);font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--white);margin-bottom:20px}
+.ft-links{list-style:none;display:flex;flex-direction:column;gap:12px;align-items:flex-start}
+.ft-links a{font-size:12px;font-weight:400;color:var(--smoke);text-decoration:none;transition:color .2s,padding-left .2s}
 .ft-links a:hover{color:#fff;padding-left:6px}
-.ft-bot{max-width:var(--max-w);margin:0 auto;padding:32px var(--pad-x) 0;border-top:1px solid var(--rim);display:flex;justify-content:center;align-items:center;font-size:11px;color:var(--smoke)}
+.ft-bot{
+  max-width:var(--max-w);margin:0 auto;padding:40px var(--pad-x) 0;
+  border-top:1px solid var(--rim);
+  display:flex;flex-direction:column;align-items:center;gap:32px;
+  text-align:center;
+}
+.ft-contact-block{display:inline-flex;flex-direction:column;align-items:flex-start;gap:0;margin:0 auto}
+.footer-contact-info{display:flex;flex-direction:column;gap:6px;width:auto;text-align:left}
+.footer-contact-info > div{display:block;letter-spacing:0.08em;width:auto}
+.ft-contact-block .ft-col-h{margin-bottom:16px;width:auto}
+.ft-brand-line{
+  border-top:1px solid var(--rim);padding-top:28px;width:100%;
+  display:flex;flex-direction:column;align-items:center;gap:8px;
+}
+.ft-copy-text{font-size:11px;color:var(--smoke)}
 footer .ft-grid{align-items:start}
-.footer-contact-info{display:grid;gap:8px}
-.footer-contact-info > div{font-size:13px;color:var(--smoke);line-height:1.7}
-.footer-contact-info > #footerContactName{font-size:15px;font-weight:700;color:#fff}
+.footer-contact-info > div{font-size:12px;font-weight:400;color:var(--smoke);line-height:1.7}
 
 /* remove old Contact Us section styles */
 .contact-us, .contact-us-inner, .contact-admin-info, .contact-admin-info > div, .contact-admin-info > #contactAdminName, .contact-admin-info > #contactAdminHint { display: none !important; }
@@ -1222,13 +1239,10 @@ footer .ft-grid{align-items:start}
   .fin-bottom{flex-direction:column;gap:12px;text-align:center;padding:28px 20px 0}
 
   /* FOOTER */
-  .ft-grid{grid-template-columns:1fr 1fr 1fr;gap:24px 20px;padding:0 20px}
-  .ft-grid > div:first-child{grid-column:1 / -1}
-  .ft-grid > div:nth-child(3){text-align:left}
-  .ft-grid > div:nth-child(3) .ft-col-h{text-align:left}
-  .ft-grid > div:nth-child(3) .footer-contact-info{align-items:start;justify-items:start}
+  .ft-grid{padding:0 20px}
+  .ft-top-row{grid-template-columns:1fr 1fr;gap:24px}
   footer{padding:60px 0 40px}
-  .ft-bot{flex-direction:column;gap:8px;text-align:center;padding:24px 20px 0}
+  .ft-bot{padding:24px 20px 0}
 }
 
 @media(max-width:480px){
@@ -1237,8 +1251,7 @@ footer .ft-grid{align-items:start}
   .hero-h1{font-size:clamp(44px,14vw,72px)}
   .hero-stats{grid-template-columns:1fr 1fr}
   .v-pay-grid{grid-template-columns:1fr}
-  .ft-grid{grid-template-columns:1fr 1fr 1fr;gap:20px 10px}
-  .ft-grid > div:nth-child(3){text-align:left}
+  .ft-top-row{grid-template-columns:1fr 1fr}
   .pr-col{padding:32px 20px}
   .si-card,.su-card{margin:0 16px}
 }

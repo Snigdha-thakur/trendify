@@ -25,15 +25,8 @@ function openCtx(idx, btn) {
   const u = filtered[idx];
   const menu = document.getElementById('ctxMenu');
   const rect = btn.getBoundingClientRect();
-  // Use fixed positioning so it works inside scrollable containers on mobile
-  menu.style.position = 'fixed';
-  const menuWidth = 180;
-  let left = rect.right - menuWidth;
-  if (left < 4) left = 4;
-  if (left + menuWidth > window.innerWidth - 4) left = window.innerWidth - menuWidth - 4;
-  let top = rect.bottom + 4;
-  menu.style.top = top + 'px';
-  menu.style.left = left + 'px';
+  menu.style.top = (rect.bottom + window.scrollY + 4) + 'px';
+  menu.style.left = (rect.left + window.scrollX - 140) + 'px';
   // Dynamic label: Login as User only (creator has no dashboard yet)
   const loginBtn = document.getElementById('ctxLoginBtn');
   if (u.role === 'user') {

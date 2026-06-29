@@ -67,9 +67,9 @@ def get_stats(
         query = query.filter(Transaction.created_at >= cutoff)
 
     if since:
-        total_creators = db.query(func.count(func.distinct(Transaction.creator_id))).filter(Transaction.creator_id != None, Transaction.created_at >= cutoff).scalar()
-        total_users = db.query(func.count(func.distinct(Transaction.buyer_email))).filter(Transaction.buyer_email != None, Transaction.created_at >= cutoff).scalar()
-        total_products = db.query(func.count(func.distinct(Transaction.product_id))).filter(Transaction.product_id != None, Transaction.created_at >= cutoff).scalar()
+        total_creators = db.query(func.count(User.id)).filter(User.role == 'creator', User.created_at >= cutoff).scalar()
+        total_users = db.query(func.count(User.id)).filter(User.created_at >= cutoff).scalar()
+        total_products = db.query(func.count(DigitalProduct.id)).filter(DigitalProduct.created_at >= cutoff).scalar()
         total_txns = query.count()
         total_revenue = db.query(func.coalesce(func.sum(Transaction.amount), 0)).filter(
             Transaction.status == "Success",
