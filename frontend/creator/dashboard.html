@@ -116,7 +116,7 @@ function initUser(){
   document.getElementById('sbName').textContent=u.name||'Creator';
   document.getElementById('sbAv2').textContent=ini;
   document.getElementById('sbName2').textContent=u.name||'Creator';
-  document.getElementById('sbEmail2').textContent=(u.email&&u.email.trim())||(u.username&&u.username.trim())||u.id||u._id||'';});});
+  document.getElementById('sbEmail2').textContent=(u.email&&u.email.trim())||(u.username&&u.username.trim())||u.id||u._id||'';
   if(localStorage.getItem('_from_admin')) document.getElementById('backBtn').style.display='inline-flex';
 }
 function toggleUserMenu(e){e.stopPropagation();var popup=document.getElementById('userPopup');var u=document.getElementById('sbUser');if(!popup.classList.contains('open')){var r=u.getBoundingClientRect();popup.style.left=r.left+'px';popup.style.bottom=(window.innerHeight-r.top+8)+'px';popup.style.width=r.width+'px';}popup.classList.toggle('open');}
