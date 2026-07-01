@@ -51,6 +51,10 @@ body{font-family:'Syne',sans-serif;overflow:hidden;min-height:100vh;color:#f5f2f
 #bulbGlow{transition:opacity .8s ease;}
 #rimGlow{transition:fill .8s ease;}
 #switchKnob{transition:fill .3s ease;}
+/* switch dialog styling */
+.switch-bubble-rect{fill:rgba(30,18,40,.6);stroke:rgba(190,150,255,.18);}
+.switch-bubble-text{fill:rgba(250,244,255,.95);font-family:'DM Mono',monospace;font-size:12px;letter-spacing:.12em;text-transform:uppercase;font-weight:700;}
+.switch-bubble-tail{fill:rgba(110,60,160,.14);stroke:rgba(190,150,255,.18);}
 
 /* card slider */
 .card-slider{width:clamp(480px,58vw,680px);flex-shrink:0;perspective:1200px;opacity:0;transform:translateY(20px);transition:opacity .8s ease .2s,transform .8s ease .2s;pointer-events:none;}
@@ -122,7 +126,7 @@ body{font-family:'Syne',sans-serif;overflow:hidden;min-height:100vh;color:#f5f2f
 
   <!-- LAMP -->
   <div class="lamp-wrap">
-    <div class="lamp-instruction">Tap the switch to brighten the room</div>
+    
     <svg viewBox="0 0 200 480" fill="none" xmlns="http://www.w3.org/2000/svg">
       <defs>
         <linearGradient id="poleG" x1="0" x2="1" y1="0" y2="0"><stop offset="0%" stop-color="#120830"/><stop offset="25%" stop-color="#4a2880"/><stop offset="50%" stop-color="#8060b0"/><stop offset="75%" stop-color="#4a2880"/><stop offset="100%" stop-color="#120830"/></linearGradient>
@@ -149,10 +153,20 @@ body{font-family:'Syne',sans-serif;overflow:hidden;min-height:100vh;color:#f5f2f
       <ellipse id="rimGlow" cx="100" cy="96" rx="64" ry="5" fill="rgba(160,110,255,0)" filter="url(#b3)"/>
       <rect x="96" y="56" width="8" height="16" rx="4" fill="#3a1860"/>
       <ellipse cx="100" cy="56" rx="7" ry="5" fill="#4a2878"/>
+
+      <!-- SWITCH DIALOG (left of switch) -->
+      <g class="switch-bubble" aria-hidden="true">
+        <text class="switch-bubble-text" text-anchor="end">
+          <tspan x="84" y="242">TAP THE SWITCH</tspan>
+          <tspan x="84" y="264">TO BRIGHTEN THE ROOM</tspan>
+        </text>
+      </g>
       <circle id="bulbGlow" cx="100" cy="98" r="36" fill="url(#bulbRG)" opacity="0" filter="url(#b6)"/>
       <circle cx="100" cy="98" r="5" fill="rgba(200,170,255,.5)"/>
-      <rect id="switchBase" x="108" y="230" width="16" height="26" rx="4" fill="#22144a" stroke="rgba(170,130,255,.4)" stroke-width="1" style="cursor:pointer;" onclick="toggleLamp()"/>
-      <rect id="switchKnob" x="111" y="241" width="10" height="12" rx="3" fill="#3a1860" style="cursor:pointer;" onclick="toggleLamp()"/>
+      <!-- SWITCH DIALOG (left of switch) -->
+      
+      <rect id="switchBase" x="122" y="226" width="24" height="36" rx="5" fill="#22144a" stroke="rgba(170,130,255,.4)" stroke-width="1" style="cursor:pointer;" onclick="toggleLamp()"/>
+      <rect id="switchKnob" x="127" y="235" width="14" height="18" rx="4" fill="#3a1860" style="cursor:pointer;" onclick="toggleLamp()"/>
     </svg>
   </div>
 
