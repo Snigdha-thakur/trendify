@@ -163,9 +163,92 @@
     .si-heading{font-size:26px}
     .si-page{padding:80px 16px 40px}
   }
+
+  /* ── LAMP ── */
+  .lamp-scene{
+    position:fixed;top:0;left:0;right:0;bottom:0;z-index:50;
+    background:#04040f;
+    display:flex;flex-direction:column;align-items:center;justify-content:flex-start;
+    transition:opacity .7s ease;
+  }
+  .lamp-scene.hidden{opacity:0;pointer-events:none;}
+  .lamp-hint{
+    position:absolute;top:55%;left:50%;transform:translate(-50%,-50%);
+    font-family:var(--f-mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;
+    color:rgba(167,124,255,.4);pointer-events:none;
+    animation:hint-pulse 2.5s ease-in-out infinite;
+  }
+  @keyframes hint-pulse{0%,100%{opacity:.3}50%{opacity:.7}}
+  .lamp-wrapper{
+    transform-origin:top center;
+    animation:lamp-idle 4s ease-in-out infinite;
+    cursor:pointer;margin-top:0;
+  }
+  .lamp-wrapper.swing{animation:lamp-swing .8s cubic-bezier(.36,.07,.19,.97) forwards;}
+  @keyframes lamp-idle{0%,100%{transform:rotate(-2deg)}50%{transform:rotate(2deg)}}
+  @keyframes lamp-swing{
+    0%{transform:rotate(0)}
+    20%{transform:rotate(20deg)}
+    40%{transform:rotate(-15deg)}
+    60%{transform:rotate(10deg)}
+    80%{transform:rotate(-5deg)}
+    100%{transform:rotate(0)}
+  }
+  .lamp-cord{
+    width:2px;height:130px;
+    background:linear-gradient(to bottom,rgba(167,124,255,.5),rgba(167,124,255,.1));
+    margin:0 auto;
+  }
+  .lamp-head{
+    width:80px;height:52px;
+    background:linear-gradient(160deg,#2a1a4a,#1a0f2e);
+    border-radius:4px 4px 40px 40px;
+    margin:0 auto;position:relative;
+    box-shadow:0 0 0 1px rgba(167,124,255,.2);
+  }
+  .lamp-bulb{
+    position:absolute;bottom:-7px;left:50%;transform:translateX(-50%);
+    width:12px;height:12px;border-radius:50%;
+    background:#fff8e0;
+    box-shadow:0 0 10px 5px rgba(255,220,80,.5),0 0 30px 15px rgba(255,180,40,.2);
+    transition:box-shadow .3s ease;
+  }
+  .lamp-wrapper.swing .lamp-bulb{
+    box-shadow:0 0 20px 10px rgba(255,220,80,.95),0 0 60px 30px rgba(255,180,40,.55),0 0 120px 60px rgba(255,140,20,.25);
+  }
+  .lamp-cone{
+    position:absolute;top:45px;left:50%;transform:translateX(-50%);
+    width:0;height:0;
+    border-left:130px solid transparent;
+    border-right:130px solid transparent;
+    border-bottom:220px solid rgba(255,200,60,.06);
+    filter:blur(20px);opacity:0;
+    transition:opacity .4s ease;pointer-events:none;
+  }
+  .lamp-wrapper.swing .lamp-cone{opacity:1;}
+  .lamp-floor{
+    position:absolute;bottom:0;left:50%;transform:translateX(-50%);
+    width:320px;height:60px;
+    background:radial-gradient(ellipse,rgba(255,180,40,.1) 0%,transparent 70%);
+    pointer-events:none;opacity:0;transition:opacity .4s ease;
+  }
+  .lamp-scene.lit .lamp-floor{opacity:1;}
 </style>
 </head>
 <body>
+
+<!-- LAMP SCENE -->
+<div class="lamp-scene" id="lampScene">
+  <div class="lamp-hint" id="lampHint">click the lamp to sign in</div>
+  <div class="lamp-wrapper" id="lampWrapper" onclick="triggerLamp()">
+    <div class="lamp-cord"></div>
+    <div class="lamp-head">
+      <div class="lamp-bulb"></div>
+      <div class="lamp-cone"></div>
+    </div>
+  </div>
+  <div class="lamp-floor"></div>
+</div>
 
 <canvas id="particles"></canvas>
 <div id="c"></div>
@@ -383,6 +466,22 @@
     google.accounts.id.prompt();
   }
   window.handleGoogleSignIn = handleGoogleSignIn;
+</script>
+<script>
+  function triggerLamp() {
+    var wrapper = document.getElementById('lampWrapper');
+    var scene = document.getElementById('lampScene');
+    var hint = document.getElementById('lampHint');
+    hint.style.display = 'none';
+    wrapper.classList.remove('swing');
+    void wrapper.offsetWidth; // reflow to restart animation
+    wrapper.classList.add('swing');
+    scene.classList.add('lit');
+    setTimeout(function() {
+      scene.classList.add('hidden');
+    }, 800);
+  }
+  window.triggerLamp = triggerLamp;
 </script>
 </body>
 </html>
