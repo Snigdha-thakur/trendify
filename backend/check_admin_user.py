@@ -26,7 +26,7 @@ try:
     if users_exists:
         # Check admin user
         from app.models.models import User
-        admin_user = db.query(User).filter(User.email == 'soumyaofficial2004@gmail.com').first()
+        admin_user = db.query(User).filter(User.email == 'trendifytechnologies@gmail.com').first()
         
         if admin_user:
             print(f"\n✓ Admin user found:")

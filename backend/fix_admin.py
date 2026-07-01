@@ -14,7 +14,7 @@ res = requests.get(f'{SUPABASE_URL}/auth/v1/admin/users?per_page=100', headers=H
 users = res.json().get('users', [])
 print(f"Total auth users: {len(users)}")
 
-user = next((u for u in users if u.get('email') == 'soumyaofficial2004@gmail.com'), None)
+user = next((u for u in users if u.get('email') == 'trendifytechnologies@gmail.com'), None)
 if not user:
     print("User not found!")
     exit(1)
@@ -39,7 +39,7 @@ res3 = requests.post(
     headers={**HEADERS, 'Prefer': 'resolution=merge-duplicates'},
     json={
         'id': user_id,
-        'email': 'soumyaofficial2004@gmail.com',
+        'email': 'trendifytechnologies@gmail.com',
         'name': 'Soumya Barddhan Panda',
         'role': 'admin',
         'status': 'active',

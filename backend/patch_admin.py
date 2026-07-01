@@ -11,7 +11,7 @@ from sqlalchemy import create_engine, text
 from app.core.config import settings
 from app.core.security import get_password_hash
 
-EMAIL = 'soumyaofficial2004@gmail.com'
+EMAIL = 'trendifytechnologies@gmail.com'
 PASSWORD = 'ARABINDA123'
 
 engine = create_engine(settings.DATABASE_URL)

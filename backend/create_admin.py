@@ -15,7 +15,7 @@ res = requests.post(
     f'{SUPABASE_URL}/auth/v1/admin/users',
     headers=HEADERS,
     json={
-        'email': 'soumyaofficial2004@gmail.com',
+        'email': 'trendifytechnologies@gmail.com',
         'password': 'ARABINDA123',
         'email_confirm': True,
         'user_metadata': {'name': 'Soumya Barddhan Panda'}
@@ -39,7 +39,7 @@ res2 = requests.post(
     headers={**HEADERS, 'Prefer': 'resolution=merge-duplicates'},
     json={
         'id': user_id,
-        'email': 'soumyaofficial2004@gmail.com',
+        'email': 'trendifytechnologies@gmail.com',
         'name': 'Soumya Barddhan Panda',
         'role': 'admin',
         'status': 'active',
