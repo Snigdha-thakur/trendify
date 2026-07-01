@@ -19,12 +19,12 @@ body{font-family:'Syne',sans-serif;overflow:hidden;min-height:100vh;color:#f5f2f
 }
 .scene::before{
   content:'';position:absolute;inset:0;
-  background:radial-gradient(circle at 25% 18%,rgba(220,180,255,.08) 0%,transparent 22%),
-              radial-gradient(circle at 80% 30%,rgba(80,220,255,.05) 0%,transparent 17%);
+  background:radial-gradient(circle at 25% 18%,rgba(220,180,255,.14) 0%,transparent 24%),
+              radial-gradient(circle at 80% 30%,rgba(100,210,255,.12) 0%,transparent 20%);
   opacity:0;pointer-events:none;transition:opacity .8s ease;
 }
-.scene.lit{background:#0d0818;}
-.scene.lit::before{opacity:.7;}
+.scene.lit{background:radial-gradient(circle at 50% 15%,rgba(130,90,255,.08),transparent 30%),#10071a;}
+.scene.lit::before{opacity:.92;}
 @keyframes bg-pulse{0%,100%{background:#0f0a1a;}50%{background:#140e26;}}
 @keyframes orb-float{0%,100%{transform:translate(0,0) scale(1);opacity:.18;}33%{transform:translate(20px,-15px) scale(1.1);opacity:.25;}66%{transform:translate(-15px,10px) scale(.95);opacity:.15;}}
 .scene.lit{animation:bg-pulse 4s ease-in-out infinite;}
@@ -59,12 +59,12 @@ body{font-family:'Syne',sans-serif;overflow:hidden;min-height:100vh;color:#f5f2f
 .card-panel{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;display:flex;}
 
 /* card wrap */
-.card-wrap{width:100%;flex-shrink:0;opacity:0;transform:translateY(16px);transition:opacity .7s ease .1s,transform .7s ease .1s;pointer-events:none;display:flex;flex-direction:column;}
+.card-wrap{width:100%;flex-shrink:0;opacity:0;transform:translateY(16px);transition:opacity .7s ease .1s,transform .7s ease .1s,box-shadow .8s ease;pointer-events:none;display:flex;flex-direction:column;border-radius:20px;}
 .scene.lit .card-wrap{opacity:1;transform:translateY(0);pointer-events:auto;}
 
 /* flip card */
-.flip-card{width:100%;height:100%;display:flex;flex-direction:row;background:linear-gradient(180deg,rgba(22,12,50,.96),rgba(12,6,30,.92));border:1px solid rgba(167,124,255,.35);border-radius:20px;overflow:hidden;box-shadow:0 16px 60px rgba(0,0,0,.85),0 0 0 1px rgba(70,40,140,.1);}
-.flip-form{flex:1;padding:20px 28px;display:flex;flex-direction:column;justify-content:flex-start;overflow-y:auto;scrollbar-width:none;position:relative;z-index:1;}
+.flip-card{width:100%;height:100%;display:flex;flex-direction:row;background:linear-gradient(180deg,rgba(22,12,50,.96),rgba(12,6,30,.92));border:1px solid rgba(167,124,255,.35);border-radius:20px;overflow:hidden;box-shadow:0 16px 60px rgba(0,0,0,.85), 0 0 0 1px rgba(70,40,140,.1);}
+.flip-form{flex:1;padding:20px 28px;display:flex;flex-direction:column;justify-content:flex-start;overflow-y:auto;overflow-x:hidden;scrollbar-width:none;position:relative;z-index:1;border-radius:20px;}
 .flip-form::-webkit-scrollbar{display:none;}
 
 /* inputs */
@@ -263,6 +263,8 @@ body{font-family:'Syne',sans-serif;overflow:hidden;min-height:100vh;color:#f5f2f
     document.getElementById('switchBase').setAttribute('stroke',isLit?'rgba(255,255,255,.45)':'rgba(170,130,255,.4)');
     document.getElementById('switchKnob').setAttribute('fill',isLit?'#9060e0':'#3a1860');
     document.getElementById('switchKnob').style.transform=isLit?'translateY(-6px)':'translateY(0)';
+    var fc=document.querySelector('.flip-card');
+    if(fc)fc.style.boxShadow=isLit?'0 20px 90px rgba(124,58,237,.7),0 0 0 1px rgba(120,80,220,.2)':'0 16px 60px rgba(0,0,0,.85),0 0 0 1px rgba(70,40,140,.1)';
   }
   window.toggleLamp=toggleLamp;
 
@@ -318,27 +320,45 @@ body{font-family:'Syne',sans-serif;overflow:hidden;min-height:100vh;color:#f5f2f
 
   var GOOGLE_CLIENT_ID='644237547029-c8humgt5p4qplv91rjfs2f3nc7dd9vvo.apps.googleusercontent.com';
   function handleGoogleSignUp(){
-    var btn=document.getElementById('googleSignUpBtn');btn.textContent='Opening Google…';btn.disabled=true;
-    google.accounts.id.initialize({client_id:GOOGLE_CLIENT_ID,callback:async function(r){
-      try{
-        var res=await fetch((window.__API_URL__||'')+'/api/auth/google',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id_token:r.credential})});
-        var data=await res.json();
-        if(!res.ok)throw new Error(data.detail||'Google sign-in failed');
-        localStorage.setItem('trendify_access_token',data.access_token);
-        localStorage.setItem('trendify_user',JSON.stringify(data.user));
-        btn.textContent='✓ Signed in!';
-        setTimeout(function(){
-          var role=(data.user&&data.user.role)||'user';
-          if(role==='admin')location.href='admin/overview.html';
-          else if(role==='creator')location.href='creator/dashboard.html';
-          else location.href='index.html';
-        },600);
-      }catch(e){
-        btn.textContent=e.message||'Failed';btn.disabled=false;
-        setTimeout(function(){btn.textContent='Continue with Google';},3000);
+    if (typeof google === 'undefined' || !google.accounts) {
+      alert('Google Sign-In is not available. Please check your internet connection.');
+      return;
+    }
+    var btn=document.getElementById('googleSignUpBtn');
+    btn.textContent='Opening Google\u2026';btn.disabled=true;
+    google.accounts.id.initialize({
+      client_id:GOOGLE_CLIENT_ID,
+      ux_mode:'popup',
+      callback:async function(r){
+        try{
+          var res=await fetch((window.__API_URL__||'')+'/api/auth/google',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id_token:r.credential})});
+          var data=await res.json();
+          if(!res.ok)throw new Error(data.detail||'Google sign-in failed');
+          localStorage.setItem('trendify_access_token',data.access_token);
+          localStorage.setItem('trendify_user',JSON.stringify(data.user));
+          btn.textContent='\u2713 Signed in!';
+          setTimeout(function(){
+            var role=(data.user&&data.user.role)||'user';
+            if(role==='admin')location.href='admin/overview.html';
+            else if(role==='creator')location.href='creator/dashboard.html';
+            else location.href='index.html';
+          },600);
+        }catch(e){
+          btn.textContent=e.message||'Failed';btn.style.color='#ef4444';btn.disabled=false;
+          setTimeout(function(){btn.textContent='Continue with Google';btn.style.color='';},3000);
+        }
       }
-    }});
-    google.accounts.id.prompt();
+    });
+    google.accounts.id.prompt(function(notification){
+      if(notification.isNotDisplayed()||notification.isSkippedMoment()){
+        var tmp=document.createElement('div');
+        tmp.style.cssText='position:fixed;opacity:0;pointer-events:none;';
+        document.body.appendChild(tmp);
+        google.accounts.id.renderButton(tmp,{type:'standard',size:'large'});
+        setTimeout(function(){var b=tmp.querySelector('[role=button]');if(b)b.click();},200);
+        btn.disabled=false;btn.textContent='Continue with Google';
+      }
+    });
   }
   window.handleGoogleSignUp=handleGoogleSignUp;
 

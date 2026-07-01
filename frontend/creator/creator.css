@@ -67,8 +67,11 @@ button{font-family:'Syne',sans-serif;}
 .c-sb-email{font-size:12px;color:#9d99bb;opacity:.95;margin-top:2px}
 .c-sb-user .c-sidebar-label{font-size:12px;line-height:1.25;font-weight:700;color:#f2f0ff;display:block;max-width:128px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 .c-sb-user .c-sb-email{font-size:11px;line-height:1.2;color:#9d99bb;opacity:.9;display:block;max-width:128px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.c-sidebar.expanded .c-sb-user .c-sidebar-label,.c-sidebar.expanded .c-sb-user .c-sb-email{max-width:none;overflow:visible;text-overflow:unset;white-space:normal;word-break:break-all;}
 .c-sb-user{display:flex;align-items:center;gap:10px;cursor:pointer;padding:10px 12px;border-radius:12px;transition:background .18s,color .18s;margin:0 8px;justify-content:center;}
 .c-sidebar.expanded .c-sb-user{justify-content:flex-start;}
+.c-sb-user .c-sidebar-label,.c-sb-user .c-sb-email,.c-sb-user>svg{display:none;}
+.c-sidebar.expanded .c-sb-user .c-sidebar-label,.c-sidebar.expanded .c-sb-user .c-sb-email,.c-sidebar.expanded .c-sb-user>svg{display:block;}
 .c-sb-user:hover{background:rgba(255,255,255,.04);}
 
 /* User popup */
