@@ -63,7 +63,7 @@ body{font-family:'Syne',sans-serif;overflow:hidden;min-height:100vh;color:#f5f2f
 .scene.lit .card-wrap{opacity:1;transform:translateY(0);pointer-events:auto;}
 
 /* flip card */
-.flip-card{width:100%;height:100%;display:flex;flex-direction:row;background:linear-gradient(180deg,rgba(22,12,50,.96),rgba(12,6,30,.92));border:1px solid rgba(167,124,255,.35);border-radius:20px;overflow:hidden;box-shadow:0 0 30px rgba(124,58,237,.4),0 0 60px rgba(124,58,237,.15),0 24px 60px rgba(10,4,30,.7);}
+.flip-card{width:100%;height:100%;display:flex;flex-direction:row;background:linear-gradient(180deg,rgba(22,12,50,.96),rgba(12,6,30,.92));border:1px solid rgba(167,124,255,.35);border-radius:20px;overflow:hidden;box-shadow:0 16px 60px rgba(0,0,0,.85),0 0 0 1px rgba(70,40,140,.1);}
 .flip-form{flex:1;padding:20px 28px;display:flex;flex-direction:column;justify-content:flex-start;overflow-y:auto;scrollbar-width:none;position:relative;z-index:1;}
 .flip-form::-webkit-scrollbar{display:none;}
 
@@ -227,10 +227,12 @@ body{font-family:'Syne',sans-serif;overflow:hidden;min-height:100vh;color:#f5f2f
   </div>
 </div>
 
+
+<script src="https://accounts.google.com/gsi/client" async defer></script>
 <script>
-  // Redirect to signin with signup panel
-  window.location.replace('signin.html?signup=1');
+  if(window.location.hostname==='localhost'||window.location.hostname==='127.0.0.1'){window.__API_URL__='http://localhost:8000';}
 </script>
+<script type="module" src="js/auth-api.js"></script>
 <script>
   /* stars */
   (function(){
@@ -292,9 +294,21 @@ body{font-family:'Syne',sans-serif;overflow:hidden;min-height:100vh;color:#f5f2f
       var role=document.querySelector('input[name="role"]:checked').value||'user';
       var urlParams=new URLSearchParams(window.location.search);
       var referralCode=urlParams.get('referral')||urlParams.get('referral_code')||'';
-      var user=await TrendifyAuth.register(email,password,fullname,phone,role,referralCode);
+      var apiBase=(window.__API_URL__||'')+'/api/auth';
+      var payload={email,password,name:fullname,phone,role};
+      if(referralCode)payload.referral_code=referralCode;
+      var res=await fetch(apiBase+'/register',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+      var data=await res.json();
+      if(!res.ok)throw new Error(data.detail||'Registration failed');
+      localStorage.setItem('trendify_access_token',data.access_token);
+      localStorage.setItem('trendify_user',JSON.stringify(data.user));
       btn.textContent='✓ Account created!';btn.style.background='#16a34a';
-      setTimeout(function(){TrendifyAuth.redirectByRole(TrendifyAuth.getUser());},700);
+      setTimeout(function(){
+        var r=(data.user&&data.user.role)||'user';
+        if(r==='admin')location.href='admin/overview.html';
+        else if(r==='creator')location.href='creator/dashboard.html';
+        else location.href='index.html';
+      },700);
     }catch(err){
       btn.textContent=err.message||'Registration failed';btn.style.background='#dc2626';btn.disabled=false;
       setTimeout(function(){btn.textContent='Create account →';btn.style.background='';},3000);
@@ -306,8 +320,23 @@ body{font-family:'Syne',sans-serif;overflow:hidden;min-height:100vh;color:#f5f2f
   function handleGoogleSignUp(){
     var btn=document.getElementById('googleSignUpBtn');btn.textContent='Opening Google…';btn.disabled=true;
     google.accounts.id.initialize({client_id:GOOGLE_CLIENT_ID,callback:async function(r){
-      try{var u=await TrendifyAuth.googleSignIn(r.credential);btn.textContent='✓ Signed in!';setTimeout(function(){TrendifyAuth.redirectByRole(u);},600);}
-      catch(e){btn.textContent=e.message||'Failed';btn.disabled=false;setTimeout(function(){btn.textContent='Continue with Google';},3000);}
+      try{
+        var res=await fetch((window.__API_URL__||'')+'/api/auth/google',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id_token:r.credential})});
+        var data=await res.json();
+        if(!res.ok)throw new Error(data.detail||'Google sign-in failed');
+        localStorage.setItem('trendify_access_token',data.access_token);
+        localStorage.setItem('trendify_user',JSON.stringify(data.user));
+        btn.textContent='✓ Signed in!';
+        setTimeout(function(){
+          var role=(data.user&&data.user.role)||'user';
+          if(role==='admin')location.href='admin/overview.html';
+          else if(role==='creator')location.href='creator/dashboard.html';
+          else location.href='index.html';
+        },600);
+      }catch(e){
+        btn.textContent=e.message||'Failed';btn.disabled=false;
+        setTimeout(function(){btn.textContent='Continue with Google';},3000);
+      }
     }});
     google.accounts.id.prompt();
   }
