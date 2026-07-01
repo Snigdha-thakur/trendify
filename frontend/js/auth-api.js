@@ -64,6 +64,19 @@ window.TrendifyAuth = {
     return data.user;
   },
 
+  async googleSignIn(idToken) {
+    const res = await fetch(`${API}/google`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id_token: idToken }),
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.detail || 'Google sign-in failed');
+    localStorage.setItem(TOKEN_KEY, data.access_token);
+    localStorage.setItem(USER_KEY, JSON.stringify(data.user));
+    return data.user;
+  },
+
   async logout() {
     this._clear();
   },

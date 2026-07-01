@@ -264,7 +264,7 @@
 
       <div class="su-divider">or sign up with</div>
 
-      <a href="#" class="su-social-btn">
+      <a href="#" class="su-social-btn" id="googleSignUpBtn" onclick="handleGoogleSignUp(); return false;">
         <svg class="su-social-icon" viewBox="0 0 24 24" fill="none">
           <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
           <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
@@ -280,6 +280,7 @@
   </div>
 </main>
 
+<script src="https://accounts.google.com/gsi/client" async defer></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
 <!-- Set API URL for local development -->
@@ -376,6 +377,29 @@
       setTimeout(() => { btn.textContent = 'Create account →'; btn.style.background = ''; }, 3000);
     }
   });
+</script>
+<script>
+  const GOOGLE_CLIENT_ID = '644237547029-c8humgt5p4qplv91rjfs2f3nc7dd9vvo.apps.googleusercontent.com';
+
+  function handleGoogleSignUp() {
+    const btn = document.getElementById('googleSignUpBtn');
+    btn.textContent = 'Opening Google…';
+    google.accounts.id.initialize({
+      client_id: GOOGLE_CLIENT_ID,
+      callback: async (response) => {
+        try {
+          const user = await TrendifyAuth.googleSignIn(response.credential);
+          btn.textContent = '✓ Signed in!';
+          setTimeout(() => { TrendifyAuth.redirectByRole(user); }, 600);
+        } catch (err) {
+          btn.textContent = err.message || 'Google sign-in failed';
+          setTimeout(() => { btn.textContent = 'Continue with Google'; }, 3000);
+        }
+      },
+    });
+    google.accounts.id.prompt();
+  }
+  window.handleGoogleSignUp = handleGoogleSignUp;
 </script>
 </body>
 </html>

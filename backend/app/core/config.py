@@ -23,6 +23,8 @@ class Settings(BaseSettings):
 
     REFRESH_TOKEN_EXPIRE_DAYS: int = 30
 
+    GOOGLE_CLIENT_ID: Optional[str] = None
+
     FRONTEND_URL: str = "https://trendifytechnology.vercel.app"
     BACKEND_URL: str = "https://trendify-pxkx.onrender.com"
 

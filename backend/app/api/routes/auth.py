@@ -4,7 +4,8 @@ from app.core.database import get_db
 from app.core.security import create_access_token, verify_password, get_password_hash, decode_token
 from app.models.models import User
 from app.schemas.schemas import UserLogin, UserRegister, TokenResponse, TokenRequest, UserLoginResponse, UserProfile, UserUpdate
-import secrets, string
+from app.core.config import settings
+import secrets, string, httpx
 import traceback
 
 router = APIRouter(prefix="/api/auth", tags=["Auth"])
@@ -127,6 +128,70 @@ def register(data: UserRegister, db: Session = Depends(get_db)):
     db.add(user)
     db.commit()
     db.refresh(user)
+
+    token = create_access_token({"sub": str(user.id), "role": user.role})
+    return UserLoginResponse(
+        access_token=token,
+        token_type="bearer",
+        user=UserProfile(
+            id=str(user.id),
+            name=user.name,
+            email=user.email,
+            phone=user.phone or "",
+            role=user.role,
+            status=user.status,
+            wallet_balance=float(user.wallet_balance or 0),
+            referral_wallet_balance=float(user.referral_wallet_balance or 0),
+            referral_code=user.referral_code or "",
+            address=user.address or "",
+            disclaimer=user.disclaimer or "",
+            instagram=user.instagram or "",
+            facebook=user.facebook or "",
+            youtube=user.youtube or "",
+            linkedin=user.linkedin or "",
+        )
+    )
+
+
+@router.post("/google", response_model=UserLoginResponse)
+async def google_signin(payload: dict, db: Session = Depends(get_db)):
+    """Verify Google ID token and sign in or register the user."""
+    id_token = payload.get("id_token")
+    if not id_token:
+        raise HTTPException(status_code=400, detail="id_token required")
+
+    # Verify token with Google
+    async with httpx.AsyncClient() as client:
+        resp = await client.get(
+            "https://oauth2.googleapis.com/tokeninfo",
+            params={"id_token": id_token},
+        )
+    if resp.status_code != 200:
+        raise HTTPException(status_code=401, detail="Invalid Google token")
+
+    info = resp.json()
+    if settings.GOOGLE_CLIENT_ID and info.get("aud") != settings.GOOGLE_CLIENT_ID:
+        raise HTTPException(status_code=401, detail="Token audience mismatch")
+
+    email = info.get("email")
+    name = info.get("name") or email.split("@")[0]
+    if not email:
+        raise HTTPException(status_code=400, detail="Google account has no email")
+
+    user = db.query(User).filter(User.email == email).first()
+    if not user:
+        ref_code = _gen_referral_code(name, db)
+        user = User(
+            name=name,
+            email=email,
+            phone="",
+            password_hash=None,
+            role="user",
+            referral_code=ref_code,
+        )
+        db.add(user)
+        db.commit()
+        db.refresh(user)
 
     token = create_access_token({"sub": str(user.id), "role": user.role})
     return UserLoginResponse(
