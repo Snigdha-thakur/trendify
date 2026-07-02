@@ -282,9 +282,13 @@ button{font-family:'Syne',sans-serif;}
   .c-main{padding:12px}
   .c-toolbar{flex-direction:column;align-items:stretch;gap:8px}
   .c-search-wrap{width:100%}
+  .c-user-popup{left:8px!important;bottom:8px!important;width:220px!important;}
 }
 
-/* ── TOGGLE SWITCH ── */
+.c-nav-av{display:none;}
+@media (max-width:480px){
+  .c-nav-av{display:flex;}
+}
 .c-toggle-row{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid rgba(167,124,255,.08);}
 .c-toggle-row:last-child{border-bottom:none;}
 .c-toggle-label{font-size:13px;color:#f2f0ff;}

@@ -72,7 +72,6 @@
     <!-- Tabs -->
     <div class="c-tabs" style="margin-bottom:28px;">
       <button class="c-tab active" id="tabProfile" onclick="switchTab('profile')">Profile</button>
-      <button class="c-tab" id="tabCreator" onclick="switchTab('creator')">Creator Settings</button>
       <button class="c-tab" id="tabKyc" onclick="switchTab('kyc')">KYC Details</button>
     </div>
 
@@ -107,6 +106,10 @@
             <input class="c-input" type="text" id="profilePhone" readonly style="cursor:not-allowed"/>
           </div>
         </div>
+        <div class="c-field">
+          <label class="c-field-label">Address</label>
+          <textarea class="c-input" id="profileAddress" rows="3" style="resize:vertical;padding:10px;border:1px solid rgba(167,124,255,.15);border-radius:6px;background:#04040f;font-family:'Syne',sans-serif;font-size:13px;width:100%;outline:none;" placeholder="Your address"></textarea>
+        </div>
         <div style="display:flex;justify-content:flex-end;margin-top:8px;">
           <button class="c-btn-primary" id="saveProfileBtn" onclick="updateProfile()">
             <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 8l4 4 8-8"/></svg>
@@ -116,59 +119,6 @@
       </div>
     </div>
 
-    <!-- CREATOR SETTINGS TAB -->
-    <div id="panelCreator" style="display:none;">
-      <div class="c-stat-card" style="max-width:680px;">
-        <div style="padding:0 0 20px;">
-          <div style="font-size:16px;font-weight:700;color:#f2f0ff;margin-bottom:4px;">Creator Settings</div>
-          <div style="font-size:13px;color:#9d99bb;">Update your creator profile and social links.</div>
-        </div>
-        <div class="c-field">
-          <label class="c-field-label">Address</label>
-          <textarea class="c-input" id="creatorAddress" rows="3" style="resize:vertical;padding:10px;border:1px solid rgba(167,124,255,.15);border-radius:6px;background:#04040f;font-family:'Syne',sans-serif;font-size:13px;width:100%;outline:none;" placeholder="Your address"></textarea>
-        </div>
-        <div class="c-field">
-          <label class="c-field-label">Disclaimer</label>
-          <textarea class="c-input" id="creatorDisclaimer" rows="3" style="resize:vertical;padding:10px;border:1px solid rgba(167,124,255,.15);border-radius:6px;background:#04040f;font-family:'Syne',sans-serif;font-size:13px;width:100%;outline:none;" placeholder="Enter disclaimer"></textarea>
-        </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
-          <div class="c-field">
-            <label class="c-field-label">Instagram</label>
-            <div class="c-input-wrap">
-              <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" style="opacity:.45;flex-shrink:0"><path d="M10 8a2 2 0 1 1-4 0 2 2 0 0 1 4 0z"/><rect x="2" y="2" width="12" height="12" rx="3"/><circle cx="12" cy="4" r=".5" fill="currentColor"/></svg>
-              <input class="c-input" type="url" id="creatorInstagram" placeholder="Instagram URL"/>
-            </div>
-          </div>
-          <div class="c-field">
-            <label class="c-field-label">Facebook</label>
-            <div class="c-input-wrap">
-              <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" style="opacity:.45;flex-shrink:0"><path d="M9 2H7a3 3 0 0 0-3 3v2H2v3h2v5h3v-5h2l1-3H7V5a1 1 0 0 1 1-1h1V2z"/></svg>
-              <input class="c-input" type="url" id="creatorFacebook" placeholder="Facebook URL"/>
-            </div>
-          </div>
-          <div class="c-field">
-            <label class="c-field-label">YouTube</label>
-            <div class="c-input-wrap">
-              <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" style="opacity:.45;flex-shrink:0"><rect x="1" y="4" width="14" height="9" rx="2"/><path d="M6 7l4 2.5L6 12V7z" fill="currentColor" stroke="none"/></svg>
-              <input class="c-input" type="url" id="creatorYoutube" placeholder="YouTube URL"/>
-            </div>
-          </div>
-          <div class="c-field">
-            <label class="c-field-label">LinkedIn</label>
-            <div class="c-input-wrap">
-              <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" style="opacity:.45;flex-shrink:0"><rect x="1" y="1" width="14" height="14" rx="2"/><path d="M4 7v5M4 4v.5M7 12V9a2 2 0 0 1 4 0v3M7 7v5"/></svg>
-              <input class="c-input" type="url" id="creatorLinkedin" placeholder="LinkedIn URL"/>
-            </div>
-          </div>
-        </div>
-        <div style="display:flex;justify-content:flex-end;margin-top:8px;">
-          <button class="c-btn-primary" id="saveCreatorBtn" onclick="updateCreatorSettings()">
-            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 8l4 4 8-8"/></svg>
-            Update Settings
-          </button>
-        </div>
-      </div>
-    </div>
     <!-- KYC TAB -->
     <div id="panelKyc" style="display:none;">
       <div class="c-stat-card" style="max-width:680px;">
@@ -267,12 +217,7 @@ async function loadProfile(){
     document.getElementById('profileName').value=u.name||'';
     document.getElementById('profileEmail').value=u.email||'';
     document.getElementById('profilePhone').value=u.phone||'';
-    document.getElementById('creatorAddress').value=u.address||'';
-    document.getElementById('creatorDisclaimer').value=u.disclaimer||'';
-    document.getElementById('creatorInstagram').value=u.instagram||'';
-    document.getElementById('creatorFacebook').value=u.facebook||'';
-    document.getElementById('creatorYoutube').value=u.youtube||'';
-    document.getElementById('creatorLinkedin').value=u.linkedin||'';
+    document.getElementById('profileAddress').value=u.address||'';
     var ini=(u.name||'CR').split(' ').map(function(w){return w[0];}).join('').toUpperCase().slice(0,2);
     document.getElementById('sbAv').textContent=ini;
     document.getElementById('sbAv2').textContent=ini;
@@ -288,12 +233,7 @@ async function loadProfile(){
       document.getElementById('profileName').value=u.name||'';
       document.getElementById('profileEmail').value=u.email||'';
       document.getElementById('profilePhone').value=u.phone||'';
-      document.getElementById('creatorAddress').value=u.address||'';
-      document.getElementById('creatorDisclaimer').value=u.disclaimer||'';
-      document.getElementById('creatorInstagram').value=u.instagram||'';
-      document.getElementById('creatorFacebook').value=u.facebook||'';
-      document.getElementById('creatorYoutube').value=u.youtube||'';
-      document.getElementById('creatorLinkedin').value=u.linkedin||'';
+      document.getElementById('profileAddress').value=u.address||'';
     }
   }
 }
@@ -316,7 +256,7 @@ async function updateProfile(){
     var res=await fetch(API_BASE+'/auth/me',{
       method:'PATCH',
       headers:{'Authorization':'Bearer '+getToken(),'Content-Type':'application/json'},
-      body:JSON.stringify({name:name})
+      body:JSON.stringify({name:name,address:document.getElementById('profileAddress').value.trim()})
     });
     if(!res.ok) throw new Error(await res.text());
     var u=await res.json();
@@ -334,33 +274,7 @@ async function updateProfile(){
   btn.textContent='Update Profile'; btn.disabled=false;
 }
 
-async function updateCreatorSettings(){
-  var btn=document.getElementById('saveCreatorBtn');
-  btn.textContent='Saving…'; btn.disabled=true;
-  var payload={
-    address:document.getElementById('creatorAddress').value.trim(),
-    disclaimer:document.getElementById('creatorDisclaimer').value.trim(),
-    instagram:document.getElementById('creatorInstagram').value.trim(),
-    facebook:document.getElementById('creatorFacebook').value.trim(),
-    youtube:document.getElementById('creatorYoutube').value.trim(),
-    linkedin:document.getElementById('creatorLinkedin').value.trim()
-  };
-  try{
-    var res=await fetch(API_BASE+'/auth/me',{
-      method:'PATCH',
-      headers:{'Authorization':'Bearer '+getToken(),'Content-Type':'application/json'},
-      body:JSON.stringify(payload)
-    });
-    if(!res.ok) throw new Error(await res.text());
-    var u=await res.json();
-    localStorage.setItem('trendify_user',JSON.stringify(u));
-    if (window.updateCreatorSidebar) {
-      window.updateCreatorSidebar(u);
-    }
-    showMsg('success','Creator settings updated successfully.');
-  }catch(e){ showMsg('error','Failed to update settings: '+e.message); }
-  btn.textContent='Update Settings'; btn.disabled=false;
-}
+async function updateCreatorSettings(){}
 
 async function loadKyc(){
   try{
@@ -434,10 +348,8 @@ async function submitKyc(){
 
 function switchTab(tab){
   document.getElementById('tabProfile').classList.toggle('active', tab==='profile');
-  document.getElementById('tabCreator').classList.toggle('active', tab==='creator');
   document.getElementById('tabKyc').classList.toggle('active', tab==='kyc');
   document.getElementById('panelProfile').style.display=tab==='profile'?'':'none';
-  document.getElementById('panelCreator').style.display=tab==='creator'?'':'none';
   document.getElementById('panelKyc').style.display=tab==='kyc'?'':'none';
   if(tab==='kyc'){loadKyc();}
 }
