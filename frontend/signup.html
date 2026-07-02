@@ -16,6 +16,7 @@ body{font-family:'Syne',sans-serif;overflow:hidden;min-height:100vh;color:#f5f2f
   gap:clamp(40px,6vw,100px);
   padding:20px;
   transition:background 1s ease;
+  overflow-y:auto;
 }
 .scene::before{
   content:'';position:absolute;inset:0;
@@ -99,16 +100,14 @@ body{font-family:'Syne',sans-serif;overflow:hidden;min-height:100vh;color:#f5f2f
 
 /* mobile */
 @media(max-width:600px){
-  .scene{flex-direction:row;gap:8px;padding:10px;justify-content:center;align-items:center;height:100svh;overflow:hidden;}
-  .lamp-wrap{width:70px;flex-shrink:0;gap:6px;min-height:0;align-self:stretch;display:flex;flex-direction:column;}
-  .lamp-wrap svg{flex:1;width:100%;}
+  .scene{flex-direction:row;gap:8px;padding:10px;justify-content:center;align-items:center;}
+  .lamp-wrap{width:70px;flex-shrink:0;gap:6px;min-height:0;height:auto;}
+  .lamp-wrap svg{width:100%;height:auto;}
   .lamp-instruction{font-size:7px;letter-spacing:.06em;word-break:break-word;text-align:center;}
-  .card-slider{flex:1;min-width:0;height:100%;}
-  .card-slider-track{height:100%;min-height:0;}
-  .card-panel{position:absolute;inset:0;}
-  .card-wrap{height:100%;}
-  .flip-card{height:100%;border-radius:12px;overflow:hidden;}
-  .flip-form{padding:14px 12px !important;overflow-y:auto;height:100%;}
+  .card-slider{flex:1;min-width:0;width:auto;}
+  .card-slider-track{height:auto;min-height:0;}
+  .flip-card{border-radius:12px;height:auto;}
+  .flip-form{padding:14px 12px !important;}
 }
 @media(min-width:601px) and (max-width:860px){
   .scene{gap:24px;}
