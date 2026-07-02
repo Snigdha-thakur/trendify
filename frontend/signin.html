@@ -800,13 +800,7 @@ body{font-family:'Syne',sans-serif;overflow:hidden;min-height:100vh;color:#f5f2f
   window.handleGoogleSignIn=handleGoogleSignIn;
   window.handleGoogleSignUp=handleGoogleSignUp;
 
-  var _params=new URLSearchParams(window.location.search);
-  if(_params.get('lit')==='1'||_params.get('signup')==='1'){
-    setTimeout(function(){
-      toggleLamp();
-      if(_params.get('signup')==='1') setTimeout(showSignup,400);
-    },300);
-  }
+
 </script>
 </body>
 </html>

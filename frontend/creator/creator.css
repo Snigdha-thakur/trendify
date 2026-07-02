@@ -75,12 +75,12 @@ button{font-family:'Syne',sans-serif;}
 .c-sb-user:hover{background:rgba(255,255,255,.04);}
 
 /* User popup */
-.c-user-popup{display:none;position:fixed;bottom:80px;left:8px;width:184px;background:#14142e;border:1px solid rgba(167,124,255,.2);border-radius:10px;box-shadow:0 20px 60px rgba(0,0,0,.6);z-index:9999;overflow:hidden;}
+.c-user-popup{display:none;position:fixed;width:220px;background:#14142e;border:1px solid rgba(167,124,255,.35);border-radius:10px;box-shadow:0 24px 80px rgba(0,0,0,.95),0 0 0 1px rgba(167,124,255,.1);z-index:9999;overflow:hidden;opacity:1;}
 .c-user-popup.open{display:block;}
-.c-user-popup-head{display:flex;align-items:center;gap:10px;padding:14px 16px;}
-.c-user-popup-divider{height:1px;background:rgba(167,124,255,.1);}
-.c-user-popup-item{display:flex;align-items:center;gap:10px;padding:11px 16px;font-size:13px;color:#9d99bb;text-decoration:none;transition:background .15s,color .15s;cursor:pointer;background:none;border:none;width:100%;font-family:'Syne',sans-serif;text-align:left;}
-.c-user-popup-item:hover{background:rgba(255,255,255,.04);color:#f2f0ff;}
+.c-user-popup-head{display:flex;align-items:center;gap:10px;padding:14px 16px;background:#1e1e3a;}
+.c-user-popup-divider{height:1px;background:rgba(167,124,255,.15);}
+.c-user-popup-item{display:flex;align-items:center;gap:10px;padding:11px 16px;font-size:13px;color:#c8c4e8;text-decoration:none;transition:background .15s,color .15s;cursor:pointer;background:#14142e;border:none;width:100%;font-family:'Syne',sans-serif;text-align:left;}
+.c-user-popup-item:hover{background:#1e1e3a;color:#f2f0ff;}
 
 /* ── MAIN ── */
 .c-main{flex:1;min-width:0;background:#04040f;overflow-y:auto;padding:28px;scrollbar-width:thin;scrollbar-color:rgba(167,124,255,.2) transparent;}
@@ -282,7 +282,6 @@ button{font-family:'Syne',sans-serif;}
   .c-main{padding:12px}
   .c-toolbar{flex-direction:column;align-items:stretch;gap:8px}
   .c-search-wrap{width:100%}
-  .c-user-popup{left:8px!important;bottom:8px!important;width:220px!important;}
 }
 
 .c-nav-av{display:none;}
