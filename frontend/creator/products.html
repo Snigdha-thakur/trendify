@@ -644,6 +644,22 @@ function editProduct(id){
   try{digitalFiles=p.digital_files?JSON.parse(p.digital_files):[];}catch(e){digitalFiles=[];}
   try{var sl=p.social_links?JSON.parse(p.social_links):{};document.getElementById('sInstagram').value=sl.instagram||'';document.getElementById('sTwitter').value=sl.twitter||'';document.getElementById('sFacebook').value=sl.facebook||'';document.getElementById('sYoutube').value=sl.youtube||'';document.getElementById('sTiktok').value=sl.tiktok||'';document.getElementById('sLinkedin').value=sl.linkedin||'';}catch(e){}
   selectPricing(p.price_type==='Fixed'?'fixed':'customer');
+  // Restore profile picture
+  if(p.profile_picture){
+    profilePicBase64=p.profile_picture;
+    var pp=document.getElementById('profilePicPreview');
+    pp.style.backgroundImage='url('+p.profile_picture+')';pp.style.display='block';
+    document.getElementById('profilePicIcon').style.display='none';
+    document.getElementById('previewAv').style.backgroundImage='url('+p.profile_picture+')';
+    document.getElementById('previewAv').style.backgroundSize='cover';
+    document.getElementById('previewAv').textContent='';
+  }
+  // Restore cover image
+  if(p.cover_image){
+    coverImageBase64=p.cover_image;
+    var cp=document.getElementById('coverPreview');
+    cp.style.backgroundImage='url('+p.cover_image+')';cp.style.display='block';
+  }
   renderFormFields();renderDigitalFiles();updateBadges();
   document.getElementById('listView').style.display='none';
   document.getElementById('createView').style.display='block';
