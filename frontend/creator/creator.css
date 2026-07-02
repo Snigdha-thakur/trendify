@@ -284,10 +284,8 @@ button{font-family:'Syne',sans-serif;}
   .c-search-wrap{width:100%}
 }
 
-.c-nav-av{display:none;}
-@media (max-width:480px){
-  .c-nav-av{display:flex;}
-}
+.c-nav-av{display:flex;}
+.c-sidebar-bottom{display:none;}
 .c-toggle-row{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid rgba(167,124,255,.08);}
 .c-toggle-row:last-child{border-bottom:none;}
 .c-toggle-label{font-size:13px;color:#f2f0ff;}

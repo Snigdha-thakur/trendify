@@ -81,7 +81,7 @@ body{background:#04040f!important;color:#f2f0ff!important}
   </div>
   <div class="c-nav-right">
     <button class="c-back-btn" id="backBtn" style="display:none" onclick="backToAdmin()"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10 3l5 5-5 5M3 8h12"/></svg>Back to Admin</button>
-    <button class="c-theme-btn" onclick="toggleTheme()">☾</button>
+    <button class="c-theme-btn" onclick="toggleTheme()">☾</button><div class="c-av c-nav-av" id="navAv" onclick="toggleUserMenu(event)" style="cursor:pointer;">CR</div>
   </div>
 </nav>
 <div class="c-shell">
@@ -549,7 +549,7 @@ function initUser(){
   document.getElementById('previewAv').textContent=ini;
   document.getElementById('previewCreatorName').textContent=u.name||'';
   document.getElementById('previewCreatorName2').textContent=u.name||'';
-  if(localStorage.getItem('_from_admin'))document.getElementById('backBtn').style.display='inline-flex';
+  var navAv=document.getElementById('navAv');if(navAv)navAv.textContent=ini; if(localStorage.getItem('_from_admin'))document.getElementById('backBtn').style.display='inline-flex';
 }
 function toggleUserMenu(e){e.stopPropagation();var popup=document.getElementById('userPopup');if(window.innerWidth<=768){var sb=document.getElementById('sidebar');if(sb)sb.classList.remove('expanded');}var r=e.currentTarget.getBoundingClientRect();var popW=220,popH=140,top=r.top-popH-8;if(top<8)top=r.bottom+8;var left=Math.max(8,Math.min(r.left,window.innerWidth-popW-8));popup.style.top=top+'px';popup.style.left=left+'px';popup.style.bottom='auto';popup.classList.toggle('open');}
 document.addEventListener('click',function(e){var p=document.getElementById('userPopup'),u=document.getElementById('sbUser');if(p&&!p.contains(e.target)&&u&&!u.contains(e.target))p.classList.remove('open');});

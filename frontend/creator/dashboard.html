@@ -205,6 +205,7 @@ function buildChart(txns,days){
 }
 function backToAdmin(){var tok=localStorage.getItem('_admin_token_backup');var usr=localStorage.getItem('_admin_user_backup');if(tok){localStorage.setItem('trendify_access_token',tok);localStorage.setItem('trendify_user',usr||'');}localStorage.removeItem('_from_admin');localStorage.removeItem('_admin_token_backup');localStorage.removeItem('_admin_user_backup');window.location.href='../admin/overview.html';}window.backToAdmin=backToAdmin;function toggleSidebar(){document.getElementById('sidebar').classList.toggle('expanded');}
 function toggleTheme(){document.body.classList.toggle('dark');}
+document.addEventListener('DOMContentLoaded',function(){var p=document.getElementById('userPopup');if(p)document.body.appendChild(p);});
 initUser();
 loadDashboard();
 </script>

@@ -38,7 +38,7 @@
   </div>
   <div class="c-nav-right">
     <button class="c-back-btn" id="backBtn" style="display:none" onclick="backToAdmin()"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10 3l5 5-5 5M3 8h12"/></svg>Back to Admin</button>
-    <button class="c-theme-btn" onclick="toggleTheme()">☾</button>
+    <button class="c-theme-btn" onclick="toggleTheme()">☾</button><div class="c-av c-nav-av" id="navAv" onclick="toggleUserMenu(event)" style="cursor:pointer;">CR</div>
   </div>
 </nav>
 <div class="c-shell">
@@ -180,7 +180,7 @@ function initUser(){
   document.getElementById('sbAv2').textContent=ini;
   document.getElementById('sbName2').textContent=u.name||'Creator';
   document.getElementById('sbEmail2').textContent=idDisplay;
-  if(localStorage.getItem('_from_admin'))document.getElementById('backBtn').style.display='inline-flex';
+  var navAv=document.getElementById('navAv');if(navAv)navAv.textContent=ini; if(localStorage.getItem('_from_admin'))document.getElementById('backBtn').style.display='inline-flex';
   // set referral code
   if(u.referral_code){
     document.getElementById('refCode').textContent='ref-'+u.referral_code;
