@@ -1,0 +1,61 @@
+/* ── Trendify Page Loader ── */
+#tfy-loader {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  background: #04040f;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity .4s ease, visibility .4s ease;
+}
+#tfy-loader.tfy-done {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+/* spinning ring */
+.tfy-ring {
+  position: relative;
+  width: 52px;
+  height: 52px;
+}
+.tfy-ring svg {
+  width: 52px;
+  height: 52px;
+  animation: tfy-spin 1s linear infinite;
+  display: block;
+}
+.tfy-ring-track {
+  fill: none;
+  stroke: rgba(167, 124, 255, .12);
+  stroke-width: 3.5;
+}
+.tfy-ring-arc {
+  fill: none;
+  stroke: url(#tfy-grad);
+  stroke-width: 3.5;
+  stroke-linecap: round;
+  stroke-dasharray: 104 34;
+}
+
+/* pulsing center dot */
+.tfy-dot {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #a67cff, #00e5c8);
+  animation: tfy-pulse 1s ease-in-out infinite;
+  box-shadow: 0 0 10px rgba(166, 124, 255, .7);
+}
+
+@keyframes tfy-spin  { to { transform: rotate(360deg); } }
+@keyframes tfy-pulse {
+  0%, 100% { transform: translate(-50%,-50%) scale(.75); opacity: .5; }
+  50%       { transform: translate(-50%,-50%) scale(1.2);  opacity: 1;  }
+}
