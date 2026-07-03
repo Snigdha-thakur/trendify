@@ -70,6 +70,7 @@ function showDetail(id) {
 }
 
 
+async function updateKYC(id, status) {
   await AdminAPI.updateKYCStatus(id, status);
   const item = allKyc.find(k => k.id === id);
   if (item) item.status = status;
