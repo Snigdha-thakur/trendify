@@ -300,7 +300,6 @@ class TransactionResponse(BaseModel):
     commission_amount: Optional[float]
     creator_amount: Optional[float]
     cashfree_order_id: Optional[str]
-    cf_payment_id: Optional[str] = None
     payment_link: Optional[str]
     created_at: Optional[datetime]
 

@@ -170,7 +170,6 @@ class Transaction(Base):
     gateway = Column(Text, default="Cashfree")
     created_at = Column(TIMESTAMP(timezone=True), server_default=func.now())
     cashfree_order_id = Column(Text)
-    cf_payment_id = Column(Text)
     payment_link = Column(Text)
     commission_amount = Column(Numeric, default=0)
     creator_amount = Column(Numeric, default=0)

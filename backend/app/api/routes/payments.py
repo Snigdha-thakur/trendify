@@ -101,7 +101,6 @@ async def cashfree_webhook(request: Request, db: Session = Depends(get_db)):
     payload = await request.json()
     order_id = payload.get("data", {}).get("order", {}).get("order_id") or payload.get("orderId")
     payment_status = payload.get("data", {}).get("payment", {}).get("payment_status") or payload.get("txStatus")
-    cf_payment_id = payload.get("data", {}).get("payment", {}).get("cf_payment_id")
 
     if not order_id:
         return {"status": "ignored"}
@@ -114,9 +113,6 @@ async def cashfree_webhook(request: Request, db: Session = Depends(get_db)):
         return {"status": "not_found"}
 
     db.add(GatewayLog(transaction_id=txn.id, log_type="Webhook"))
-
-    if cf_payment_id:
-        txn.cf_payment_id = str(cf_payment_id)
 
     if payment_status in ("SUCCESS", "PAID"):
         if txn.status != "Success":  # idempotency guard
