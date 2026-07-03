@@ -133,6 +133,20 @@
     </div>
   </main>
 </div>
+<div id="detailModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(6px);z-index:9999;align-items:center;justify-content:center;padding:20px;" onclick="if(event.target===this)this.style.display='none'">
+</div>
+<style>
+.kyc-detail-card{background:#0d0d26;border:1px solid rgba(167,124,255,.25);border-radius:20px;padding:32px;max-width:480px;width:100%;position:relative;max-height:90vh;overflow-y:auto;}
+.kyc-detail-close{position:absolute;top:16px;right:16px;background:rgba(255,255,255,.06);border:1px solid rgba(167,124,255,.2);color:#9d99bb;width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;}
+.kyc-detail-close:hover{background:rgba(255,255,255,.1);color:#f2f0ff;}
+.kyc-detail-name{font-size:20px;font-weight:800;color:#f2f0ff;margin-bottom:20px;padding-right:40px;}
+.kyc-detail-section{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#a67cff;background:rgba(166,124,255,.08);border:1px solid rgba(166,124,255,.15);border-radius:6px;padding:6px 12px;display:inline-block;margin-bottom:14px;}
+.kyc-detail-grid{display:flex;flex-direction:column;gap:0;border:1px solid rgba(167,124,255,.12);border-radius:10px;overflow:hidden;}
+.kyc-detail-row{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;border-bottom:1px solid rgba(167,124,255,.08);}
+.kyc-detail-row:last-child{border-bottom:none;}
+.kyc-detail-label{font-size:12px;color:#9d99bb;flex-shrink:0;width:130px;}
+.kyc-detail-val{font-size:13px;color:#f2f0ff;font-family:'DM Mono',monospace;font-weight:600;text-align:right;word-break:break-all;}
+</style>
 <script type="module" src="../js/auth-api.js"></script>
 <script type="module" src="admin-api.js"></script>
 <script type="module" src="kyc-management.js"></script>

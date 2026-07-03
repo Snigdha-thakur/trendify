@@ -36,7 +36,40 @@ async function loadData() {
   renderTable();
 }
 
-async function updateKYC(id, status) {
+function showDetail(id) {
+  const r = allKyc.find(k => k.id === id);
+  if (!r) return;
+  document.getElementById('detailModal').innerHTML = `
+    <div class="kyc-detail-card">
+      <button class="kyc-detail-close" onclick="document.getElementById('detailModal').style.display='none'">✕</button>
+      <div class="kyc-detail-name">${r.name}</div>
+      <div class="kyc-detail-section">KYC Details</div>
+      <div class="kyc-detail-grid">
+        <div class="kyc-detail-row"><span class="kyc-detail-label">Aadhaar</span><span class="kyc-detail-val">${r.aadhar}</span></div>
+        <div class="kyc-detail-row"><span class="kyc-detail-label">PAN</span><span class="kyc-detail-val">${r.pan}</span></div>
+        <div class="kyc-detail-row"><span class="kyc-detail-label">GST</span><span class="kyc-detail-val">${r.gst}</span></div>
+        <div class="kyc-detail-row"><span class="kyc-detail-label">UDYAM</span><span class="kyc-detail-val">${r.udyam}</span></div>
+        <div class="kyc-detail-row"><span class="kyc-detail-label">Website</span><span class="kyc-detail-val">${r.website}</span></div>
+        <div class="kyc-detail-row"><span class="kyc-detail-label">Phone</span><span class="kyc-detail-val">${r.phone}</span></div>
+        <div class="kyc-detail-row"><span class="kyc-detail-label">Email</span><span class="kyc-detail-val">${r.email}</span></div>
+        <div class="kyc-detail-row"><span class="kyc-detail-label">Status</span><span class="kyc-detail-val">${badge(r.status)}</span></div>
+      </div>
+      <div class="kyc-detail-section" style="margin-top:20px;">Bank Details</div>
+      <div class="kyc-detail-grid">
+        <div class="kyc-detail-row"><span class="kyc-detail-label">Bank Name</span><span class="kyc-detail-val">${r.bank_name}</span></div>
+        <div class="kyc-detail-row"><span class="kyc-detail-label">Account Holder</span><span class="kyc-detail-val">${r.account_holder_name}</span></div>
+        <div class="kyc-detail-row"><span class="kyc-detail-label">Account Number</span><span class="kyc-detail-val">${r.account_number}</span></div>
+        <div class="kyc-detail-row"><span class="kyc-detail-label">IFSC Code</span><span class="kyc-detail-val">${r.ifsc_code}</span></div>
+      </div>
+      <div style="display:flex;gap:10px;margin-top:24px;justify-content:center;">
+        ${r.status !== 'Approved' ? `<button class="action-icon-btn" onclick="updateKYC('${r.id}','Approved');document.getElementById('detailModal').style.display='none'" style="font-size:12px;padding:8px 20px;color:var(--green)">✓ Approve</button>` : ''}
+        ${r.status !== 'Rejected' ? `<button class="action-icon-btn" onclick="updateKYC('${r.id}','Rejected');document.getElementById('detailModal').style.display='none'" style="font-size:12px;padding:8px 20px;color:var(--ember)">✗ Reject</button>` : ''}
+      </div>
+    </div>`;
+  document.getElementById('detailModal').style.display = 'flex';
+}
+
+
   await AdminAPI.updateKYCStatus(id, status);
   const item = allKyc.find(k => k.id === id);
   if (item) item.status = status;
@@ -55,7 +88,7 @@ function renderTable() {
     empty.style.display = 'none';
     tbody.innerHTML = slice.map(r => `
       <tr>
-        <td><span style="font-weight:700;color:var(--white)">${r.name}</span></td>
+        <td style="cursor:pointer;font-weight:700;color:var(--white);text-decoration:underline;text-underline-offset:3px;" onclick="showDetail('${r.id}')">${r.name}</td>
         <td style="font-family:var(--f-mono);font-size:12px">${r.aadhar}</td>
         <td style="font-family:var(--f-mono);font-size:12px">${r.pan}</td>
         <td style="font-family:var(--f-mono);font-size:12px">${r.gst}</td>
@@ -129,3 +162,4 @@ window.filterTable = filterTable;
 window.renderTable = renderTable;
 window.goPage = goPage;
 window.updateKYC = updateKYC;
+window.showDetail = showDetail;
