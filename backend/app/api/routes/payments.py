@@ -115,10 +115,11 @@ async def cashfree_webhook(request: Request, db: Session = Depends(get_db)):
     db.add(GatewayLog(transaction_id=txn.id, log_type="Webhook"))
 
     if payment_status in ("SUCCESS", "PAID"):
-        txn.status = "Success"
-        _credit_wallets(txn, db)
-        db.commit()
-        await _broadcast_wallet_update(txn)
+        if txn.status != "Success":  # idempotency guard
+            txn.status = "Success"
+            _credit_wallets(txn, db)
+            db.commit()
+            await _broadcast_wallet_update(txn)
         return {"status": "ok"}
     elif payment_status in ("FAILED", "CANCELLED", "VOID"):
         txn.status = "Failed"
@@ -201,11 +202,12 @@ async def verify_transaction(txn_id: str, db: Session = Depends(get_db)):
     )
 
     if paid:
-        txn.status = "Success"
-        _credit_wallets(txn, db)
-        db.add(GatewayLog(transaction_id=txn.id, log_type="Verify"))
-        db.commit()
-        await _broadcast_wallet_update(txn)
+        if txn.status != "Success":  # idempotency guard
+            txn.status = "Success"
+            _credit_wallets(txn, db)
+            db.add(GatewayLog(transaction_id=txn.id, log_type="Verify"))
+            db.commit()
+            await _broadcast_wallet_update(txn)
         return {"status": "success", "message": "Payment verified and wallet credited"}
 
     return {"status": txn.status.lower(), "message": "Payment not yet successful"}
@@ -229,6 +231,15 @@ async def _broadcast_wallet_update(txn: Transaction):
 
 def _credit_wallets(txn: Transaction, db: Session):
     """Credit creator wallet and referral wallet on successful payment."""
+    # Idempotency: skip if already credited for this transaction
+    already = db.query(WalletLog).filter(
+        WalletLog.transaction_id == txn.id,
+        WalletLog.wallet_type == "Main Wallet",
+        WalletLog.type == "Credit",
+    ).first()
+    if already:
+        return
+
     creator = db.query(User).filter(User.id == txn.creator_id).first()
     if not creator:
         return

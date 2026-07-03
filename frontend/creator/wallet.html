@@ -10,6 +10,9 @@
 <style>html,body{cursor:default!important}body{background:#04040f!important;color:#f2f0ff!important}.c-nav{background:rgba(3,3,7,.97)!important;border-bottom:1px solid rgba(167,124,255,.12)!important}.c-sidebar{background:#080818!important;border-right:1px solid rgba(167,124,255,.1)!important}.c-main{background:#04040f!important}.c-stat-card{background:#14142e!important;border:1px solid rgba(167,124,255,.12)!important}.c-chart-card{background:#14142e!important;border:1px solid rgba(167,124,255,.12)!important}.c-stat-label,.c-chart-sub,.c-nav-title,.c-search::placeholder,.c-perpage-wrap{color:#9d99bb!important}.c-stat-val,.c-page-title,.c-chart-title,.c-nav-title .current{color:#f2f0ff!important}.c-table th{background:#04040f!important;color:#f2f0ff!important}.c-table tbody tr{border-bottom:1px solid rgba(167,124,255,.07)!important}.c-table tbody tr:hover{background:rgba(123,94,167,.05)!important}.c-table td{color:#c8c4e8!important}.c-search-wrap,.c-perpage,.c-date-sel{background:#14142e!important;border:1px solid rgba(167,124,255,.15)!important;color:#f2f0ff!important}.c-search{background:none!important;color:#f2f0ff!important}.c-tabs{border-bottom:1px solid rgba(167,124,255,.12)!important}.c-tab{color:#9d99bb!important}.c-tab.active{color:#f2f0ff!important;border-bottom-color:#a67cff!important}.c-pg{background:#14142e!important;border:1px solid rgba(167,124,255,.15)!important;color:#9d99bb!important}.c-pg.active{background:rgba(123,94,167,.2)!important;color:#a67cff!important}.c-modal{background:#14142e!important}.c-modal-title{color:#f2f0ff!important}.c-modal-sub{color:#9d99bb!important}.c-input-wrap,.c-input,.c-select,.c-price-input{background:#04040f!important;color:#f2f0ff!important;border-color:rgba(167,124,255,.15)!important}.c-field-label,.c-section-title{color:#f2f0ff!important}.c-pricing-card{background:#04040f!important;border-color:rgba(167,124,255,.15)!important}.c-pricing-card.selected{border-color:#a67cff!important}.c-section-item,.c-form-field-placeholder{background:#04040f!important;border-color:rgba(167,124,255,.12)!important}.c-preview-card,.c-preview-content,.c-preview-bar{background:#14142e!important;border-color:rgba(167,124,255,.12)!important}.c-preview-browser{background:#080818!important}.c-preview-product-title,.c-preview-name{color:#f2f0ff!important}.c-preview-by,.c-preview-section,.c-preview-contact,.c-upload-label{color:#9d99bb!important}.c-save-bar{background:rgba(3,3,7,.97)!important;border-bottom:1px solid rgba(167,124,255,.12)!important}.c-sidebar-link{color:#9d99bb!important}.c-sidebar-link:hover{background:rgba(255,255,255,.04)!important;color:#f2f0ff!important}.c-sidebar-link.active{color:#a67cff!important;background:rgba(123,94,167,.1)!important}.c-sidebar-divider{background:rgba(167,124,255,.1)!important}.c-wallet-cards .c-stat-card{background:#14142e!important}.c-empty{color:#9d99bb!important}</style>
 </head>
 <body>
+<link rel="stylesheet" href="../css/loader.css"/>
+<div id="tfy-loader"><div class="tfy-ring"><svg viewBox="0 0 56 56" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="tfy-grad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#a67cff"/><stop offset="100%" stop-color="#00e5c8"/></linearGradient></defs><circle class="tfy-ring-track" cx="28" cy="28" r="22"/><circle class="tfy-ring-arc" cx="28" cy="28" r="22"/></svg><div class="tfy-dot"></div></div></div>
+<script>(function(){function h(){var l=document.getElementById('tfy-loader');if(l)l.classList.add('tfy-done');setTimeout(function(){var l2=document.getElementById('tfy-loader');if(l2&&l2.parentNode)l2.parentNode.removeChild(l2);},500);}if(document.readyState==='complete'){h();}else{window.addEventListener('load',h);}})();</script>
 <nav class="c-nav">
   <div class="c-nav-left">
     <button class="c-sidebar-toggle" onclick="toggleSidebar()"><svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="3" width="14" height="1.5" rx=".75"/><rect x="1" y="7.25" width="14" height="1.5" rx=".75"/><rect x="1" y="11.5" width="14" height="1.5" rx=".75"/></svg></button>
@@ -189,10 +192,16 @@ function backToAdmin(){var tok=localStorage.getItem('_admin_token_backup');var u
 function toggleTheme(){document.body.classList.toggle('dark');}
 window.copy=copy;window.goPage=goPage;window.filterTable=filterTable;window.renderTable=renderTable;
 window.openWithdraw=openWithdraw;window.closeWithdraw=closeWithdraw;window.submitWithdraw=submitWithdraw;
-initUser();load();
-_timer=setInterval(load,10000);
+// Debounced load — collapses rapid calls into one
+var _loadDebounce=null;
+function debouncedLoad(){
+  clearTimeout(_loadDebounce);
+  _loadDebounce=setTimeout(load,300);
+}
 
-// WebSocket for real-time wallet updates
+initUser();load();
+
+// WebSocket for real-time wallet updates (replaces polling)
 (function(){
   var wsBase=(location.hostname==='localhost'||location.hostname==='127.0.0.1')
     ?'ws://localhost:8000':'wss://trendify-pxkx.onrender.com';
@@ -203,7 +212,7 @@ _timer=setInterval(load,10000);
     ws.onmessage=function(e){
       try{
         var msg=JSON.parse(e.data);
-        if(msg.type==='wallet_update') load();
+        if(msg.type==='wallet_update') debouncedLoad();
       }catch(err){}
     };
     ws.onclose=function(){ setTimeout(connectWS,5000); };
