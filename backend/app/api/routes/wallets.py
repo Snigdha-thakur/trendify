@@ -2,10 +2,11 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from uuid import UUID
 from app.core.database import get_db
-from app.models.models import User, WalletLog, Payout, ReferralEarning, PayoutWebhook, KYC
+from app.models.models import User, WalletLog, Payout, ReferralEarning, PayoutWebhook, KYC, BankDetail
 from app.schemas.schemas import (
     WalletLogResponse, PayoutResponse, ReferralEarningResponse,
     PayoutWebhookCreate, PayoutWebhookResponse, KYCCreate, KYCResponse,
+    BankDetailCreate, BankDetailResponse,
 )
 from app.api.routes.users import get_current_user
 from decimal import Decimal
@@ -150,6 +151,33 @@ def submit_kyc(
     db.commit()
     db.refresh(kyc)
     return kyc
+
+
+# Bank Details
+@router.get("/bank", response_model=BankDetailResponse)
+def get_bank(current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+    bank = db.query(BankDetail).filter(BankDetail.user_id == current_user.id).first()
+    if not bank:
+        raise HTTPException(status_code=404, detail="No bank details found")
+    return bank
+
+
+@router.post("/bank", response_model=BankDetailResponse)
+def save_bank(
+    data: BankDetailCreate,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    bank = db.query(BankDetail).filter(BankDetail.user_id == current_user.id).first()
+    if bank:
+        for field, value in data.model_dump().items():
+            setattr(bank, field, value)
+    else:
+        bank = BankDetail(user_id=current_user.id, **data.model_dump())
+        db.add(bank)
+    db.commit()
+    db.refresh(bank)
+    return bank
 
 
 # Payout Webhooks

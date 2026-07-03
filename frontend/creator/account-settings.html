@@ -12,7 +12,7 @@
 <body>
 <link rel="stylesheet" href="../css/loader.css"/>
 <div id="tfy-loader"><div class="tfy-ring"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div><span class="tfy-label">Please wait...</span></div>
-<script>(function(){var _p=0,_h=null,_s=null,_f=window.fetch;function _show(){clearTimeout(_h);var l=document.getElementById('tfy-loader');if(l){l.classList.remove('tfy-done');clearTimeout(_s);_s=setTimeout(function(){var lb=l.querySelector('.tfy-label');if(lb)lb.textContent='Server waking up, please wait...';},5000);}}function _hide(){clearTimeout(_s);_h=setTimeout(function(){if(_p<=0){var l=document.getElementById('tfy-loader');if(l){var lb=l.querySelector('.tfy-label');if(lb)lb.textContent='Please wait...';l.classList.add('tfy-done');}setTimeout(function(){var l2=document.getElementById('tfy-loader');if(l2&&l2.parentNode)l2.parentNode.removeChild(l2);},450);}},120);}window.fetch=function(){_p++;_show();return _f.apply(this,arguments).finally(function(){_p=Math.max(0,_p-1);if(_p===0)_hide();});};window.addEventListener('load',function(){if(_p===0)_hide();});var _api=(location.hostname==='localhost'||location.hostname==='127.0.0.1')?'http://localhost:8000':'https://trendify-pxkx.onrender.com';function _ping(){_f(_api+'/health',{method:'GET',cache:'no-store'}).catch(function(){});}setTimeout(_ping,500);setInterval(_ping,840000);})();</script>
+<script>(function(){var _p=0,_h=null,_f=window.fetch;function _show(){clearTimeout(_h);var l=document.getElementById('tfy-loader');if(l){l.classList.remove('tfy-done');}}function _hide(){_h=setTimeout(function(){if(_p<=0){var l=document.getElementById('tfy-loader');if(l){var lb=l.querySelector('.tfy-label');if(lb)lb.textContent='Please wait...';l.classList.add('tfy-done');}setTimeout(function(){var l2=document.getElementById('tfy-loader');if(l2&&l2.parentNode)l2.parentNode.removeChild(l2);},450);}},120);}window.fetch=function(){_p++;_show();return _f.apply(this,arguments).finally(function(){_p=Math.max(0,_p-1);if(_p===0)_hide();});};window.addEventListener('load',function(){if(_p===0)_hide();});})();</script>
 <!-- NAV -->
 <nav class="c-nav">
   <div class="c-nav-left">
@@ -76,6 +76,7 @@
     <div class="c-tabs" style="margin-bottom:28px;">
       <button class="c-tab active" id="tabProfile" onclick="switchTab('profile')">Profile</button>
       <button class="c-tab" id="tabKyc" onclick="switchTab('kyc')">KYC Details</button>
+      <button class="c-tab" id="tabBank" onclick="switchTab('bank')">Bank Details</button>
     </div>
 
     <div id="profileError" style="display:none;margin-bottom:16px;padding:12px;border-radius:6px;background:rgba(232,103,74,.1);border:1px solid rgba(232,103,74,.25);color:#e8674a;font-size:13px;"></div>
@@ -183,6 +184,50 @@
           <button class="c-btn-primary" id="saveKycBtn" onclick="submitKyc()">
             <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 8l4 4 8-8"/></svg>
             Submit KYC
+          </button>
+        </div>
+      </div>
+    </div>
+    <!-- BANK DETAILS TAB -->
+    <div id="panelBank" style="display:none;">
+      <div class="c-stat-card" style="max-width:680px;">
+        <div style="padding:0 0 20px;">
+          <div style="font-size:16px;font-weight:700;color:#f2f0ff;margin-bottom:4px;">Bank Details</div>
+          <div style="font-size:13px;color:#9d99bb;">Add your bank account for payouts. Details are encrypted and secure.</div>
+        </div>
+        <div id="bankStatus" style="display:none;margin-bottom:16px;padding:10px 14px;border-radius:6px;font-size:13px;font-weight:600;"></div>
+        <div class="c-field">
+          <label class="c-field-label">Bank Name</label>
+          <div class="c-input-wrap">
+            <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" style="opacity:.45;flex-shrink:0"><rect x="1" y="6" width="14" height="8" rx="1"/><path d="M1 6l7-4 7 4"/><path d="M6 10v4M10 10v4"/></svg>
+            <input class="c-input" type="text" id="bankName" placeholder="e.g. State Bank of India"/>
+          </div>
+        </div>
+        <div class="c-field">
+          <label class="c-field-label">Account Holder Name</label>
+          <div class="c-input-wrap">
+            <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" style="opacity:.45;flex-shrink:0"><circle cx="8" cy="5" r="3"/><path d="M2 14c0-3.3 2.7-6 6-6s6 2.7 6 6"/></svg>
+            <input class="c-input" type="text" id="bankHolderName" placeholder="Name as per bank account"/>
+          </div>
+        </div>
+        <div class="c-field">
+          <label class="c-field-label">Account Number</label>
+          <div class="c-input-wrap">
+            <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" style="opacity:.45;flex-shrink:0"><rect x="1" y="4" width="14" height="9" rx="1"/><path d="M1 7h14"/></svg>
+            <input class="c-input" type="text" id="bankAccountNumber" placeholder="Enter account number" maxlength="18"/>
+          </div>
+        </div>
+        <div class="c-field">
+          <label class="c-field-label">IFSC Code</label>
+          <div class="c-input-wrap">
+            <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" style="opacity:.45;flex-shrink:0"><rect x="1" y="3" width="14" height="10" rx="1"/><path d="M5 8h6M8 5v6"/></svg>
+            <input class="c-input" type="text" id="bankIfsc" placeholder="e.g. SBIN0001234" maxlength="11" style="text-transform:uppercase"/>
+          </div>
+        </div>
+        <div style="display:flex;justify-content:flex-end;margin-top:8px;">
+          <button class="c-btn-primary" id="saveBankBtn" onclick="submitBank()">
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 8l4 4 8-8"/></svg>
+            Save Bank Details
           </button>
         </div>
       </div>
@@ -350,14 +395,15 @@ async function submitKyc(){
 }
 
 function switchTab(tab){
-  document.getElementById('tabProfile').classList.toggle('active', tab==='profile');
-  document.getElementById('tabKyc').classList.toggle('active', tab==='kyc');
-  document.getElementById('panelProfile').style.display=tab==='profile'?'':'none';
-  document.getElementById('panelKyc').style.display=tab==='kyc'?'':'none';
-  if(tab==='kyc'){loadKyc();}
+  ['profile','kyc','bank'].forEach(function(t){
+    document.getElementById('tab'+t.charAt(0).toUpperCase()+t.slice(1)).classList.toggle('active',t===tab);
+    document.getElementById('panel'+t.charAt(0).toUpperCase()+t.slice(1)).style.display=t===tab?'':'none';
+  });
+  if(tab==='kyc') loadKyc();
+  if(tab==='bank') loadBank();
 }
 
-function toggleUserMenu(e){ e.stopPropagation(); document.getElementById('userPopup').classList.toggle('open'); }
+function toggleUserMenu(e){e.stopPropagation();e.preventDefault();var p=document.getElementById('userPopup');if(p)p.classList.toggle('open');}
 document.addEventListener('click',function(e){
   var p=document.getElementById('userPopup'),u=document.getElementById('sbUser');
   if(p&&!p.contains(e.target)&&u&&!u.contains(e.target)) p.classList.remove('open');
@@ -383,6 +429,48 @@ function backToAdmin(){
 window.backToAdmin=backToAdmin;
 function toggleSidebar(){ document.getElementById('sidebar').classList.toggle('expanded'); }
 function toggleTheme(){ document.body.classList.toggle('dark'); }
+
+async function loadBank(){
+  try{
+    var res=await fetch(API_BASE+'/wallets/bank',{headers:{'Authorization':'Bearer '+getToken()}});
+    if(res.status===404){return;}
+    if(!res.ok) throw new Error(res.statusText);
+    var b=await res.json();
+    document.getElementById('bankName').value=b.bank_name||'';
+    document.getElementById('bankHolderName').value=b.account_holder_name||'';
+    document.getElementById('bankAccountNumber').value=b.account_number||'';
+    document.getElementById('bankIfsc').value=b.ifsc_code||'';
+    if(b.bank_name){
+      var s=document.getElementById('bankStatus');
+      s.innerHTML='<span class="badge-kyc-approved">Bank details saved</span>';
+      s.style.display='block';
+    }
+  }catch(e){console.error('Error loading bank:',e);}
+}
+
+async function submitBank(){
+  var bankName=document.getElementById('bankName').value.trim();
+  var holderName=document.getElementById('bankHolderName').value.trim();
+  var accountNumber=document.getElementById('bankAccountNumber').value.trim();
+  var ifsc=document.getElementById('bankIfsc').value.trim().toUpperCase();
+  if(!bankName||!holderName||!accountNumber||!ifsc){showMsg('error','Please fill all bank details.');return;}
+  if(!/^[A-Z]{4}0[A-Z0-9]{6}$/.test(ifsc)){showMsg('error','Invalid IFSC code format.');return;}
+  var btn=document.getElementById('saveBankBtn');
+  btn.textContent='Saving…';btn.disabled=true;
+  try{
+    var res=await fetch(API_BASE+'/wallets/bank',{
+      method:'POST',
+      headers:{'Authorization':'Bearer '+getToken(),'Content-Type':'application/json'},
+      body:JSON.stringify({bank_name:bankName,account_holder_name:holderName,account_number:accountNumber,ifsc_code:ifsc})
+    });
+    if(!res.ok) throw new Error(await res.text());
+    var s=document.getElementById('bankStatus');
+    s.innerHTML='<span class="badge-kyc-approved">Bank details saved</span>';
+    s.style.display='block';
+    showMsg('success','Bank details saved successfully.');
+  }catch(e){showMsg('error','Failed to save bank details: '+e.message);}
+  btn.textContent='Save Bank Details';btn.disabled=false;
+}
 
 initUser();
 loadProfile();

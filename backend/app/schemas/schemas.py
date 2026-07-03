@@ -375,6 +375,26 @@ class PayoutWebhookResponse(BaseModel):
     model_config = {"from_attributes": True}
 
 
+# Bank Detail
+class BankDetailCreate(BaseModel):
+    bank_name: str
+    account_holder_name: str
+    account_number: str
+    ifsc_code: str
+
+
+class BankDetailResponse(BaseModel):
+    id: UUID
+    user_id: Optional[UUID]
+    bank_name: Optional[str]
+    account_holder_name: Optional[str]
+    account_number: Optional[str]
+    ifsc_code: Optional[str]
+    created_at: Optional[datetime]
+
+    model_config = {"from_attributes": True}
+
+
 # Gateway Log
 class GatewayLogResponse(BaseModel):
     id: UUID

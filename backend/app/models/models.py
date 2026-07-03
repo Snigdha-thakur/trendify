@@ -34,6 +34,7 @@ class User(Base):
     created_at = Column(TIMESTAMP(timezone=True), server_default=func.now())
 
     kyc = relationship("KYC", back_populates="user", uselist=False)
+    bank_detail = relationship("BankDetail", back_populates="user", uselist=False)
     products = relationship("DigitalProduct", back_populates="creator", foreign_keys="DigitalProduct.creator_id")
     transactions = relationship("Transaction", back_populates="creator", foreign_keys="Transaction.creator_id")
     payouts = relationship("Payout", back_populates="user")
@@ -63,6 +64,21 @@ class KYC(Base):
     created_at = Column(TIMESTAMP(timezone=True), server_default=func.now())
 
     user = relationship("User", back_populates="kyc")
+
+
+class BankDetail(Base):
+    __tablename__ = "bank_details"
+    __table_args__ = {"schema": "public"}
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    user_id = Column(UUID(as_uuid=True), ForeignKey("public.users.id"), unique=True)
+    bank_name = Column(Text)
+    account_holder_name = Column(Text)
+    account_number = Column(Text)
+    ifsc_code = Column(Text)
+    created_at = Column(TIMESTAMP(timezone=True), server_default=func.now())
+
+    user = relationship("User", back_populates="bank_detail")
 
 
 class DigitalProduct(Base):

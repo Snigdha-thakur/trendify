@@ -7,21 +7,31 @@ function badge(s) {
 }
 
 async function loadData() {
-  const [kycs, users] = await Promise.all([AdminAPI.getKYC(), AdminAPI.getUsers()]);
+  const [kycs, users, banks] = await Promise.all([AdminAPI.getKYC(), AdminAPI.getUsers(), AdminAPI.getBankDetails()]);
   const userMap = {};
   users.forEach(u => { userMap[u.id] = u.name || u.email || u.id.slice(0,8); });
-  allKyc = kycs.map(k => ({
-    id: k.id,
-    name: userMap[k.user_id] || '—',
-    aadhar: k.aadhar || '—',
-    pan: k.pan || '—',
-    gst: k.gst || '—',
-    udyam: k.udyam || '—',
-    website: k.website || '—',
-    phone: k.phone || '—',
-    email: k.email || '—',
-    status: k.status || 'Pending',
-  }));
+  const bankMap = {};
+  banks.forEach(b => { bankMap[b.user_id] = b; });
+  allKyc = kycs.map(k => {
+    const bank = bankMap[k.user_id] || {};
+    return {
+      id: k.id,
+      user_id: k.user_id,
+      name: userMap[k.user_id] || '—',
+      aadhar: k.aadhar || '—',
+      pan: k.pan || '—',
+      gst: k.gst || '—',
+      udyam: k.udyam || '—',
+      website: k.website || '—',
+      phone: k.phone || '—',
+      email: k.email || '—',
+      status: k.status || 'Pending',
+      bank_name: bank.bank_name || '—',
+      account_holder_name: bank.account_holder_name || '—',
+      account_number: bank.account_number || '—',
+      ifsc_code: bank.ifsc_code || '—',
+    };
+  });
   filtered = [...allKyc];
   renderTable();
 }
@@ -53,6 +63,10 @@ function renderTable() {
         <td style="font-size:13px;color:var(--smoke)">${r.website}</td>
         <td style="font-family:var(--f-mono);font-size:12px">${r.phone}</td>
         <td style="color:var(--violet);font-size:12px">${r.email}</td>
+        <td style="font-size:12px">${r.bank_name}</td>
+        <td style="font-size:12px">${r.account_holder_name}</td>
+        <td style="font-family:var(--f-mono);font-size:12px">${r.account_number}</td>
+        <td style="font-family:var(--f-mono);font-size:12px">${r.ifsc_code}</td>
         <td>${badge(r.status)}</td>
         <td>
           ${r.status !== 'Approved' ? `<button class="action-icon-btn" onclick="updateKYC('${r.id}','Approved')" style="font-size:11px;padding:4px 10px;color:var(--green)">Approve</button>` : ''}

@@ -1,4 +1,20 @@
 (function(){
+  var SESSION_DURATION = 30 * 60 * 1000; // 30 minutes
+  var SESSION_KEY = 'trendify_login_time';
+  function checkSession(){
+    var loginTime = parseInt(localStorage.getItem(SESSION_KEY)||'0');
+    if(!loginTime || Date.now() - loginTime > SESSION_DURATION){
+      localStorage.removeItem('trendify_access_token');
+      localStorage.removeItem('trendify_user');
+      localStorage.removeItem(SESSION_KEY);
+      location.replace('../signin.html');
+    }
+  }
+  checkSession();
+  setInterval(checkSession, 60000);
+  document.addEventListener('visibilitychange', function(){
+    if(document.visibilityState === 'visible') checkSession();
+  });
   let base = 'https://trendify-pxkx.onrender.com/api';
   if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') {
     base = 'http://localhost:8000/api';

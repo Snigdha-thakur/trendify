@@ -20,6 +20,23 @@
   }
   const API_URL = baseAPI + '/admin';
   const TOKEN_KEY = 'trendify_access_token';
+  const SESSION_DURATION = 30 * 60 * 1000;
+  const SESSION_KEY = 'trendify_login_time';
+
+  function checkSession(){
+    var loginTime = parseInt(localStorage.getItem(SESSION_KEY)||'0');
+    if(!loginTime || Date.now() - loginTime > SESSION_DURATION){
+      localStorage.removeItem(TOKEN_KEY);
+      localStorage.removeItem('trendify_user');
+      localStorage.removeItem(SESSION_KEY);
+      location.replace('../signin.html');
+    }
+  }
+  checkSession();
+  setInterval(checkSession, 60000);
+  document.addEventListener('visibilitychange', function(){
+    if(document.visibilityState === 'visible') checkSession();
+  });
 
   function getToken() {
     return localStorage.getItem(TOKEN_KEY);
@@ -114,6 +131,7 @@
       return res.json();
     },
     getKYC: () => query('/kyc?skip=0&limit=1000'),
+    getBankDetails: () => query('/bank-details'),
     updateKYCStatus: (id, status) => put(`/kyc/${id}?status=${status}`, {}),
     getProducts: () => query('/products?skip=0&limit=1000'),
     updateProductStatus: async (id, status) => {

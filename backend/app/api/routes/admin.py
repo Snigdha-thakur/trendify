@@ -8,7 +8,7 @@ from app.core.security import get_password_hash
 from app.models.models import (
     User, KYC, DigitalProduct, Transaction, Payout,
     CreatorPayout, ReferralEarning, WalletLog, WebhookLog,
-    PayoutWebhook, GatewayLog, PlatformSetting,
+    PayoutWebhook, GatewayLog, PlatformSetting, BankDetail,
 )
 from app.schemas.schemas import (
     UserResponse, UserUpdate, UserRegister, KYCResponse, ProductResponse,
@@ -191,6 +191,23 @@ def list_kyc(
     if status:
         q = q.filter(KYC.status == status)
     return q.order_by(KYC.created_at.desc()).offset(skip).limit(limit).all()
+
+
+@router.get("/bank-details")
+def list_bank_details(
+    db: Session = Depends(get_db), _: User = Depends(require_admin),
+):
+    banks = db.query(BankDetail).all()
+    return [
+        {
+            "user_id": str(b.user_id),
+            "bank_name": b.bank_name or "",
+            "account_holder_name": b.account_holder_name or "",
+            "account_number": b.account_number or "",
+            "ifsc_code": b.ifsc_code or "",
+        }
+        for b in banks
+    ]
 
 
 @router.put("/kyc/{kyc_id}")

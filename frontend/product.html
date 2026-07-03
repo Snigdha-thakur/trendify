@@ -53,9 +53,6 @@ body{background:#04040f;color:#f2f0ff;font-family:'Syne',sans-serif;min-height:1
 .amount-wrap input{flex:1;border:none;outline:none;padding:12px 12px 12px 0;font-size:14px;color:#f2f0ff;background:transparent;font-family:'Syne',sans-serif;}
 .amount-wrap input::placeholder{color:rgba(157,153,187,.5);}
 
-/* ── ADDITIONAL INFO ── */
-.add-info-title{font-size:16px;font-weight:800;color:#f2f0ff;margin:18px 0 12px;}
-
 /* ── SUMMARY ── */
 .summary-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;font-size:13px;color:#9d99bb;}
 .summary-row.total{font-size:15px;font-weight:800;color:#f2f0ff;border-top:1px solid rgba(167,124,255,.15);margin-top:4px;padding-top:12px;}
@@ -94,7 +91,7 @@ body{background:#04040f;color:#f2f0ff;font-family:'Syne',sans-serif;min-height:1
 <body>
 <link rel="stylesheet" href="/css/loader.css"/>
 <div id="tfy-loader"><div class="tfy-ring"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div><span class="tfy-label">Please wait...</span></div>
-<script>(function(){var _p=0,_h=null,_s=null,_f=window.fetch;function _show(){clearTimeout(_h);var l=document.getElementById('tfy-loader');if(l){l.classList.remove('tfy-done');clearTimeout(_s);_s=setTimeout(function(){var lb=l.querySelector('.tfy-label');if(lb)lb.textContent='Server waking up, please wait...';},5000);}}function _hide(){clearTimeout(_s);_h=setTimeout(function(){if(_p<=0){var l=document.getElementById('tfy-loader');if(l){var lb=l.querySelector('.tfy-label');if(lb)lb.textContent='Please wait...';l.classList.add('tfy-done');}setTimeout(function(){var l2=document.getElementById('tfy-loader');if(l2&&l2.parentNode)l2.parentNode.removeChild(l2);},450);}},120);}window.fetch=function(){_p++;_show();return _f.apply(this,arguments).finally(function(){_p=Math.max(0,_p-1);if(_p===0)_hide();});};window.addEventListener('load',function(){if(_p===0)_hide();});var _api=(location.hostname==='localhost'||location.hostname==='127.0.0.1')?'http://localhost:8000':'https://trendify-pxkx.onrender.com';function _ping(){_f(_api+'/health',{method:'GET',cache:'no-store'}).catch(function(){});}setTimeout(_ping,500);setInterval(_ping,840000);})();</script>
+<script>(function(){var _p=0,_h=null,_f=window.fetch;function _show(){clearTimeout(_h);var l=document.getElementById('tfy-loader');if(l){l.classList.remove('tfy-done');}}function _hide(){_h=setTimeout(function(){if(_p<=0){var l=document.getElementById('tfy-loader');if(l){var lb=l.querySelector('.tfy-label');if(lb)lb.textContent='Please wait...';l.classList.add('tfy-done');}setTimeout(function(){var l2=document.getElementById('tfy-loader');if(l2&&l2.parentNode)l2.parentNode.removeChild(l2);},450);}},120);}window.fetch=function(){_p++;_show();return _f.apply(this,arguments).finally(function(){_p=Math.max(0,_p-1);if(_p===0)_hide();});};window.addEventListener('load',function(){if(_p===0)_hide();});})();</script>
 
 <div id="loading"></div>
 
@@ -162,16 +159,6 @@ body{background:#04040f;color:#f2f0ff;font-family:'Syne',sans-serif;min-height:1
         </div>
 
         <!-- ADDITIONAL INFO -->
-        <div class="add-info-title">Additional Information</div>
-
-        <!-- TOKEN / NOTE -->
-        <div class="field">
-          <label>Token</label>
-          <div class="input-wrap">
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="8" cy="5" r="3"/><path d="M2 14c0-3.3 2.7-6 6-6s6 2.7 6 6"/></svg>
-            <input type="text" id="buyerNote" placeholder="Enter token"/>
-          </div>
-        </div>
 
         <div class="sheet-sub" style="text-align:left;margin-bottom:12px;">Please ensure your email and phone number are correct.</div>
 
@@ -314,7 +301,6 @@ document.getElementById('checkoutForm').addEventListener('submit',async function
   var email=document.getElementById('buyerEmail').value.trim();
   var code=document.getElementById('countryCode').value;
   var phone=document.getElementById('buyerPhone').value.trim();
-  var note=document.getElementById('buyerNote').value.trim();
   var isCustomer=product&&product.price_type==='Customer Decided';
   var amount=isCustomer?parseFloat(document.getElementById('buyerAmount').value):fixedAmount;
 
@@ -332,8 +318,7 @@ document.getElementById('checkoutForm').addEventListener('submit',async function
       buyer_name:name,
       buyer_email:email,
       buyer_phone:(code+phone).replace(/\s/g,''),
-      amount:amount,
-      note:note
+      amount:amount
     };
     var res=await fetch(BASE+'/payments/initiate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
     var result=await res.json();

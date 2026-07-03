@@ -32,7 +32,7 @@ window.TrendifyAuth = {
     return !!this.getToken();
   },
   _clear() {
-    [TOKEN_KEY, USER_KEY, 'trendify_session', 'trendify_creds'].forEach(k => localStorage.removeItem(k));
+    [TOKEN_KEY, USER_KEY, 'trendify_session', 'trendify_creds', 'trendify_login_time'].forEach(k => localStorage.removeItem(k));
   },
 
   async login(email, password) {
@@ -45,6 +45,7 @@ window.TrendifyAuth = {
     if (!res.ok) throw new Error(data.detail || 'Login failed');
     localStorage.setItem(TOKEN_KEY, data.access_token);
     localStorage.setItem(USER_KEY, JSON.stringify(data.user));
+    localStorage.setItem('trendify_login_time', Date.now().toString());
     return data.user;
   },
 
@@ -61,6 +62,7 @@ window.TrendifyAuth = {
     if (!res.ok) throw new Error(data.detail || 'Registration failed');
     localStorage.setItem(TOKEN_KEY, data.access_token);
     localStorage.setItem(USER_KEY, JSON.stringify(data.user));
+    localStorage.setItem('trendify_login_time', Date.now().toString());
     return data.user;
   },
 
@@ -74,10 +76,12 @@ window.TrendifyAuth = {
     if (!res.ok) throw new Error(data.detail || 'Google sign-in failed');
     localStorage.setItem(TOKEN_KEY, data.access_token);
     localStorage.setItem(USER_KEY, JSON.stringify(data.user));
+    localStorage.setItem('trendify_login_time', Date.now().toString());
     return data.user;
   },
 
   async logout() {
+    localStorage.removeItem('trendify_login_time');
     this._clear();
   },
 
