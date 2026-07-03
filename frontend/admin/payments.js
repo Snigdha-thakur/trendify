@@ -93,13 +93,13 @@ function showDetails(txnId) {
     <div class="pd-divider"></div>
     <div class="pd-section-title">Payment Details</div>
     <div class="pd-row"><span class="pd-label">Transaction Status</span><span class="pd-val">${badge(raw.status)}</span></div>
+    <div class="pd-row"><span class="pd-label">Transaction ID</span><span class="pd-val pd-mono">${raw.id}</span></div>
     <div class="pd-row"><span class="pd-label">Gateway</span><span class="pd-val">${raw.gateway || 'Cashfree'}</span></div>
     <div class="pd-row"><span class="pd-label">Amount Paid</span><span class="pd-val">${fmtAmt(raw.amount)}</span></div>
     <div class="pd-row"><span class="pd-label">Payout Amount</span><span class="pd-val">${fmtAmt(raw.creator_amount ?? raw.amount)}</span></div>
     <div class="pd-row"><span class="pd-label">Platform Fee (in %)</span><span class="pd-val">${commissionPct}%</span></div>
     <div class="pd-row"><span class="pd-label">Platform Fee</span><span class="pd-val">${fmtAmt(raw.commission_amount ?? 0)}</span></div>
     <div class="pd-row"><span class="pd-label">Gateway Reference</span><span class="pd-val pd-mono">${raw.cashfree_order_id || '—'}</span></div>
-    <div class="pd-row"><span class="pd-label">Order ID</span><span class="pd-val pd-mono">${raw.id}</span></div>
     <div class="pd-row"><span class="pd-label">Date</span><span class="pd-val">${fmt(raw.created_at)}</span></div>
   `;
   document.getElementById('pdOverlay').classList.add('open');
