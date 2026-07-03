@@ -218,11 +218,41 @@ function goBack(){
   else history.back();
 }
 var BASE=(location.hostname==='localhost'||location.hostname==='127.0.0.1')?'http://localhost:8000/api':'/api';
-var productId=new URLSearchParams(location.search).get('id');
+var params=new URLSearchParams(location.search);
+var productId=params.get('id');
 var product=null;
 var fixedAmount=0;
 
+// Handle Cashfree return
+var returnStatus=params.get('status');
+var returnOrderId=params.get('order_id');
+if(returnStatus&&productId){
+  // Fetch product to get custom redirect URLs
+  fetch(BASE+'/products/'+encodeURIComponent(productId))
+    .then(function(r){return r.ok?r.json():null;})
+    .then(function(p){
+      var amt=params.get('amount')||'';
+      var name=p?encodeURIComponent(p.name||''):''
+      if(returnStatus==='success'){
+        var dest=p&&p.success_redirect?p.success_redirect
+          :(location.origin+'/payment-success.html?product_id='+encodeURIComponent(productId)+'&product_name='+name+(returnOrderId?'&order_id='+returnOrderId:'')+(amt?'&amount='+amt:''));
+        window.location.replace(dest);
+      }else{
+        var reason=params.get('reason')||'';
+        var dest=p&&p.failed_redirect?p.failed_redirect
+          :(location.origin+'/payment-failed.html?product_id='+encodeURIComponent(productId)+(reason?'&reason='+encodeURIComponent(reason):''));
+        window.location.replace(dest);
+      }
+    })
+    .catch(function(){
+      window.location.replace(returnStatus==='success'
+        ?location.origin+'/payment-success.html'
+        :location.origin+'/payment-failed.html');
+    });
+}
+
 async function init(){
+  if(returnStatus)return; // already redirecting
   if(!productId){document.getElementById('loading').textContent='No product ID provided.';return;}
   try{
     var r=await fetch(BASE+'/products/'+encodeURIComponent(productId));
@@ -308,7 +338,11 @@ document.getElementById('checkoutForm').addEventListener('submit',async function
 
     if(result.payment_session_id){
       var cf=Cashfree({mode:result.env==='PROD'?'production':'sandbox'});
-      cf.checkout({paymentSessionId:result.payment_session_id,returnUrl:location.origin+'/product.html?id='+productId+'&status=success'});
+      var returnBase=location.origin+'/product.html?id='+encodeURIComponent(productId);
+      cf.checkout({
+        paymentSessionId:result.payment_session_id,
+        returnUrl:returnBase+'&status={status}&order_id={order_id}&amount='+amount
+      });
       return;
     }
     if(result.payment_link){window.location.href=result.payment_link;return;}

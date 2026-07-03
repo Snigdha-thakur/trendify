@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Payment Failed | Trendify</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#04040f;color:#f2f0ff;font-family:'Syne',sans-serif;min-height:100vh;display:flex;align-items:center;justify-content:center;background-image:radial-gradient(rgba(167,124,255,.05) 1px,transparent 1px);background-size:40px 40px;}
+.card{max-width:440px;width:100%;margin:24px;background:#0d0d26;border:1px solid rgba(232,103,74,.2);border-radius:20px;padding:48px 36px;text-align:center;}
+.icon-wrap{width:80px;height:80px;border-radius:50%;background:rgba(232,103,74,.1);border:2px solid rgba(232,103,74,.3);display:flex;align-items:center;justify-content:center;margin:0 auto 24px;}
+.icon-wrap svg{color:#e8674a;}
+.title{font-size:24px;font-weight:800;color:#f2f0ff;margin-bottom:8px;}
+.sub{font-size:14px;color:#9d99bb;line-height:1.6;margin-bottom:28px;}
+.reason-box{background:rgba(232,103,74,.06);border:1px solid rgba(232,103,74,.15);border-radius:10px;padding:14px 18px;margin-bottom:28px;font-size:13px;color:#e8674a;text-align:left;display:none;}
+.btns{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;}
+.btn{display:inline-flex;align-items:center;gap:8px;background:#a67cff;color:#fff;border:none;border-radius:8px;padding:13px 28px;font-size:14px;font-weight:700;cursor:pointer;font-family:'Syne',sans-serif;text-decoration:none;transition:opacity .15s;}
+.btn:hover{opacity:.88;}
+.btn-outline{background:transparent;border:1px solid rgba(167,124,255,.3);color:#a67cff;}
+.btn-outline:hover{background:rgba(167,124,255,.08);}
+.brand{margin-top:32px;font-size:11px;color:#9d99bb;font-family:'DM Mono',monospace;}
+.brand span{background:linear-gradient(135deg,#a67cff,#00e5c8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-weight:700;}
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="icon-wrap">
+    <svg width="36" height="36" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 3l10 10M13 3L3 13"/></svg>
+  </div>
+  <div class="title">Payment Failed</div>
+  <div class="sub">Something went wrong while processing your payment. No amount has been deducted. Please try again.</div>
+
+  <div class="reason-box" id="reasonBox"></div>
+
+  <div class="btns">
+    <a class="btn" id="retryBtn" href="/">
+      <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 8a6 6 0 1 1 1.5 4"/><path d="M2 12V8h4"/></svg>
+      Try Again
+    </a>
+    <a class="btn btn-outline" id="homeBtn" href="/">Go Home</a>
+  </div>
+  <div class="brand">Powered by <span>Trendify</span></div>
+</div>
+
+<script>
+var params=new URLSearchParams(location.search);
+var productId=params.get('product_id');
+var reason=params.get('reason');
+
+if(reason){
+  var rb=document.getElementById('reasonBox');
+  rb.textContent='Reason: '+decodeURIComponent(reason);
+  rb.style.display='block';
+}
+
+if(productId){
+  document.getElementById('retryBtn').href='/product.html?id='+encodeURIComponent(productId);
+  document.getElementById('homeBtn').href='/product-preview.html?id='+encodeURIComponent(productId);
+}
+</script>
+</body>
+</html>
