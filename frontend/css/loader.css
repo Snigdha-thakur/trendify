@@ -23,17 +23,18 @@
   width: 22px;
   height: 22px;
   animation: tfy-spin .8s steps(8, end) infinite;
+  flex-shrink: 0;
 }
 .tfy-ring span {
   position: absolute;
   left: 50%;
-  top: 50%;
+  top: 0;
   width: 2px;
   height: 6px;
   margin-left: -1px;
   border-radius: 1px;
   background: #fff;
-  transform-origin: 1px -4px;
+  transform-origin: 1px 11px;
 }
 .tfy-ring span:nth-child(1)  { transform: rotate(0deg);    opacity: 1;    }
 .tfy-ring span:nth-child(2)  { transform: rotate(45deg);   opacity: 0.85; }
