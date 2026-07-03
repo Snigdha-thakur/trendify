@@ -304,7 +304,7 @@ document.getElementById('checkoutForm').addEventListener('submit',async function
 
   try{
     var payload={
-      id:'order-'+Date.now(),
+      id:'txn-'+Date.now()+'-'+Math.random().toString(36).slice(2,7),
       product_id:productId,
       buyer_name:name,
       buyer_email:email,
