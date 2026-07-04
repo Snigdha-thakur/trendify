@@ -1,520 +1,2072 @@
 <!DOCTYPE html>
+
+
+
 <html lang="en">
+
+
+
 <head>
+
+
+
 <meta charset="UTF-8"/>
+
+
+
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+
+
+
 <script>
+
+
+
 // Auth guard: skip when testing locally (file://) or when ?test=1 is present
+
+
+
 (function(){
+
+
+
   if (location.protocol === 'file:' || (location.search && location.search.indexOf('test=1') !== -1)) {
+
+
+
     return;
+
+
+
   }
+
+
+
   var t=localStorage.getItem('trendify_access_token');
+
+
+
   if(!t){window.location.replace('../signin.html');return;}
+
+
+
   try{var u=JSON.parse(localStorage.getItem('trendify_user'));if(!u||u.role!='admin')window.location.replace('../signin.html');}catch(e){window.location.replace('../signin.html');}
+
+
+
 })();
+
+
+
 </script>
+
+
+
 <title>Profile Settings — Admin Dashboard</title>
+
+
+
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
+
+
+
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,600;1,300;1,600&family=Syne:wght@400;700;800&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet"/>
+
+
+
 <link rel="stylesheet" href="../css/styles.css"/>
-<link rel="stylesheet" href="admin.css?v=10"/><script src="/sidebar-init.js"></script>
+
+
+
+<link rel="stylesheet" href="admin.css?v=16"/><script src="/sidebar-init.js"></script>
+
+
+
 </head>
+
+
+
 <body>
+
+
 <link rel="stylesheet" href="../css/loader.css"/>
+
+
 <div id="tfy-loader"><div class="tfy-ring"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div><span class="tfy-label">Please wait...</span></div>
+
+
 <script>(function(){var _p=0,_h=null,_f=window.fetch;function _show(){clearTimeout(_h);var l=document.getElementById('tfy-loader');if(l){l.classList.remove('tfy-done');}}function _hide(){_h=setTimeout(function(){if(_p<=0){var l=document.getElementById('tfy-loader');if(l){var lb=l.querySelector('.tfy-label');if(lb)lb.textContent='Please wait...';l.classList.add('tfy-done');}setTimeout(function(){var l2=document.getElementById('tfy-loader');if(l2&&l2.parentNode)l2.parentNode.removeChild(l2);},450);}},120);}window.fetch=function(){_p++;_show();return _f.apply(this,arguments).finally(function(){_p=Math.max(0,_p-1);if(_p===0)_hide();});};window.addEventListener('load',function(){if(_p===0)_hide();});})();</script>
+
+
+
 <nav id="nav" class="s admin-nav">
+
+
+
   <a href="overview.html" class="logo" aria-label="Trendify">
-    <img src="../assets/logo.jpeg" alt="Trendify logo" class="site-logo" onerror="this.style.display='none'; this.parentElement.querySelector('.logo-text').style.display='inline-block'"/>
+
+
+
+    <img src="../assets/logo-removebg-preview.png" alt="Trendify logo" class="site-logo" onerror="this.style.display='none'; this.parentElement.querySelector('.logo-text').style.display='inline-block'"/>
+
+
+
     <span class="logo-text">Trendify</span>
+
+
+
   </a>
-  <div class="na">
+
+
+
+  <div class="na"><button class="theme-toggle-btn">&#9790;</button>
+
+
+
     <span style="font-family:var(--f-mono);font-size:10px;color:var(--smoke);letter-spacing:.08em;">Admin Panel</span>
+
+
+
     <a href="../signin.html" class="btn-nav-ghost">Sign out</a>
+
+
+
   </div>
+
+
+
 </nav>
+
+
+
 <div class="admin-shell">
+
+
+
   <aside class="admin-sidebar" id="adminSidebar">
+
+
+
     <div class="sb-section">
+
+
+
       <span class="sb-label">Platform</span>
+
+
+
       <a class="sb-link" href="overview.html"><svg class="sb-icon" viewBox="0 0 16 16" fill="currentColor"><rect x="1" y="1" width="6" height="6" rx="1"/><rect x="9" y="1" width="6" height="6" rx="1"/><rect x="1" y="9" width="6" height="6" rx="1"/><rect x="9" y="9" width="6" height="6" rx="1"/></svg>Overview</a>
+
+
+
       <a class="sb-link" href="payments.html"><svg class="sb-icon" viewBox="0 0 16 16" fill="currentColor"><rect x="1" y="4" width="14" height="9" rx="1" fill="none" stroke="currentColor" stroke-width="1.3"/><path d="M1 7h14"/></svg>Payments</a>
+
+
+
       <a class="sb-link" href="wallet-balance.html"><svg class="sb-icon" viewBox="0 0 16 16" fill="currentColor"><path d="M2 3h12a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z" fill="none" stroke="currentColor" stroke-width="1.3"/><circle cx="11.5" cy="8" r="1.5"/></svg>Wallet Balance</a>
+
+
+
       <a class="sb-link" href="payout-history.html"><svg class="sb-icon" viewBox="0 0 16 16" fill="currentColor"><circle cx="8" cy="8" r="6" fill="none" stroke="currentColor" stroke-width="1.3"/><path d="M8 5v3l2 2"/></svg>Payout History</a>
+
+
+
       <a class="sb-link" href="index.html"><svg class="sb-icon" viewBox="0 0 16 16" fill="currentColor"><path d="M8 1l2 4h4l-3 3 1 4-4-2-4 2 1-4-3-3h4z"/></svg>Paid Earnings</a>
+
+
+
       <a class="sb-link" href="referral-history.html"><svg class="sb-icon" viewBox="0 0 16 16" fill="currentColor"><circle cx="8" cy="8" r="6" fill="none" stroke="currentColor" stroke-width="1.3"/><path d="M8 5v3l2 2"/></svg>Referral History</a>
+
+
+
       <a class="sb-link" href="referral-payouts.html"><svg class="sb-icon" viewBox="0 0 16 16" fill="currentColor"><path d="M1 12L5 6l3 4 2-3 4 5H1z"/></svg>Referral Payouts</a>
+
+
+
       <a class="sb-link" href="creator-payouts.html"><svg class="sb-icon" viewBox="0 0 16 16" fill="currentColor"><circle cx="6" cy="5" r="3"/><path d="M1 14c0-2.8 2.2-5 5-5M11 10l2 2 3-3"/></svg>Creator Payouts</a>
+
+
+
     </div>
+
+
+
     <div class="sb-divider"></div>
+
+
+
     <div class="sb-section">
+
+
+
       <a class="sb-link" href="user-management.html"><svg class="sb-icon" viewBox="0 0 16 16" fill="currentColor"><circle cx="8" cy="5" r="3"/><path d="M2 14c0-3.3 2.7-6 6-6s6 2.7 6 6H2z"/></svg>User Management</a>
+
+
+
       <a class="sb-link" href="kyc-management.html"><svg class="sb-icon" viewBox="0 0 16 16" fill="currentColor"><path d="M8 1l6 3v4c0 3.5-2.5 6.5-6 7.5C2.5 14.5 0 11.5 0 8V4l8-3z" fill="none" stroke="currentColor" stroke-width="1.2"/><path d="M5 8l2 2 4-4"/></svg>KYC Management</a>
+
+
+
       <a class="sb-link" href="digital-products.html"><svg class="sb-icon" viewBox="0 0 16 16" fill="currentColor"><rect x="2" y="2" width="12" height="12" rx="1" fill="none" stroke="currentColor" stroke-width="1.2"/><path d="M5 8h6M8 5v6"/></svg>Digital Products</a>
+
+
+
     </div>
+
+
+
     <div class="sb-divider"></div>
+
+
+
     <div class="sb-section">
+
+
+
       <a class="sb-link" href="webhook-logs.html"><svg class="sb-icon" viewBox="0 0 16 16" fill="currentColor"><path d="M2 8a6 6 0 1 1 12 0" fill="none" stroke="currentColor" stroke-width="1.3"/><path d="M8 8l3-5M8 8l-3 3"/></svg>Webhook Logs</a>
+
+
+
       <a class="sb-link" href="payout-webhooks.html"><svg class="sb-icon" viewBox="0 0 16 16" fill="currentColor"><path d="M1 4h14M1 8h10M1 12h7"/></svg>Payout Webhooks</a>
+
+
+
       <a class="sb-link" href="wallet-logs.html"><svg class="sb-icon" viewBox="0 0 16 16" fill="currentColor"><path d="M2 3h12a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z" fill="none" stroke="currentColor" stroke-width="1.2"/><path d="M1 7h14"/></svg>Wallet Logs</a>
+
+
+
       <a class="sb-link" href="gateway-logs.html"><svg class="sb-icon" viewBox="0 0 16 16" fill="currentColor"><rect x="1" y="3" width="14" height="10" rx="1" fill="none" stroke="currentColor" stroke-width="1.2"/><path d="M4 7h8M4 10h5"/></svg>Gateway Logs</a>
+
+
+
     </div>
+
+
+
         <div class="sb-bottom">
+
+
+
       <div class="sb-user" id="sbUser">
+
+
+
         <div class="sb-av"></div>
+
+
+
         <div class="sb-user-info">
+
+
+
           <div class="sb-name"></div>
+
+
+
           <div class="sb-plan"></div>
+
+
+
           
+
+
+
         </div>
+
+
+
         <svg class="sb-chevron" width="12" height="12" viewBox="0 0 16 16" fill="currentColor"><path d="M4 6l4 4 4-4"/></svg>
+
+
+
       </div>
+
+
+
       <div class="user-popup" id="userPopup">
+
+
+
         <div class="user-popup-head">
+
+
+
           <div class="sb-av"></div>
+
+
+
           <div class="sb-user-info">
+
+
+
             <div class="sb-name"></div>
+
+
+
             <div class="sb-plan"></div>
+
+
+
             
+
+
+
           </div>
+
+
+
         </div>
+
+
+
         <div class="user-popup-divider"></div>
+
+
+
         <a class="user-popup-item" href="profile-settings.html"><svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><circle cx="8" cy="5" r="3"/><path d="M2 14c0-3.3 2.7-6 6-6s6 2.7 6 6H2z"/></svg>Account Settings</a>
+
+
+
         <a class="user-popup-item" href="../signin.html"><svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M6 2H3a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3M10 11l3-3-3-3M13 8H6"/></svg>Sign Out</a>
+
+
+
       </div>
+
+
+
     </div>
+
+
+
   </aside>
 
+
+
+
+
+
+
   <main class="admin-main">
+
+
+
     <div class="admin-breadcrumb">
+
+
+
       <span class="bc-parent">Admin Dashboard</span><span class="bc-sep">›</span><span class="bc-current">Profile Settings</span>
-      <button class="theme-toggle-btn" onclick="toggleTheme()">☾</button>
+
+
+
     </div>
+
+
+
+
+
+
 
     <div class="admin-page-body">
+
+
+
       <!-- Tabs -->
+
+
+
       <div class="rp-tabs" style="margin-bottom:28px">
+
+
+
         <button class="rp-tab active" id="tabProfile" onclick="switchTab('profile')">Profile</button>
+
+
+
         <button class="rp-tab" id="tabAdmin" onclick="switchTab('admin')">Admin Settings</button>
+
+
+
       </div>
+
+
+
+
+
+
 
       <!-- PROFILE TAB -->
+
+
+
       <div id="panelProfile">
+
+
+
         <div id="profileError" class="ps-error" style="display:none;margin-bottom:16px;padding:12px;border-radius:6px;background:#3a1f3a;color:#ffdede"></div>
+
+
+
         <div class="ps-card">
+
+
+
           <div class="ps-card-head">
+
+
+
             <div class="ps-card-title">Profile Information</div>
+
+
+
             <div class="ps-card-sub">Update your profile information here.</div>
+
+
+
           </div>
+
+
+
           <div class="ps-form">
+
+
+
             <div class="ps-field">
+
+
+
               <label class="ps-label">Name</label>
+
+
+
               <div class="ps-input-wrap">
+
+
+
                 <svg class="ps-input-ico" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><circle cx="8" cy="5" r="3"/><path d="M2 14c0-3.3 2.7-6 6-6s6 2.7 6 6"/></svg>
+
+
+
                 <input class="ps-input" type="text" id="profileName" value=""/>
+
+
+
               </div>
+
+
+
             </div>
+
+
+
             <div class="ps-field">
+
+
+
               <label class="ps-label">Email</label>
+
+
+
               <div class="ps-input-wrap">
+
+
+
                 <svg class="ps-input-ico" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="1" y="4" width="14" height="9" rx="1"/><path d="M1 4l7 5 7-5"/></svg>
+
+
+
                 <input class="ps-input" type="email" id="profileEmail" value="" readonly style="opacity:.6;cursor:not-allowed"/>
+
+
+
               </div>
+
+
+
             </div>
+
+
+
             <div class="ps-field">
+
+
+
               <label class="ps-label">Phone</label>
+
+
+
               <div class="ps-input-wrap">
+
+
+
                 <svg class="ps-input-ico" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M3 2h3l1.5 3.5-2 1.2a9 9 0 0 0 3.8 3.8l1.2-2L14 10v3a1 1 0 0 1-1 1A11 11 0 0 1 2 3a1 1 0 0 1 1-1z"/></svg>
+
+
+
                 <input class="ps-input" type="text" id="profilePhone" value=""/>
+
+
+
               </div>
+
+
+
             </div>
+
+
+
             <div class="ps-actions">
+
+
+
               <button class="rp-pay-btn" onclick="updateProfile(event)">
+
+
+
                 <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" style="margin-right:6px;vertical-align:middle"><path d="M2 3h12a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"/><path d="M1 7h14"/></svg>
+
+
+
                 Update Profile
+
+
+
               </button>
+
+
+
             </div>
+
+
+
           </div>
+
+
+
         </div>
+
+
+
       </div>
+
+
+
+
+
+
 
       <!-- ADMIN SETTINGS TAB -->
+
+
+
       <div id="panelAdmin" style="display:none">
+
+
+
         <div class="ps-card">
+
+
+
           <div class="ps-card-head">
+
+
+
             <div class="ps-card-title">Admin Settings</div>
+
+
+
             <div class="ps-card-sub">Update your profile and platform fee settings.</div>
+
+
+
           </div>
+
+
+
           <div class="ps-form">
+
+
+
             <div class="ps-field">
+
+
+
               <label class="ps-label">Phone</label>
+
+
+
               <div class="ps-input-wrap">
+
+
+
                 <svg class="ps-input-ico" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M3 2h3l1.5 3.5-2 1.2a9 9 0 0 0 3.8 3.8l1.2-2L14 10v3a1 1 0 0 1-1 1A11 11 0 0 1 2 3a1 1 0 0 1 1-1z"/></svg>
+
+
+
                 <input class="ps-input" type="text" id="adminPhone" placeholder=""/>
+
+
+
               </div>
+
+
+
             </div>
+
+
+
             <div class="ps-field">
+
+
+
               <label class="ps-label">Email</label>
+
+
+
               <div class="ps-input-wrap">
+
+
+
                 <svg class="ps-input-ico" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="1" y="4" width="14" height="9" rx="1"/><path d="M1 4l7 5 7-5"/></svg>
+
+
+
                 <input class="ps-input" type="email" id="adminEmail" value=""/>
+
+
+
               </div>
+
+
+
             </div>
+
+
+
             <div class="ps-field">
+
+
+
               <label class="ps-label">Address</label>
+
+
+
               <textarea class="ps-input ps-textarea" id="adminAddress"></textarea>
+
+
+
             </div>
+
+
+
             <div class="ps-grid-2">
+
+
+
               <div class="ps-field">
+
+
+
                 <label class="ps-label">Instagram Link</label>
+
+
+
                 <div class="ps-input-wrap">
+
+
+
                   <svg class="ps-input-ico" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M10 8a2 2 0 1 1-4 0 2 2 0 0 1 4 0z"/><rect x="2" y="2" width="12" height="12" rx="3"/><circle cx="12" cy="4" r=".5" fill="currentColor"/></svg>
+
+
+
                   <input class="ps-input" type="url" id="adminInstagram" placeholder="Enter your Instagram link"/>
+
+
+
                 </div>
+
+
+
               </div>
+
+
+
               <div class="ps-field">
+
+
+
                 <label class="ps-label">Facebook Link</label>
+
+
+
                 <div class="ps-input-wrap">
+
+
+
                   <svg class="ps-input-ico" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M9 2H7a3 3 0 0 0-3 3v2H2v3h2v5h3v-5h2l1-3H7V5a1 1 0 0 1 1-1h1V2z"/></svg>
+
+
+
                   <input class="ps-input" type="url" id="adminFacebook" placeholder="Enter your Facebook link"/>
+
+
+
                 </div>
+
+
+
               </div>
+
+
+
               <div class="ps-field">
+
+
+
                 <label class="ps-label">YouTube Link</label>
+
+
+
                 <div class="ps-input-wrap">
+
+
+
                   <svg class="ps-input-ico" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="1" y="4" width="14" height="9" rx="2"/><path d="M6 7l4 2.5L6 12V7z" fill="currentColor" stroke="none"/></svg>
+
+
+
                   <input class="ps-input" type="url" id="adminYoutube" placeholder="Enter your YouTube link"/>
+
+
+
                 </div>
+
+
+
               </div>
+
+
+
               <div class="ps-field">
+
+
+
                 <label class="ps-label">LinkedIn Link</label>
+
+
+
                 <div class="ps-input-wrap">
+
+
+
                   <svg class="ps-input-ico" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="1" y="1" width="14" height="14" rx="2"/><path d="M4 7v5M4 4v.5M7 12V9a2 2 0 0 1 4 0v3M7 7v5"/></svg>
+
+
+
                   <input class="ps-input" type="url" id="adminLinkedin" placeholder="Enter your LinkedIn link"/>
+
+
+
                 </div>
+
+
+
               </div>
+
+
+
             </div>
+
+
+
             <div class="ps-actions">
+
+
+
               <button class="rp-pay-btn" onclick="updateAdminSettings(event)">
+
+
+
                 <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" style="margin-right:6px;vertical-align:middle"><path d="M2 3h12a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"/><path d="M1 7h14"/></svg>
+
+
+
                 Update Profile
+
+
+
               </button>
+
+
+
             </div>
+
+
+
           </div>
+
+
+
         </div>
+
+
+
       </div>
+
+
+
     </div>
+
+
+
   </main>
+
+
+
 </div>
 
+
+
+
+
+
+
 <script type="module" src="../js/auth-api.js"></script>
+
+
+
 <script>
+
+
+
 // Auth guard
+
+
+
 async function initAuthGuard() {
+
+
+
   let attempts = 0;
+
+
+
   while (!window.TrendifyAuth && attempts < 50) { await new Promise(r => setTimeout(r, 10)); attempts++; }
+
+
+
   if (!window.TrendifyAuth) { window.location.href = '../signin.html'; return; }
+
+
+
   const user = TrendifyAuth.requireAuth('../signin.html');
+
+
+
   if (!user) return;
+
+
+
   if (user.role !== 'admin') { window.location.href = '../signin.html'; return; }
+
+
+
   if (window.updateSidebarUser) {
+
+
+
     window.updateSidebarUser(user);
+
+
+
   } else {
+
+
+
     const initials = (user.name || 'A').split(' ').map(w => w[0]).join('').toUpperCase().slice(0,2);
+
+
+
     document.querySelectorAll('.sb-av').forEach(el => el.textContent = initials);
+
+
+
     document.querySelectorAll('.sb-name').forEach(el => el.textContent = user.name || 'Admin');
+
+
+
     document.querySelectorAll('.sb-plan').forEach(el => el.textContent = user.email || '');
+
+
+
   }
+
+
+
 }
+
+
+
 initAuthGuard();
 
+
+
+
+
+
+
 // Load real user data from backend API
+
+
+
 async function loadProfile() {
+
+
+
   console.log('🔄 loadProfile() called');
 
+
+
+
+
+
+
   try {
+
+
+
     const token = TrendifyAuth.getToken();
+
+
+
     if (!token) {
+
+
+
       console.error('❌ No token found');
+
+
+
       return null;
+
+
+
     }
+
+
+
+
+
+
 
     // Ensure DOM ready
+
+
+
     if (document.readyState === 'loading') {
+
+
+
       await new Promise(resolve => document.addEventListener('DOMContentLoaded', resolve));
+
+
+
     }
+
+
+
+
+
+
 
     const apiBase = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+
+
+
       ? 'http://localhost:8000/api'
+
+
+
       : (typeof __API_URL__ !== 'undefined' ? __API_URL__ : '/api');
+
+
+
     const apiUrl = apiBase + '/auth/me';
+
+
+
     console.log('📡 Fetching from:', apiUrl);
 
+
+
+
+
+
+
     const res = await fetch(apiUrl, {
+
+
+
       method: 'GET',
+
+
+
       headers: {
+
+
+
         'Authorization': 'Bearer ' + token,
+
+
+
         'Content-Type': 'application/json',
+
+
+
       },
+
+
+
     });
 
+
+
+
+
+
+
     if (!res.ok) {
+
+
+
       throw new Error(`API Error: ${res.status} ${res.statusText}`);
+
+
+
     }
+
+
+
+
+
+
 
     const user = await res.json();
+
+
+
     console.log('✓ API Response received:', user);
 
+
+
+
+
+
+
     // Save to localStorage and update UI
+
+
+
     localStorage.setItem('trendify_user', JSON.stringify(user));
+
+
+
     if (window.updateSidebarUser) {
+
+
+
       window.updateSidebarUser(user);
+
+
+
     } else {
+
+
+
       const initials = (user.name || 'A').split(' ').map(w => w[0]).join('').toUpperCase().slice(0,2);
+
+
+
       document.querySelectorAll('.sb-av').forEach(el => el.textContent = initials);
+
+
+
       document.querySelectorAll('.sb-name').forEach(el => el.textContent = user.name || 'Admin');
+
+
+
       document.querySelectorAll('.sb-plan').forEach(el => el.textContent = (user.email&&user.email.trim())||(user.username&&user.username.trim())||user.id||user._id||'');
+
+
+
     }
+
+
+
+
+
+
 
     // Populate profile fields
+
+
+
     const profileName = document.getElementById('profileName');
+
+
+
     const profileEmail = document.getElementById('profileEmail');
+
+
+
     const profilePhone = document.getElementById('profilePhone');
 
+
+
+
+
+
+
     if (profileName) profileName.value = user.name || '';
+
+
+
     if (profileEmail) profileEmail.value = user.email || '';
+
+
+
     if (profilePhone) profilePhone.value = user.phone || '';
+
+
+
+
+
+
 
     // Admin settings
+
+
+
     const adminEmail = document.getElementById('adminEmail');
+
+
+
     const adminPhone = document.getElementById('adminPhone');
+
+
+
     const adminAddress = document.getElementById('adminAddress');
+
+
+
     const adminInstagram = document.getElementById('adminInstagram');
+
+
+
     const adminFacebook = document.getElementById('adminFacebook');
+
+
+
     const adminYoutube = document.getElementById('adminYoutube');
+
+
+
     const adminLinkedin = document.getElementById('adminLinkedin');
 
+
+
+
+
+
+
     if (adminEmail) adminEmail.value = user.email || '';
+
+
+
     if (adminPhone) adminPhone.value = user.phone || '';
+
+
+
     if (adminAddress) adminAddress.value = user.address || '';
+
+
+
     if (adminInstagram) adminInstagram.value = user.instagram || '';
+
+
+
     if (adminFacebook) adminFacebook.value = user.facebook || '';
+
+
+
     if (adminYoutube) adminYoutube.value = user.youtube || '';
+
+
+
     if (adminLinkedin) adminLinkedin.value = user.linkedin || '';
+
+
+
+
+
+
 
     console.log('✅ All fields populated from API');
+
+
+
     return user;
+
+
+
   } catch (err) {
+
+
+
     console.error('❌ Error loading from API:', err);
+
+
+
     try {
+
+
+
       const errEl = document.getElementById('profileError');
+
+
+
       if (errEl) {
+
+
+
         errEl.style.display = '';
+
+
+
         errEl.textContent = 'Unable to load profile from API: ' + (err && err.message ? err.message : String(err)) + '. Check console/network for details.';
+
+
+
       }
+
+
+
     } catch (e) { /* ignore */ }
 
+
+
+
+
+
+
     // Fallback to localStorage
+
+
+
     const user = TrendifyAuth.getUser();
+
+
+
     if (!user) {
+
+
+
       console.error('❌ No user data in localStorage');
+
+
+
       return null;
+
+
+
     }
 
+
+
+
+
+
+
     console.log('📦 Using localStorage fallback');
+
+
+
     const profileName = document.getElementById('profileName');
+
+
+
     const profileEmail = document.getElementById('profileEmail');
+
+
+
     const profilePhone = document.getElementById('profilePhone');
+
+
+
     if (profileName) profileName.value = user.name || '';
+
+
+
     if (profileEmail) profileEmail.value = user.email || '';
+
+
+
     if (profilePhone) profilePhone.value = user.phone || '';
 
+
+
+
+
+
+
     const adminEmail = document.getElementById('adminEmail');
+
+
+
     const adminPhone = document.getElementById('adminPhone');
+
+
+
     const adminAddress = document.getElementById('adminAddress');
+
+
+
     const adminInstagram = document.getElementById('adminInstagram');
+
+
+
     const adminFacebook = document.getElementById('adminFacebook');
+
+
+
     const adminYoutube = document.getElementById('adminYoutube');
+
+
+
     const adminLinkedin = document.getElementById('adminLinkedin');
+
+
+
     if (adminEmail) adminEmail.value = user.email || '';
+
+
+
     if (adminPhone) adminPhone.value = user.phone || '';
+
+
+
     if (adminAddress) adminAddress.value = user.address || '';
+
+
+
     if (adminInstagram) adminInstagram.value = user.instagram || '';
+
+
+
     if (adminFacebook) adminFacebook.value = user.facebook || '';
+
+
+
     if (adminYoutube) adminYoutube.value = user.youtube || '';
+
+
+
     if (adminLinkedin) adminLinkedin.value = user.linkedin || '';
 
+
+
+
+
+
+
     console.log('✅ Loaded from localStorage');
+
+
+
     return user;
+
+
+
   }
+
+
+
 }
+
+
+
+
+
+
+
+
+
 
 
 async function updateProfile(evt) {
+
+
+
   const user = TrendifyAuth.getUser();
+
+
+
   if (!user) return;
+
+
+
   const name  = document.getElementById('profileName').value.trim();
+
+
+
   const phone = document.getElementById('profilePhone').value.trim();
+
+
+
   const btn = evt.currentTarget || evt.target;
+
+
+
   
+
+
+
   if (!name) {
+
+
+
     alert('Name is required');
+
+
+
     return;
+
+
+
   }
+
+
+
   
+
+
+
   btn.textContent = 'Saving…';
+
+
+
   btn.disabled = true;
+
+
+
   try {
+
+
+
     const token = TrendifyAuth.getToken();
+
+
+
     const apiBase = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+
+
+
       ? 'http://localhost:8000/api'
+
+
+
       : (typeof __API_URL__ !== 'undefined' ? __API_URL__ : '/api');
+
+
+
     const res = await fetch(apiBase + '/auth/me', {
+
+
+
       method: 'PATCH',
+
+
+
       headers: { 
+
+
+
         'Authorization': 'Bearer ' + token, 
+
+
+
         'Content-Type': 'application/json' 
+
+
+
       },
+
+
+
       body: JSON.stringify({ name, phone }),
+
+
+
     });
+
+
+
     if (res.ok) {
+
+
+
       const updated = await res.json();
+
+
+
       const userData = {
+
+
+
         id: updated.id,
+
+
+
         name: updated.name,
+
+
+
         email: updated.email,
+
+
+
         phone: updated.phone,
+
+
+
         role: updated.role,
+
+
+
         status: updated.status,
+
+
+
         wallet_balance: updated.wallet_balance,
+
+
+
         referral_wallet_balance: updated.referral_wallet_balance,
+
+
+
         referral_code: updated.referral_code,
+
+
+
         address: updated.address,
+
+
+
         instagram: updated.instagram,
+
+
+
         facebook: updated.facebook,
+
+
+
         youtube: updated.youtube,
+
+
+
         linkedin: updated.linkedin,
+
+
+
       };
+
+
+
       localStorage.setItem('trendify_user', JSON.stringify(userData));
+
+
+
       if (window.updateSidebarUser) {
+
+
+
         window.updateSidebarUser(userData);
+
+
+
       } else {
+
+
+
         document.querySelectorAll('.sb-name').forEach(el => el.textContent = name);
+
+
+
         const initials = name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0,2);
+
+
+
         document.querySelectorAll('.sb-av').forEach(el => el.textContent = initials);
+
+
+
       }
+
+
+
       btn.textContent = '✓ Saved';
+
+
+
       btn.style.background = 'var(--green)';
+
+
+
       setTimeout(() => { btn.textContent = 'Update Profile'; btn.style.background = ''; btn.disabled = false; }, 2000);
+
+
+
     } else {
+
+
+
       throw new Error('Save failed: ' + res.statusText);
+
+
+
     }
+
+
+
   } catch (err) {
+
+
+
     console.error(err);
+
+
+
     btn.textContent = 'Error saving';
+
+
+
     btn.style.background = 'var(--ember)';
+
+
+
     setTimeout(() => { btn.textContent = 'Update Profile'; btn.style.background = ''; btn.disabled = false; }, 2000);
+
+
+
   }
+
+
+
 }
+
+
+
+
+
+
 
 async function updateAdminSettings(evt) {
+
+
+
   const user = TrendifyAuth.getUser();
+
+
+
   if (!user) return;
+
+
+
   
+
+
+
   const phone = document.getElementById('adminPhone').value.trim();
+
+
+
   const address = document.getElementById('adminAddress').value.trim();
+
+
+
   const instagram = document.getElementById('adminInstagram').value.trim();
+
+
+
   const facebook = document.getElementById('adminFacebook').value.trim();
+
+
+
   const youtube = document.getElementById('adminYoutube').value.trim();
+
+
+
   const linkedin = document.getElementById('adminLinkedin').value.trim();
+
+
+
   
+
+
+
   const btn = evt.currentTarget || evt.target;
+
+
+
   btn.textContent = 'Saving…';
+
+
+
   btn.disabled = true;
+
+
+
   
+
+
+
   try {
+
+
+
     const token = TrendifyAuth.getToken();
+
+
+
     const apiBase = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+
+
+
       ? 'http://localhost:8000/api'
+
+
+
       : (typeof __API_URL__ !== 'undefined' ? __API_URL__ : '/api');
+
+
+
     const res = await fetch(apiBase + '/auth/me', {
+
+
+
       method: 'PATCH',
+
+
+
       headers: { 
+
+
+
         'Authorization': 'Bearer ' + token, 
+
+
+
         'Content-Type': 'application/json' 
+
+
+
       },
+
+
+
       body: JSON.stringify({ phone, address, instagram, facebook, youtube, linkedin }),
+
+
+
     });
+
+
+
     if (res.ok) {
+
+
+
       const updated = await res.json();
+
+
+
       const userData = {
+
+
+
         id: updated.id,
+
+
+
         name: updated.name,
+
+
+
         email: updated.email,
+
+
+
         phone: updated.phone,
+
+
+
         role: updated.role,
+
+
+
         status: updated.status,
+
+
+
         wallet_balance: updated.wallet_balance,
+
+
+
         referral_wallet_balance: updated.referral_wallet_balance,
+
+
+
         referral_code: updated.referral_code,
+
+
+
         address: updated.address,
+
+
+
         instagram: updated.instagram,
+
+
+
         facebook: updated.facebook,
+
+
+
         youtube: updated.youtube,
+
+
+
         linkedin: updated.linkedin,
+
+
+
       };
+
+
+
       localStorage.setItem('trendify_user', JSON.stringify(userData));
+
+
+
       if (window.updateSidebarUser) {
+
+
+
         window.updateSidebarUser(userData);
+
+
+
       }
+
+
+
       btn.textContent = '✓ Saved';
+
+
+
       btn.style.background = 'var(--green)';
+
+
+
       setTimeout(() => { btn.textContent = 'Update Profile'; btn.style.background = ''; btn.disabled = false; }, 2000);
+
+
+
     } else {
+
+
+
       throw new Error('Save failed: ' + res.statusText);
+
+
+
     }
+
+
+
   } catch (err) {
+
+
+
     console.error(err);
+
+
+
     btn.textContent = 'Error saving';
+
+
+
     btn.style.background = 'var(--ember)';
+
+
+
     setTimeout(() => { btn.textContent = 'Update Profile'; btn.style.background = ''; btn.disabled = false; }, 2000);
+
+
+
   }
+
+
+
 }
+
+
+
+
+
+
 
 function switchTab(tab) {
+
+
+
   document.getElementById('tabProfile').classList.toggle('active', tab === 'profile');
+
+
+
   document.getElementById('tabAdmin').classList.toggle('active', tab === 'admin');
+
+
+
   document.getElementById('panelProfile').style.display = tab === 'profile' ? '' : 'none';
+
+
+
   document.getElementById('panelAdmin').style.display   = tab === 'admin'   ? '' : 'none';
+
+
+
 }
+
+
+
 function toggleSidebar() { document.getElementById('adminSidebar').classList.toggle('collapsed'); }
-function toggleTheme()   { document.body.classList.toggle('light-theme'); }
+
+
+
 function toggleUserMenu() { event.stopPropagation(); document.getElementById('userPopup').classList.toggle('open'); }
+
+
+
 document.addEventListener('click', function(e) {
+
+
+
   if (e.target.closest('.user-popup-item')) return;
+
+
+
   const popup = document.getElementById('userPopup'), user = document.getElementById('sbUser');
+
+
+
   if (popup && !popup.contains(e.target) && !user.contains(e.target)) popup.classList.remove('open');
-});
-document.querySelectorAll('a[href="../signin.html"]').forEach(el => {
-  el.addEventListener('click', async function(e) {
-    e.preventDefault();
-    await TrendifyAuth.logout();
-    window.location.href = '../signin.html';
-  });
+
+
+
 });
 
+
+
+document.querySelectorAll('a[href="../signin.html"]').forEach(el => {
+
+
+
+  el.addEventListener('click', async function(e) {
+
+
+
+    e.preventDefault();
+
+
+
+    await TrendifyAuth.logout();
+
+
+
+    window.location.href = '../signin.html';
+
+
+
+  });
+
+
+
+});
+
+
+
+
+
+
+
 // Load profile when DOM is ready
+
+
+
 if (document.readyState === 'loading') {
+
+
+
   document.addEventListener('DOMContentLoaded', loadProfile);
+
+
+
 } else {
+
+
+
   // DOM is already loaded
+
+
+
   loadProfile();
+
+
+
 }
+
+
+
 </script>
+
+
+
 <div id="c"></div>
+
+
+
 <div id="cr" class="cr"></div>
+
+
+
 <script type="module" src="../js/cursor.js"></script>
+
+
+
+<script src="../js/theme.js"></script>
+
+
 </body>
+
+
+
 </html>
+
+
+
+
+
+
 

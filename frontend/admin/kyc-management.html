@@ -1,175 +1,521 @@
 <!DOCTYPE html>
+
+
 <html lang="en">
+
+
 <head>
+
+
 <meta charset="UTF-8"/>
+
+
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+
+
 <script>(function(){var t=localStorage.getItem('trendify_access_token');if(!t){window.location.replace('../signin.html');return;}try{var u=JSON.parse(localStorage.getItem('trendify_user'));if(!u||u.role!='admin')window.location.replace('../signin.html');}catch(e){window.location.replace('../signin.html');}})();</script>
+
+
 <title>KYC Management — Admin Dashboard</title>
+
+
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
+
+
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,600;1,300;1,600&family=Syne:wght@400;700;800&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet"/>
+
+
 <link rel="stylesheet" href="../css/styles.css"/>
-<link rel="stylesheet" href="admin.css?v=10"/><script src="/sidebar-init.js"></script>
+
+
+<link rel="stylesheet" href="admin.css?v=16"/><script src="/sidebar-init.js"></script>
+
+
 </head>
+
+
 <body>
+
 <link rel="stylesheet" href="../css/loader.css"/>
+
 <div id="tfy-loader"><div class="tfy-ring"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div><span class="tfy-label">Please wait...</span></div>
+
 <script>(function(){var _p=0,_h=null,_f=window.fetch;function _show(){clearTimeout(_h);var l=document.getElementById('tfy-loader');if(l){l.classList.remove('tfy-done');}}function _hide(){_h=setTimeout(function(){if(_p<=0){var l=document.getElementById('tfy-loader');if(l){var lb=l.querySelector('.tfy-label');if(lb)lb.textContent='Please wait...';l.classList.add('tfy-done');}setTimeout(function(){var l2=document.getElementById('tfy-loader');if(l2&&l2.parentNode)l2.parentNode.removeChild(l2);},450);}},120);}window.fetch=function(){_p++;_show();return _f.apply(this,arguments).finally(function(){_p=Math.max(0,_p-1);if(_p===0)_hide();});};window.addEventListener('load',function(){if(_p===0)_hide();});})();</script>
+
+
 <nav id="nav" class="s admin-nav">
-  <a href="../index.html" class="logo" aria-label="Trendify"><img src="../assets/logo.jpeg" alt="Trendify logo" class="site-logo" onerror="this.style.display=chr(39)none chr(39); this.parentElement.querySelector(chr(39).logo-text chr(39)).style.display=chr(39)inline-block chr(39)"/><span class="logo-text">Trendify</span></a>
-  <div class="na">
+
+
+  <a href="../index.html" class="logo" aria-label="Trendify"><img src="../assets/logo-removebg-preview.png" alt="Trendify logo" class="site-logo" onerror="this.style.display=chr(39)none chr(39); this.parentElement.querySelector(chr(39).logo-text chr(39)).style.display=chr(39)inline-block chr(39)"/><span class="logo-text">Trendify</span></a>
+
+
+  <div class="na"><button class="theme-toggle-btn">&#9790;</button>
+
+
     <span style="font-family:var(--f-mono);font-size:10px;color:var(--smoke);letter-spacing:.08em;">Admin Panel</span>
+
+
     <a href="../signin.html" class="btn-nav-ghost">Sign out</a>
+
+
   </div>
+
+
 </nav>
+
+
 <div class="admin-shell">
+
+
 <div class="sb-overlay" id="sbOverlay" onclick="toggleSidebar()"></div>
+
+
   <aside class="admin-sidebar" id="adminSidebar">
-    <div class="sb-logo-rail"><img src="../assets/logo.jpeg" alt="T" onerror="this.style.display='none'"/></div>
+
+
+    <div class="sb-logo-rail"><img src="../assets/logo-removebg-preview.png" alt="T" onerror="this.style.display='none'"/></div>
+
+
     <div class="sb-section">
+
+
       <span class="sb-label">Platform</span>
+
+
       <a class="sb-link" href="overview.html"><svg class="sb-icon" viewBox="0 0 16 16" fill="currentColor"><rect x="1" y="1" width="6" height="6" rx="1"/><rect x="9" y="1" width="6" height="6" rx="1"/><rect x="1" y="9" width="6" height="6" rx="1"/><rect x="9" y="9" width="6" height="6" rx="1"/></svg>Overview</a>
+
+
       <a class="sb-link" href="payments.html"><svg class="sb-icon" viewBox="0 0 16 16" fill="currentColor"><rect x="1" y="4" width="14" height="9" rx="1" fill="none" stroke="currentColor" stroke-width="1.3"/><path d="M1 7h14"/></svg>Payments</a>
+
+
       <a class="sb-link" href="wallet-balance.html"><svg class="sb-icon" viewBox="0 0 16 16" fill="currentColor"><path d="M2 3h12a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z" fill="none" stroke="currentColor" stroke-width="1.3"/><circle cx="11.5" cy="8" r="1.5"/></svg>Wallet Balance</a>
+
+
       <a class="sb-link" href="payout-history.html"><svg class="sb-icon" viewBox="0 0 16 16" fill="currentColor"><circle cx="8" cy="8" r="6" fill="none" stroke="currentColor" stroke-width="1.3"/><path d="M8 5v3l2 2"/></svg>Payout History</a>
+
+
       <a class="sb-link" href="index.html"><svg class="sb-icon" viewBox="0 0 16 16" fill="currentColor"><path d="M8 1l2 4h4l-3 3 1 4-4-2-4 2 1-4-3-3h4z"/></svg>Paid Earnings</a>
+
+
       <a class="sb-link" href="referral-history.html"><svg class="sb-icon" viewBox="0 0 16 16" fill="currentColor"><circle cx="8" cy="8" r="6" fill="none" stroke="currentColor" stroke-width="1.3"/><path d="M8 5v3l2 2"/></svg>Referral History</a>
+
+
       <a class="sb-link" href="referral-payouts.html"><svg class="sb-icon" viewBox="0 0 16 16" fill="currentColor"><path d="M1 12L5 6l3 4 2-3 4 5H1z"/></svg>Referral Payouts</a>
+
+
       <a class="sb-link" href="creator-payouts.html"><svg class="sb-icon" viewBox="0 0 16 16" fill="currentColor"><circle cx="6" cy="5" r="3"/><path d="M1 14c0-2.8 2.2-5 5-5M11 10l2 2 3-3"/></svg>Creator Payouts</a>
+
+
     </div>
+
+
     <div class="sb-divider"></div>
+
+
     <div class="sb-section">
+
+
       <a class="sb-link" href="user-management.html"><svg class="sb-icon" viewBox="0 0 16 16" fill="currentColor"><circle cx="8" cy="5" r="3"/><path d="M2 14c0-3.3 2.7-6 6-6s6 2.7 6 6H2z"/></svg>User Management</a>
+
+
       <a class="sb-link active" href="kyc-management.html"><svg class="sb-icon" viewBox="0 0 16 16" fill="currentColor"><path d="M8 1l6 3v4c0 3.5-2.5 6.5-6 7.5C2.5 14.5 0 11.5 0 8V4l8-3z" fill="none" stroke="currentColor" stroke-width="1.2"/><path d="M5 8l2 2 4-4"/></svg>KYC Management</a>
+
+
       <a class="sb-link" href="digital-products.html"><svg class="sb-icon" viewBox="0 0 16 16" fill="currentColor"><rect x="2" y="2" width="12" height="12" rx="1" fill="none" stroke="currentColor" stroke-width="1.2"/><path d="M5 8h6M8 5v6"/></svg>Digital Products</a>
+
+
     </div>
+
+
     <div class="sb-divider"></div>
+
+
     <div class="sb-section">
+
+
       <a class="sb-link" href="webhook-logs.html"><svg class="sb-icon" viewBox="0 0 16 16" fill="currentColor"><path d="M2 8a6 6 0 1 1 12 0" fill="none" stroke="currentColor" stroke-width="1.3"/><path d="M8 8l3-5M8 8l-3 3"/></svg>Webhook Logs</a>
+
+
       <a class="sb-link" href="payout-webhooks.html"><svg class="sb-icon" viewBox="0 0 16 16" fill="currentColor"><path d="M1 4h14M1 8h10M1 12h7"/></svg>Payout Webhooks</a>
+
+
       <a class="sb-link" href="wallet-logs.html"><svg class="sb-icon" viewBox="0 0 16 16" fill="currentColor"><path d="M2 3h12a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z" fill="none" stroke="currentColor" stroke-width="1.2"/><path d="M1 7h14"/></svg>Wallet Logs</a>
+
+
       <a class="sb-link" href="gateway-logs.html"><svg class="sb-icon" viewBox="0 0 16 16" fill="currentColor"><rect x="1" y="3" width="14" height="10" rx="1" fill="none" stroke="currentColor" stroke-width="1.2"/><path d="M4 7h8M4 10h5"/></svg>Gateway Logs</a>
+
+
     </div>
+
+
         <div class="sb-bottom">
+
+
       <div class="sb-user" id="sbUser">
+
+
         <div class="sb-av"></div>
+
+
         <div class="sb-user-info">
+
+
           <div class="sb-name"></div>
+
+
           <div class="sb-plan"></div>
+
+
           
+
+
         </div>
+
+
         <svg class="sb-chevron" width="12" height="12" viewBox="0 0 16 16" fill="currentColor"><path d="M4 6l4 4 4-4"/></svg>
+
+
       </div>
+
+
       <div class="user-popup" id="userPopup">
+
+
         <div class="user-popup-head">
+
+
           <div class="sb-av"></div>
+
+
           <div class="sb-user-info">
+
+
             <div class="sb-name"></div>
+
+
             <div class="sb-plan"></div>
+
+
             
+
+
           </div>
+
+
         </div>
+
+
         <div class="user-popup-divider"></div>
+
+
         <a class="user-popup-item" href="profile-settings.html"><svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><circle cx="8" cy="5" r="3"/><path d="M2 14c0-3.3 2.7-6 6-6s6 2.7 6 6H2z"/></svg>Account Settings</a>
+
+
         <a class="user-popup-item" href="../signin.html"><svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M6 2H3a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3M10 11l3-3-3-3M13 8H6"/></svg>Sign Out</a>
+
+
       </div>
+
+
     </div>
+
+
   </aside>
+
+
   <main class="admin-main">
+
+
     <div class="admin-breadcrumb">
+
+
       <span class="bc-parent">Admin Dashboard</span><span class="bc-sep">›</span><span class="bc-current">KYC Management</span>
-      <button class="theme-toggle-btn" onclick="toggleTheme()">☾</button>
+
+
     </div>
+
+
     <div class="admin-page-body">
+
+
       <div class="admin-toolbar">
+
+
         <div class="admin-search-wrap">
+
+
           <svg class="admin-search-ico" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" width="14" height="14"><circle cx="6.5" cy="6.5" r="4.5"/><path d="M10.5 10.5l3 3"/></svg>
+
+
           <input class="admin-search" id="searchInput" type="text" placeholder="Search by user ID, Aadhar, PAN, GST..." oninput="filterTable()"/>
+
+
         </div>
+
+
         <div style="display:flex;align-items:center;gap:14px;margin-left:auto">
+
+
           <div style="display:flex;align-items:center;gap:8px">
+
+
             <span class="per-page-lbl">Status:</span>
+
+
             <select class="per-page-sel" id="statusFilter" onchange="filterTable()">
+
+
               <option value="">All Status</option>
+
+
               <option value="Approved">Approved</option>
+
+
               <option value="Pending">Pending</option>
+
+
               <option value="Rejected">Rejected</option>
+
+
             </select>
+
+
           </div>
+
+
           <div class="admin-perpage">
+
+
             <span class="per-page-lbl">Per page:</span>
+
+
             <select class="per-page-sel" id="perPage" onchange="renderTable()">
+
+
               <option value="15" selected>15</option>
+
+
               <option value="25">25</option>
+
+
               <option value="50">50</option>
+
+
             </select>
+
+
           </div>
+
+
         </div>
+
+
       </div>
+
+
       <div class="admin-table-wrap">
+
+
         <table class="admin-table" id="kycTable">
+
+
           <thead>
+
+
             <tr>
+
+
               <th>User Name</th>
+
+
               <th>Aadhaar</th>
+
+
               <th>PAN</th>
+
+
               <th>GST</th>
+
+
               <th>UDYAM</th>
+
+
               <th>Website</th>
+
+
               <th>Phone</th>
+
+
               <th>Email</th>
+
+
               <th>Bank Name</th>
+
+
               <th>Account Holder</th>
+
+
               <th>Account No.</th>
+
+
               <th>IFSC</th>
+
+
               <th>Status</th>
+
+
               <th>Actions</th>
+
+
             </tr>
+
+
           </thead>
+
+
           <tbody id="tableBody"></tbody>
+
+
         </table>
+
+
         <div class="admin-empty" id="emptyState" style="display:none">No results found.</div>
+
+
       </div>
+
+
       <div class="admin-pagination" id="pagination"></div>
+
+
     </div>
+
+
   </main>
+
+
 </div>
+
+
 <div id="detailModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(6px);z-index:9999;align-items:center;justify-content:center;padding:20px;" onclick="if(event.target===this)this.style.display='none'">
+
+
 </div>
+
+
 <style>
+
+
 .kyc-detail-card{background:#0d0d26;border:1px solid rgba(167,124,255,.25);border-radius:20px;padding:32px;max-width:480px;width:100%;position:relative;max-height:90vh;overflow-y:auto;}
+
+
 .kyc-detail-close{position:absolute;top:16px;right:16px;background:rgba(255,255,255,.06);border:1px solid rgba(167,124,255,.2);color:#9d99bb;width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;}
+
+
 .kyc-detail-close:hover{background:rgba(255,255,255,.1);color:#f2f0ff;}
+
+
 .kyc-detail-name{font-size:20px;font-weight:800;color:#f2f0ff;margin-bottom:20px;padding-right:40px;}
+
+
 .kyc-detail-section{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#a67cff;background:rgba(166,124,255,.08);border:1px solid rgba(166,124,255,.15);border-radius:6px;padding:6px 12px;display:inline-block;margin-bottom:14px;}
+
+
 .kyc-detail-grid{display:flex;flex-direction:column;gap:0;border:1px solid rgba(167,124,255,.12);border-radius:10px;overflow:hidden;}
+
+
 .kyc-detail-row{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;border-bottom:1px solid rgba(167,124,255,.08);}
+
+
 .kyc-detail-row:last-child{border-bottom:none;}
+
+
 .kyc-detail-label{font-size:12px;color:#9d99bb;flex-shrink:0;width:130px;}
+
+
 .kyc-detail-val{font-size:13px;color:#f2f0ff;font-family:'DM Mono',monospace;font-weight:600;text-align:right;word-break:break-all;}
+
+
 </style>
+
+
 <script type="module" src="../js/auth-api.js"></script>
+
+
 <script type="module" src="admin-api.js"></script>
+
+
 <script type="module" src="kyc-management.js"></script>
+
+
 <script>
+
+
   async function initPage() {
+
+
     let attempts = 0;
+
+
     while (!window.TrendifyAuth && attempts < 50) { await new Promise(r => setTimeout(r, 10)); attempts++; }
+
+
     if (!window.TrendifyAuth) { window.location.href = '../signin.html'; return; }
+
+
     var user = TrendifyAuth.requireAuth('../signin.html');
+
+
     if (!user) return;
+
+
     var ini = (user.name || 'A').split(' ').map(function(w) { return w[0]; }).join('').toUpperCase().slice(0, 2);
+
+
     document.querySelectorAll('.sb-av').forEach(function(el) { el.textContent = ini; });
+
+
     document.querySelectorAll('.sb-name').forEach(function(el) { el.textContent = user.name || 'Admin'; });
+
+
     document.querySelectorAll('.sb-plan').forEach(function(el) { el.textContent = user.email || ''; });
+
+
   }
+
+
   initPage();
+
+
   document.querySelectorAll('a[href="../signin.html"]').forEach(function(el) {
+
+
     el.addEventListener('click', async function(e) { e.preventDefault(); await TrendifyAuth.logout(); window.location.href = '../signin.html'; });
+
+
   });
+
+
 </script>
+
+
 <div id="c"></div>
+
+
 <div id="cr" class="cr"></div>
+
+
 <script type="module" src="../js/cursor.js"></script>
+
+
+<script src="../js/theme.js"></script>
+
 </body>
+
+
 </html>
+
+
+
+
 

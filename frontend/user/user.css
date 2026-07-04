@@ -396,16 +396,59 @@ body.h .cr{width:54px;height:54px}
   color: var(--smoke);
 }
 
-body.light-theme {
-  --void: #f5f5fa;
-  --depth: #ffffff;
-  --panel: #ffffff;
-  --lift: #f0f0f8;
-  --white: #1a1a2e;
-  --smoke: #4a4a6a;
-  --mist: #8888aa;
-  background-color: var(--void);
+body.light-theme { background: #f5f5fa !important; color: #1a1a2e !important; }
+body.light-theme .creator-nav { background: rgba(255,255,255,.97) !important; border-bottom-color: rgba(100,70,200,.15) !important; }
+body.light-theme .admin-sidebar { background: #ffffff !important; border-right-color: rgba(100,70,200,.12) !important; }
+body.light-theme .sb-link { color: #4a4a6a !important; }
+body.light-theme .sb-link:hover { background: rgba(100,70,200,.06) !important; color: #1a1a2e !important; }
+body.light-theme .sb-link.active { color: #7b5ea7 !important; border-left-color: #7b5ea7 !important; background: rgba(123,94,167,.1) !important; }
+body.light-theme .sb-label { color: #8888aa !important; }
+body.light-theme .sb-name { color: #1a1a2e !important; }
+body.light-theme .sb-plan { color: #4a4a6a !important; }
+body.light-theme .sb-av { background: rgba(123,94,167,.15) !important; border-color: rgba(167,124,255,.25) !important; }
+body.light-theme .user-popup { background: #ffffff !important; border-color: rgba(100,70,200,.2) !important; }
+body.light-theme .user-popup-head { background: #f0f0f8 !important; }
+body.light-theme .user-popup-item { color: #4a4a6a !important; }
+body.light-theme .user-popup-item:hover { background: #f0f0f8 !important; color: #1a1a2e !important; }
+body.light-theme .admin-main { background: #f5f5fa !important; }
+body.light-theme .admin-breadcrumb { background: #f5f5fa !important; border-bottom-color: rgba(100,70,200,.08) !important; }
+body.light-theme .bc-parent { color: #4a4a6a !important; }
+body.light-theme .bc-current { color: #1a1a2e !important; }
+body.light-theme .theme-toggle-btn { color: #4a4a6a !important; border-color: rgba(100,70,200,.2) !important; }
+body.light-theme .theme-toggle-btn:hover { color: #1a1a2e !important; border-color: rgba(100,70,200,.5) !important; }
+body.light-theme .sb-toggle-btn { color: #4a4a6a !important; }
+body.light-theme .sb-toggle-btn:hover { color: #1a1a2e !important; background: rgba(100,70,200,.06) !important; }
+body.light-theme .admin-page-body { background: #f5f5fa !important; }
+body.light-theme .welcome-title { color: #1a1a2e !important; }
+body.light-theme .welcome-desc { color: #4a4a6a !important; }
+body.light-theme .service-card { background: #ffffff !important; border-color: rgba(100,70,200,.12) !important; }
+body.light-theme .service-title { color: #1a1a2e !important; }
+body.light-theme .service-desc { color: #4a4a6a !important; }
+body.light-theme .service-features li { color: #4a4a6a !important; }
+body.light-theme .order-table-wrap { background: #ffffff !important; border-color: rgba(100,70,200,.12) !important; }
+body.light-theme .order-search input { background: #f5f5fa !important; border-color: rgba(100,70,200,.15) !important; color: #1a1a2e !important; }
+body.light-theme .order-search input::placeholder { color: #8888aa !important; }
+body.light-theme .order-table thead tr { background: #f0f0f8 !important; border-bottom-color: rgba(100,70,200,.12) !important; }
+body.light-theme .order-table th { color: #1a1a2e !important; }
+body.light-theme .order-table tbody tr { border-bottom-color: rgba(100,70,200,.06) !important; }
+body.light-theme .order-table tbody tr:hover { background: rgba(123,94,167,.04) !important; }
+body.light-theme .order-table td { color: #4a4a6a !important; }
+
+/* ── LIGHT MODE: logo fixes ── */
+body.light-theme .site-logo { filter: none !important; background: transparent !important; }
+body.light-theme .logo-text {
+  background: linear-gradient(90deg, #3a1a6e 15%, #7b5ea7 50%, #5a3a9e 80%) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  background-clip: text !important;
 }
-body.light-theme .creator-nav { background: rgba(255,255,255,.97) !important; }
-body.light-theme .admin-breadcrumb { background: var(--void); }
-body.light-theme .order-table thead tr { background: var(--lift); }
+body.light-theme .theme-toggle-btn {
+  background: none !important;
+  border: 1px solid rgba(100,70,200,.2) !important;
+  color: #4a4a6a !important;
+  border-radius: 4px !important;
+  padding: 5px 9px !important;
+  font-size: 13px !important;
+  cursor: pointer !important;
+}
+body.light-theme .theme-toggle-btn:hover { color: #1a1a2e !important; border-color: rgba(100,70,200,.5) !important; }

@@ -104,7 +104,46 @@ function closeSidebarOnMobile() {
 }
 window.closeSidebarOnMobile = closeSidebarOnMobile;
 
-function toggleTheme() { document.body.classList.toggle('light-theme'); }
+function toggleTheme() {
+  if (window.toggleTheme && window.toggleTheme !== toggleTheme) {
+    window.toggleTheme();
+    return;
+  }
+  var isLight = !document.body.classList.contains('light-theme');
+  var btn = document.querySelector('.theme-toggle-btn, .c-theme-btn');
+
+  if (btn) {
+    var rect = btn.getBoundingClientRect();
+    var cx = rect.left + rect.width / 2;
+    var cy = rect.top + rect.height / 2;
+    var maxR = Math.ceil(Math.sqrt(Math.pow(Math.max(cx, window.innerWidth - cx), 2) + Math.pow(Math.max(cy, window.innerHeight - cy), 2)));
+    var ripple = document.createElement('div');
+    ripple.style.cssText = [
+      'position:fixed', 'border-radius:50%', 'pointer-events:none',
+      'z-index:2147483640', 'transform:translate(-50%,-50%) scale(0)',
+      'transition:transform 0.55s cubic-bezier(0.4,0,0.2,1),opacity 0.55s ease',
+      'left:' + cx + 'px', 'top:' + cy + 'px',
+      'width:' + maxR * 2 + 'px', 'height:' + maxR * 2 + 'px',
+      'background:' + (isLight ? '#f5f5fa' : '#04040f'), 'opacity:1'
+    ].join(';');
+    document.body.appendChild(ripple);
+    ripple.getBoundingClientRect();
+    ripple.style.transform = 'translate(-50%,-50%) scale(1)';
+    setTimeout(function () {
+      ripple.style.opacity = '0';
+      setTimeout(function () { if (ripple.parentNode) ripple.parentNode.removeChild(ripple); }, 300);
+    }, 420);
+  }
+
+  setTimeout(function () {
+    document.body.classList.toggle('light-theme', isLight);
+    try { localStorage.setItem('tfy-theme', isLight ? 'light' : 'dark'); } catch(e){}
+    document.querySelectorAll('.theme-toggle-btn, .c-theme-btn').forEach(function(b) {
+      b.textContent = isLight ? '☀' : '☾';
+      b.title = isLight ? 'Switch to dark mode' : 'Switch to light mode';
+    });
+  }, 60);
+}
 
 window.toggleSidebar = toggleSidebar;
 window.toggleTheme = toggleTheme;

@@ -214,9 +214,10 @@ function render(p){
 
   // Creator avatar
   var av=document.getElementById('creatorAv');
+  var displayName = (p.creator_name || p.creatorName || p.creator || 'Creator').toString().trim() || 'Creator';
   if(p.profile_picture){av.style.backgroundImage='url('+p.profile_picture+')';av.textContent='';}
-  else{av.textContent=(p.creator_name||'').split(' ').filter(Boolean).map(function(w){return w[0];}).join('').toUpperCase().slice(0,2)||'?';}
-  document.getElementById('creatorName').textContent=p.creator_name||'';
+  else{av.textContent=displayName.split(/\s+/).filter(Boolean).map(function(w){return w[0];}).join('').toUpperCase().slice(0,2) || 'C';}
+  document.getElementById('creatorName').textContent=displayName;
 
   // Status
   var sb=document.getElementById('statusBadge');

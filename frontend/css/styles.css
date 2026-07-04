@@ -1258,3 +1258,86 @@ footer .ft-grid{align-items:start}
   .pr-col{padding:32px 20px}
   .si-card,.su-card{margin:0 16px}
 }
+
+/* ── LIGHT MODE: global logo fixes ── */
+body.light-theme .site-logo {
+  filter: none !important;
+  background: transparent !important;
+  border-radius: 6px !important;
+  mix-blend-mode: multiply !important;
+}
+body.light-theme .logo-text {
+  background: linear-gradient(90deg, #3a1a6e 15%, #7b5ea7 50%, #5a3a9e 80%) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  background-clip: text !important;
+  animation: none !important;
+}
+
+/* ── LIGHT MODE: nav + logo fixes (override) ── */
+body.light-theme nav {
+  background: rgba(255,255,255,0.93) !important;
+  backdrop-filter: blur(20px) !important;
+  border-bottom: 1px solid rgba(123,94,167,0.15) !important;
+}
+body.light-theme nav.s {
+  background: rgba(255,255,255,0.97) !important;
+  box-shadow: 0 1px 24px rgba(0,0,0,0.08) !important;
+}
+body.light-theme .logo-text {
+  background: linear-gradient(90deg, #1a0050 15%, #6b3fa0 50%, #007a6e 80%) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  background-clip: text !important;
+  animation: none !important;
+}
+
+/* ── LIGHT MODE: logo-text dark shimmer animation ── */
+@keyframes text-shimmer-light {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+body.light-theme .logo-text {
+  background: linear-gradient(90deg, #1a0050 0%, #6b3fa0 35%, #007a6e 65%, #1a0050 100%) !important;
+  background-size: 200% 100% !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  animation: text-shimmer-light 4.4s linear infinite !important;
+}
+
+/* ── LIGHT MODE: logo-text color animation (dark colors, no gradient clip) ── */
+@keyframes logo-color-cycle {
+  0%   { color: #1a0050; }
+  33%  { color: #6b3fa0; }
+  66%  { color: #007a6e; }
+  100% { color: #1a0050; }
+}
+body.light-theme .logo-text {
+  background: none !important;
+  background-image: none !important;
+  -webkit-background-clip: unset !important;
+  background-clip: unset !important;
+  -webkit-text-fill-color: unset !important;
+  color: #1a0050 !important;
+  animation: logo-color-cycle 4.4s linear infinite !important;
+}
+
+/* ── LIGHT MODE: logo-text vibrant shimmer (override previous) ── */
+@keyframes logo-color-cycle-v2 {
+  0%   { color: #4a00b4; }
+  25%  { color: #7b2ff7; }
+  50%  { color: #0077aa; }
+  75%  { color: #7b2ff7; }
+  100% { color: #4a00b4; }
+}
+body.light-theme .logo-text,
+body.light-theme .admin-nav .logo-text {
+  background: none !important;
+  background-image: none !important;
+  -webkit-background-clip: unset !important;
+  background-clip: unset !important;
+  -webkit-text-fill-color: unset !important;
+  animation: logo-color-cycle-v2 3s ease-in-out infinite !important;
+}
