@@ -46,6 +46,9 @@ async def initiate_payment(
     commission = (amount * _get_commission_rate(db, creator_id=product.creator_id)).quantize(Decimal("0.01"))
     creator_amount = amount - commission
 
+    import time, random, string
+    cashfree_order_id = "order-" + str(int(time.time() * 1000)) + "-" + ''.join(random.choices(string.ascii_lowercase + string.digits, k=5))
+
     order_payload = {
         "order_id": data.id,
         "amount": float(amount),
@@ -59,7 +62,7 @@ async def initiate_payment(
     }
 
     cashfree_result = await CashfreeService.create_order(
-        order_id=data.id,
+        order_id=cashfree_order_id,
         amount=float(amount),
         currency="INR",
         customer_details=order_payload["customer_details"],
