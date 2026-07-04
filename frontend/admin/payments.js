@@ -100,7 +100,6 @@ function showDetails(txnId) {
     <div class="pd-row"><span class="pd-label">Payout Amount</span><span class="pd-val">${fmtAmt(raw.creator_amount ?? raw.amount)}</span></div>
     <div class="pd-row"><span class="pd-label">Platform Fee (in %)</span><span class="pd-val">${commissionPct}%</span></div>
     <div class="pd-row"><span class="pd-label">Platform Fee</span><span class="pd-val">${fmtAmt(raw.commission_amount ?? 0)}</span></div>
-    <div class="pd-row"><span class="pd-label">Transaction ID</span><span class="pd-val pd-mono">${raw.id}</span></div>
     <div class="pd-row"><span class="pd-label">Date</span><span class="pd-val">${fmt(raw.created_at)}</span></div>
   `;
   document.getElementById('pdOverlay').classList.add('open');
