@@ -8,7 +8,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,600;1,300;1,600&family=Syne:wght@400;700;800&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet"/>
 <link rel="stylesheet" href="creator.css"/>
 
-</head>
+<script src="/js/theme.js"></script></head>
 <body>
 <link rel="stylesheet" href="../css/loader.css"/>
 <div id="tfy-loader"><div class="tfy-ring"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div><span class="tfy-label">Please wait...</span></div>
@@ -466,7 +466,7 @@
   </div>
 </div>
 
-<script src="creator-api.js"></script>
+<script type="module" src="creator-api.js"></script>
 <script>
 var all=[],filtered=[],page=1,pricingMode='fixed',editId=null,userData=null;
 var testimonials=[],faqs=[],benefits=[],formFields=[],digitalFiles=[];
@@ -820,6 +820,8 @@ function backToAdmin(){var tok=localStorage.getItem('_admin_token_backup');var u
 initUser();
 if(window.CreatorAPI){load();}else{document.addEventListener('DOMContentLoaded',function(){load();});}
 </script>
-<script src="../js/theme.js"></script>
+
 </body>
 </html>
+
+
