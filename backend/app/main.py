@@ -7,6 +7,7 @@ from app.core.db_migrations import (
     ensure_digital_product_columns,
     ensure_platform_settings_table,
     ensure_bank_details_table,
+    ensure_transaction_columns,
 )
 from app.api.routes import auth, users, payments, products, admin, wallets, coupons, realtime
 import traceback
@@ -37,6 +38,7 @@ try:
     ensure_coupons_table()
     ensure_platform_settings_table()
     ensure_bank_details_table()
+    ensure_transaction_columns()
 except Exception as e:
     print(f"[startup] DB migration warning: {e}")
 

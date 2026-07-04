@@ -379,3 +379,15 @@ function updateSidebarIcons() {
 
 document.addEventListener('DOMContentLoaded', initSidebar);
 document.addEventListener('DOMContentLoaded', updateSidebarIcons);
+
+// Auto-close sidebar on mobile when a module link is clicked
+document.addEventListener('DOMContentLoaded', function() {
+  var sb = document.getElementById('adminSidebar');
+  if (!sb) return;
+  sb.addEventListener('click', function(e) {
+    var link = e.target.closest('.sb-link');
+    if (link) closeSidebarOnMobile();
+  });
+  var ov = document.getElementById('sbOverlay');
+  if (ov) ov.addEventListener('click', function() { closeSidebarOnMobile(); });
+});

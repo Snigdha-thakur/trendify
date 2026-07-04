@@ -403,11 +403,7 @@ function switchTab(tab){
   if(tab==='bank') loadBank();
 }
 
-function toggleUserMenu(e){e.stopPropagation();e.preventDefault();var p=document.getElementById('userPopup');if(p)p.classList.toggle('open');}
-document.addEventListener('click',function(e){
-  var p=document.getElementById('userPopup'),u=document.getElementById('sbUser');
-  if(p&&!p.contains(e.target)&&u&&!u.contains(e.target)) p.classList.remove('open');
-});
+function toggleUserMenu(e){e.stopPropagation();e.preventDefault();var p=document.getElementById('userPopup');if(p)p.classList.toggle('open');});
 document.addEventListener('DOMContentLoaded',function(){
   var btn=document.getElementById('signOutBtn');
   if(btn) btn.addEventListener('click',function(){

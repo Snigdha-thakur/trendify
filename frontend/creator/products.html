@@ -554,8 +554,7 @@ function initUser(){
   document.getElementById('previewCreatorName2').textContent=u.name||'';
   var navAv=document.getElementById('navAv');if(navAv)navAv.textContent=ini; if(localStorage.getItem('_from_admin'))document.getElementById('backBtn').style.display='inline-flex';
 }
-function toggleUserMenu(e){e.stopPropagation();e.preventDefault();var p=document.getElementById('userPopup');if(p)p.classList.toggle('open');}
-document.addEventListener('click',function(e){var p=document.getElementById('userPopup'),u=document.getElementById('sbUser'),n=document.getElementById('navAv');if(p&&p.classList.contains('open')&&!p.contains(e.target)&&(!u||!u.contains(e.target))&&(!n||!n.contains(e.target)))p.classList.remove('open');});
+function toggleUserMenu(e){e.stopPropagation();e.preventDefault();var p=document.getElementById('userPopup');if(p)p.classList.toggle('open');});
 document.addEventListener('DOMContentLoaded',function(){var btn=document.getElementById('signOutBtn');if(btn)btn.addEventListener('click',function(){localStorage.removeItem('trendify_access_token');localStorage.removeItem('trendify_user');window.location.href='../signin.html';});});
 
 async function load(){all=await CreatorAPI.getProducts();filtered=[...all];renderTable();}

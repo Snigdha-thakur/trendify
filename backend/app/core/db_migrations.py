@@ -89,3 +89,10 @@ def ensure_bank_details_table() -> None:
             )
         """))
         conn.commit()
+
+
+def ensure_transaction_columns() -> None:
+    with engine.connect().execution_options(isolation_level="AUTOCOMMIT") as conn:
+        conn.execute(text("SET LOCAL statement_timeout = '0'"))
+        conn.execute(text("SET LOCAL lock_timeout = '0'"))
+        conn.execute(text("ALTER TABLE public.transactions ADD COLUMN IF NOT EXISTS cf_payment_id TEXT"))
