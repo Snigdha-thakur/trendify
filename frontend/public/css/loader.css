@@ -1,0 +1,58 @@
+/* ── Trendify Page Loader ── */
+#tfy-loader {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  background: #000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: opacity .35s ease, visibility .35s ease;
+}
+#tfy-loader.tfy-done {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+/* 8-spoke dashed spinner */
+.tfy-ring {
+  position: relative;
+  width: 22px;
+  height: 22px;
+  animation: tfy-spin .8s steps(8, end) infinite;
+  flex-shrink: 0;
+}
+.tfy-ring span {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  width: 2px;
+  height: 6px;
+  margin-left: -1px;
+  border-radius: 1px;
+  background: #fff;
+  transform-origin: 1px 11px;
+}
+.tfy-ring span:nth-child(1)  { transform: rotate(0deg);    opacity: 1;    }
+.tfy-ring span:nth-child(2)  { transform: rotate(45deg);   opacity: 0.85; }
+.tfy-ring span:nth-child(3)  { transform: rotate(90deg);   opacity: 0.7;  }
+.tfy-ring span:nth-child(4)  { transform: rotate(135deg);  opacity: 0.55; }
+.tfy-ring span:nth-child(5)  { transform: rotate(180deg);  opacity: 0.4;  }
+.tfy-ring span:nth-child(6)  { transform: rotate(225deg);  opacity: 0.3;  }
+.tfy-ring span:nth-child(7)  { transform: rotate(270deg);  opacity: 0.2;  }
+.tfy-ring span:nth-child(8)  { transform: rotate(315deg);  opacity: 0.1;  }
+
+.tfy-dot { display: none; }
+
+.tfy-label {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 13px;
+  font-weight: 400;
+  color: rgba(255,255,255,.75);
+  letter-spacing: .01em;
+}
+
+@keyframes tfy-spin { to { transform: rotate(360deg); } }

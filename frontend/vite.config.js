@@ -1,4 +1,24 @@
 import { defineConfig, loadEnv } from 'vite';
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
+// Plugin to copy css/ folder into dist/css/ as static files
+function copyCssPlugin() {
+  return {
+    name: 'copy-css',
+    closeBundle() {
+      const src = path.resolve(__dirname, 'css');
+      const dest = path.resolve(__dirname, 'dist', 'css');
+      if (!fs.existsSync(dest)) fs.mkdirSync(dest, { recursive: true });
+      fs.readdirSync(src).forEach(function(file) {
+        fs.copyFileSync(path.join(src, file), path.join(dest, file));
+      });
+    }
+  };
+}
 
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '');
@@ -9,6 +29,7 @@ export default defineConfig(({ mode }) => {
   define: {
     __API_URL__: JSON.stringify(apiURL),
   },
+  plugins: [copyCssPlugin()],
   build: {
     outDir: 'dist',
     emptyOutDir: true,
