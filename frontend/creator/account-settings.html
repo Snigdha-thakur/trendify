@@ -403,7 +403,7 @@ function switchTab(tab){
   if(tab==='bank') loadBank();
 }
 
-function toggleUserMenu(e){e.stopPropagation();e.preventDefault();var p=document.getElementById('userPopup');if(p)p.classList.toggle('open');});
+function toggleUserMenu(e){e.stopPropagation();e.preventDefault();var p=document.getElementById('userPopup');if(p)p.classList.toggle('open');}
 document.addEventListener('DOMContentLoaded',function(){
   var btn=document.getElementById('signOutBtn');
   if(btn) btn.addEventListener('click',function(){
