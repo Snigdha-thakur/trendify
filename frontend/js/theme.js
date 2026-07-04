@@ -29,6 +29,7 @@
     );
 
     var ripple = document.createElement('div');
+    ripple.className = 'tfy-theme-ripple';
     ripple.style.cssText = [
       'position:fixed',
       'border-radius:50%',

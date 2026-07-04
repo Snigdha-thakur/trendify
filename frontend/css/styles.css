@@ -45,7 +45,7 @@ img{max-width:100%;height:auto;display:block}
 
 /* Reduce/disable heavy animations on touch devices to improve performance */
 .touch-device .hl, .touch-device #particles, .touch-device #prog, .touch-device .belt-track{display:none !important}
-.touch-device *:not(.logo):not(.logo-text):not(.site-logo){animation: none !important; transition: none !important}
+.touch-device *:not(.logo):not(.logo-text):not(.site-logo):not(.tfy-theme-ripple){animation: none !important; transition: none !important}
 
 /* Responsive adjustments */
 @media (max-width:1024px){
