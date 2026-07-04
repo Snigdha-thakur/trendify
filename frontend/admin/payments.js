@@ -93,7 +93,7 @@ function showDetails(txnId) {
     <div class="pd-divider"></div>
     <div class="pd-section-title">Payment Details</div>
     <div class="pd-row"><span class="pd-label">Transaction Status</span><span class="pd-val">${badge(raw.status)}</span></div>
-    <div class="pd-row"><span class="pd-label">Transaction ID</span><span class="pd-val pd-mono">${raw.id}</span></div>
+    <div class="pd-row"><span class="pd-label">Transaction ID</span><span class="pd-val pd-mono">${raw.cf_payment_id || raw.id}</span></div>
     <div class="pd-row"><span class="pd-label">Cashfree Order ID</span><span class="pd-val pd-mono">${raw.cashfree_order_id || '—'}</span></div>
     <div class="pd-row"><span class="pd-label">Gateway</span><span class="pd-val">${raw.gateway || 'Cashfree'}</span></div>
     <div class="pd-row"><span class="pd-label">Amount Paid</span><span class="pd-val">${fmtAmt(raw.amount)}</span></div>
