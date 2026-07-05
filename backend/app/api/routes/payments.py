@@ -8,6 +8,7 @@ from app.schemas.schemas import TransactionCreate, TransactionResponse
 from app.api.routes.users import get_current_user
 from app.services.cashfree_service import CashfreeService
 from app.core.config import settings
+from app.utils.email import send_purchase_confirmation
 from decimal import Decimal
 
 router = APIRouter(prefix="/api/payments", tags=["Payments"])
@@ -127,6 +128,7 @@ async def cashfree_webhook(request: Request, db: Session = Depends(get_db)):
             _credit_wallets(txn, db)
             db.commit()
             await _broadcast_wallet_update(txn)
+            _send_confirmation_email(txn)
         return {"status": "ok"}
     elif payment_status in ("FAILED", "CANCELLED", "VOID"):
         txn.status = "Failed"
@@ -215,12 +217,26 @@ async def verify_transaction(txn_id: str, db: Session = Depends(get_db)):
             db.add(GatewayLog(transaction_id=txn.id, log_type="Verify"))
             db.commit()
             await _broadcast_wallet_update(txn)
+            _send_confirmation_email(txn)
         return {"status": "success", "message": "Payment verified and wallet credited"}
 
     return {"status": txn.status.lower(), "message": "Payment not yet successful"}
 
 
 # ---------- internal helpers ----------
+
+def _send_confirmation_email(txn: Transaction):
+    product_name = txn.product.name if txn.product else str(txn.product_id)
+    view_url = f"{settings.FRONTEND_URL}/payment-success.html?txn={txn.id}"
+    send_purchase_confirmation(
+        buyer_email=txn.buyer_email,
+        buyer_name=txn.buyer_name or "Customer",
+        product_name=product_name,
+        transaction_id=str(txn.id),
+        amount=float(txn.amount or 0),
+        view_url=view_url,
+    )
+
 
 async def _broadcast_wallet_update(txn: Transaction):
     """Broadcast wallet update event to all connected WebSocket clients."""
