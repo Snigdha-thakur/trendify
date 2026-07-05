@@ -60,7 +60,6 @@
   }
 
   window.toggleTheme = function (e) {
-    /* Support both: called from onclick (e = MouseEvent) or programmatically */
     var btn = null;
     if (e && e.target) {
       btn = e.target.closest('.theme-toggle-btn, .c-theme-btn');
@@ -71,8 +70,8 @@
 
     if (btn) rippleTransition(btn, isLight);
 
-    /* Small delay so ripple starts before class swap */
     setTimeout(function () {
+      document.documentElement.classList.toggle('light-theme', isLight);
       document.body.classList.toggle('light-theme', isLight);
       localStorage.setItem(STORAGE_KEY, isLight ? 'light' : 'dark');
       updateBtn(isLight);
@@ -96,9 +95,10 @@
     updateBtn(isLight);
     fixLogoText(isLight);
     document.querySelectorAll('.theme-toggle-btn, .c-theme-btn').forEach(function (btn) {
-      /* Remove old inline onclick and re-attach properly */
       btn.removeAttribute('onclick');
+      btn.style.touchAction = 'manipulation';
       btn.addEventListener('click', window.toggleTheme);
+      btn.addEventListener('touchend', function(e) { e.preventDefault(); window.toggleTheme(e); });
     });
   }
 
