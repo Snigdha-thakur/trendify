@@ -5,7 +5,7 @@
   /* Apply saved theme immediately (no flash) */
   if (localStorage.getItem(STORAGE_KEY) === 'light') {
     document.documentElement.classList.add('light-theme');
-    document.body.classList.add('light-theme');
+    if (document.body) document.body.classList.add('light-theme');
   }
 
   function updateBtn(isLight) {
@@ -91,7 +91,9 @@
 
   /* Wire up buttons once DOM is ready */
   function wireButtons() {
-    var isLight = document.body.classList.contains('light-theme');
+    var isLight = document.documentElement.classList.contains('light-theme');
+    /* Sync body class in case it was missed during head execution */
+    document.body.classList.toggle('light-theme', isLight);
     updateBtn(isLight);
     fixLogoText(isLight);
     document.querySelectorAll('.theme-toggle-btn, .c-theme-btn').forEach(function (btn) {
