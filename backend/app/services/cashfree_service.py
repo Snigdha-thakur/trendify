@@ -37,8 +37,8 @@ class CashfreeService:
                 "customer_phone": cust.get("customer_phone") or "9999999999",
             },
             "order_meta": {
-                "return_url": f"https://trendifytechnology.vercel.app/product.html?id={order_id}&status=success",
-                "notify_url": "https://trendify-pxkx.onrender.com/api/payments/webhook/cashfree",
+                "return_url": f"{settings.BACKEND_URL}/api/payments/return?order_id={{order_id}}&product_id={order_id}",
+                "notify_url": f"{settings.BACKEND_URL}/api/payments/webhook/cashfree",
             },
         }
 

@@ -173,6 +173,61 @@ def get_transaction(txn_id: str, db: Session = Depends(get_db)):
     return txn_dict
 
 
+@router.get("/return")
+async def payment_return(order_id: str, product_id: str = None, db: Session = Depends(get_db)):
+    """Cashfree return URL handler - verifies payment, sends email, redirects to frontend."""
+    from fastapi.responses import RedirectResponse
+    import httpx
+
+    txn = db.query(Transaction).filter(
+        (Transaction.id == order_id) | (Transaction.cashfree_order_id == order_id)
+    ).first()
+
+    if not txn:
+        return RedirectResponse(f"{settings.FRONTEND_URL}/payment-failed.html")
+
+    # Query Cashfree for payment status
+    env = (settings.CASHFREE_ENV or "TEST").upper()
+    base = "https://api.cashfree.com" if env == "PROD" else "https://sandbox.cashfree.com"
+    cf_order_id = txn.cashfree_order_id or txn.id
+    headers = {
+        "x-client-id": settings.CASHFREE_APP_ID,
+        "x-client-secret": settings.CASHFREE_SECRET_KEY,
+        "x-api-version": "2023-08-01",
+    }
+
+    try:
+        async with httpx.AsyncClient(timeout=15) as client:
+            resp = await client.get(f"{base}/pg/orders/{cf_order_id}/payments", headers=headers)
+        payments = resp.json() if resp.is_success else []
+        paid = any(p.get("payment_status") in ("SUCCESS", "PAID") for p in (payments if isinstance(payments, list) else []))
+    except Exception:
+        paid = False
+
+    pid = txn.product_id
+    product = txn.product
+    pname = encodeURIComponent_py(product.name if product else "")
+
+    if paid:
+        if txn.status != "Success":
+            txn.status = "Success"
+            _credit_wallets(txn, db)
+            db.add(GatewayLog(transaction_id=txn.id, log_type="Return"))
+            db.commit()
+            await _broadcast_wallet_update(txn)
+        _send_confirmation_email(txn)
+        dest = f"{settings.FRONTEND_URL}/payment-success.html?product_id={pid}&order_id={txn.id}&amount={float(txn.amount or 0)}&product_name={pname}"
+    else:
+        dest = f"{settings.FRONTEND_URL}/payment-failed.html?product_id={pid}"
+
+    return RedirectResponse(dest)
+
+
+def encodeURIComponent_py(s: str) -> str:
+    from urllib.parse import quote
+    return quote(str(s), safe='')
+
+
 @router.post("/transactions/{txn_id}/verify")
 async def verify_transaction(txn_id: str, db: Session = Depends(get_db)):
     """Manually verify a payment status with Cashfree and credit wallet if successful."""
