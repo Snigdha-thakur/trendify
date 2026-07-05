@@ -186,6 +186,7 @@ async def verify_transaction(txn_id: str, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Transaction not found")
 
     if txn.status == "Success":
+        _send_confirmation_email(txn)  # resend email even if already marked success
         return {"status": "already_success", "message": "Transaction already marked as successful"}
 
     # Query Cashfree for the latest order status
@@ -217,7 +218,7 @@ async def verify_transaction(txn_id: str, db: Session = Depends(get_db)):
             db.add(GatewayLog(transaction_id=txn.id, log_type="Verify"))
             db.commit()
             await _broadcast_wallet_update(txn)
-            _send_confirmation_email(txn)
+        _send_confirmation_email(txn)  # always send email on verify
         return {"status": "success", "message": "Payment verified and wallet credited"}
 
     return {"status": txn.status.lower(), "message": "Payment not yet successful"}
