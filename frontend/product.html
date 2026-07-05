@@ -216,13 +216,13 @@ if(returnStatus&&productId){
       var amt=params.get('amount')||'';
       var name=p?encodeURIComponent(p.name||''):''
       if(returnStatus==='success'){
-        // Trigger email confirmation
-        if(returnOrderId){
-          fetch(BASE+'/payments/transactions/'+encodeURIComponent(returnOrderId)+'/verify',{method:'POST'}).catch(function(){});
-        }
+        // Trigger email confirmation - wait for it before redirecting
+        var verifyPromise = returnOrderId
+          ? fetch('https://trendify-pxkx.onrender.com/api/payments/transactions/'+encodeURIComponent(returnOrderId)+'/verify',{method:'POST'}).catch(function(){})
+          : Promise.resolve();
         var dest=p&&p.success_redirect?p.success_redirect
           :(location.origin+'/payment-success.html?product_id='+encodeURIComponent(productId)+'&product_name='+name+(returnOrderId?'&order_id='+returnOrderId:'')+(amt?'&amount='+amt:''));
-        window.location.replace(dest);
+        verifyPromise.finally(function(){ window.location.replace(dest); });
       }else{
         var reason=params.get('reason')||'';
         var dest=p&&p.failed_redirect?p.failed_redirect
