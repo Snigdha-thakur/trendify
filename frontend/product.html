@@ -199,7 +199,7 @@ function goBack(){
   if(productId)window.location.href=location.origin+'/product-preview.html?id='+encodeURIComponent(productId);
   else history.back();
 }
-var BASE=(location.hostname==='localhost'||location.hostname==='127.0.0.1')?'http://localhost:8000/api':'/api';
+var BASE=(location.hostname==='localhost'||location.hostname==='127.0.0.1')?'http://localhost:8000/api':'https://trendify-pxkx.onrender.com/api';
 var params=new URLSearchParams(location.search);
 var productId=params.get('id');
 var product=null;
