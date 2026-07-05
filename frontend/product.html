@@ -216,6 +216,10 @@ if(returnStatus&&productId){
       var amt=params.get('amount')||'';
       var name=p?encodeURIComponent(p.name||''):''
       if(returnStatus==='success'){
+        // Trigger email confirmation
+        if(returnOrderId){
+          fetch(BASE+'/payments/transactions/'+encodeURIComponent(returnOrderId)+'/verify',{method:'POST'}).catch(function(){});
+        }
         var dest=p&&p.success_redirect?p.success_redirect
           :(location.origin+'/payment-success.html?product_id='+encodeURIComponent(productId)+'&product_name='+name+(returnOrderId?'&order_id='+returnOrderId:'')+(amt?'&amount='+amt:''));
         window.location.replace(dest);
