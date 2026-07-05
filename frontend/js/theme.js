@@ -4,6 +4,7 @@
 
   /* Apply saved theme immediately (no flash) */
   if (localStorage.getItem(STORAGE_KEY) === 'light') {
+    document.documentElement.classList.add('light-theme');
     document.body.classList.add('light-theme');
   }
 

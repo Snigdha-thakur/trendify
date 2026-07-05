@@ -3,7 +3,7 @@
   position: fixed;
   inset: 0;
   z-index: 99999;
-  background: #000;
+  background: #04040f;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -56,3 +56,17 @@
 }
 
 @keyframes tfy-spin { to { transform: rotate(360deg); } }
+
+/* ── Light mode overrides ── */
+body.light-theme #tfy-loader,
+html.light-theme #tfy-loader {
+  background: #f5f5fa;
+}
+body.light-theme .tfy-ring span,
+html.light-theme .tfy-ring span {
+  background: #1a1a2e;
+}
+body.light-theme .tfy-label,
+html.light-theme .tfy-label {
+  color: rgba(26,26,46,.7);
+}

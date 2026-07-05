@@ -170,7 +170,8 @@ async def google_signin(payload: dict, db: Session = Depends(get_db)):
         raise HTTPException(status_code=401, detail="Invalid Google token")
 
     info = resp.json()
-    if settings.GOOGLE_CLIENT_ID and info.get("aud") != settings.GOOGLE_CLIENT_ID:
+    allowed_auds = [a.strip() for a in (settings.GOOGLE_CLIENT_ID or "").split(",") if a.strip()]
+    if allowed_auds and info.get("aud") not in allowed_auds:
         raise HTTPException(status_code=401, detail="Token audience mismatch")
 
     email = info.get("email")
