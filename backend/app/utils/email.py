@@ -46,11 +46,18 @@ def send_purchase_confirmation(
     msg["To"] = buyer_email
     msg.attach(MIMEText(html, "html"))
 
+    print(f"[email] Attempting to send to {buyer_email} via {settings.SMTP_HOST}:{settings.SMTP_PORT} as {settings.SMTP_USER}")
     try:
         with smtplib.SMTP(settings.SMTP_HOST, settings.SMTP_PORT) as server:
+            server.ehlo()
             server.starttls()
+            server.ehlo()
             server.login(settings.SMTP_USER, settings.SMTP_PASSWORD)
             server.sendmail(settings.SMTP_USER, buyer_email, msg.as_string())
-        print(f"[email] Sent purchase confirmation to {buyer_email}")
+        print(f"[email] SUCCESS: Sent to {buyer_email}")
+    except smtplib.SMTPAuthenticationError as e:
+        print(f"[email] AUTH FAILED: Wrong Gmail app password. {e}")
+    except smtplib.SMTPException as e:
+        print(f"[email] SMTP ERROR: {e}")
     except Exception as e:
-        print(f"[email] Failed to send email: {e}")
+        print(f"[email] UNEXPECTED ERROR: {e}")

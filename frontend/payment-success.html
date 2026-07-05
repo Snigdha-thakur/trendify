@@ -53,7 +53,7 @@ body{background:#04040f;color:#f2f0ff;font-family:'Syne',sans-serif;min-height:1
 
 <script>
 var params=new URLSearchParams(location.search);
-var orderId=params.get('order_id');
+var orderId=params.get('order_id')||params.get('txn');
 var amount=params.get('amount');
 var productId=params.get('product_id');
 var productName=params.get('product_name');
@@ -67,6 +67,11 @@ if(orderId||amount||productName){
 
 if(productId){
   document.getElementById('backBtn').href='/product-preview.html?id='+encodeURIComponent(productId);
+}
+
+// Trigger verify so email is sent
+if(orderId){
+  fetch('https://trendify-pxkx.onrender.com/api/payments/transactions/'+encodeURIComponent(orderId)+'/verify',{method:'POST'}).catch(function(){});
 }
 </script>
 </body>
