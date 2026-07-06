@@ -117,6 +117,13 @@ async def cashfree_webhook(request: Request, db: Session = Depends(get_db)):
     if not txn:
         return {"status": "not_found"}
 
+    # Eagerly load product name before session closes
+    product_name = None
+    try:
+        product_name = txn.product.name if txn.product else str(txn.product_id)
+    except Exception:
+        product_name = str(txn.product_id)
+
     db.add(GatewayLog(transaction_id=txn.id, log_type="Webhook"))
 
     if cf_payment_id:
@@ -128,7 +135,7 @@ async def cashfree_webhook(request: Request, db: Session = Depends(get_db)):
             _credit_wallets(txn, db)
             db.commit()
             await _broadcast_wallet_update(txn)
-        _send_confirmation_email(txn)  # always send email on success
+        _send_confirmation_email(txn, product_name=product_name)
         return {"status": "ok"}
     elif payment_status in ("FAILED", "CANCELLED", "VOID"):
         txn.status = "Failed"
@@ -291,9 +298,14 @@ async def verify_transaction(txn_id: str, db: Session = Depends(get_db)):
 
 # ---------- internal helpers ----------
 
-def _send_confirmation_email(txn: Transaction):
-    product_name = txn.product.name if txn.product else str(txn.product_id)
+def _send_confirmation_email(txn: Transaction, product_name: str = None):
+    if not product_name:
+        try:
+            product_name = txn.product.name if txn.product else str(txn.product_id)
+        except Exception:
+            product_name = str(txn.product_id)
     view_url = f"{settings.FRONTEND_URL}/payment-success.html?txn={txn.id}"
+    print(f"[email] Sending to {txn.buyer_email} for product {product_name}")
     send_purchase_confirmation(
         buyer_email=txn.buyer_email,
         buyer_name=txn.buyer_name or "Customer",
