@@ -312,8 +312,9 @@ def _send_confirmation_email(txn: Transaction, product_name: str = None):
             product_name = str(txn.product_id)
     # Use Cashfree transaction ID if available, else internal ID
     display_txn_id = str(txn.cf_payment_id) if txn.cf_payment_id else str(txn.id)
-    # View Purchase → product page
-    view_url = f"{settings.FRONTEND_URL}/product.html?id={txn.product_id}"
+    # View Purchase → product's success_redirect (e.g. skillinspire login) or fallback to product page
+    product = txn.product
+    view_url = (product.success_redirect if product and product.success_redirect else f"{settings.FRONTEND_URL}/product.html?id={txn.product_id}")
     print(f"[email] Sending to {txn.buyer_email} for product {product_name}")
     send_purchase_confirmation(
         buyer_email=txn.buyer_email,
