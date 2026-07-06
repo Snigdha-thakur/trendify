@@ -35,6 +35,8 @@ class Settings(BaseSettings):
     SMTP_FROM_NAME: str = "Trendify"
     SMTP_FROM_EMAIL: Optional[str] = None
 
+    RESEND_API_KEY: Optional[str] = None
+
 
 
     class Config:

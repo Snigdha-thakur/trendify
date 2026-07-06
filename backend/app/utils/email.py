@@ -4,21 +4,9 @@ from email.mime.text import MIMEText
 from app.core.config import settings
 
 
-def send_purchase_confirmation(
-    buyer_email: str,
-    buyer_name: str,
-    product_name: str,
-    transaction_id: str,
-    amount: float,
-    view_url: str,
-):
-    if not settings.SMTP_USER or not settings.SMTP_PASSWORD:
-        print("[email] SMTP not configured, skipping email.")
-        return
-
+def _build_html(buyer_name: str, product_name: str, transaction_id: str, amount: float, view_url: str) -> str:
     logo_url = "https://www.trendifytechnologies.in/assets/logo1.png"
-
-    html = f"""<!DOCTYPE html>
+    return f"""<!DOCTYPE html>
 <html>
 <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
 <body style="margin:0;padding:0;background:#121212;font-family:Arial,sans-serif;">
@@ -67,22 +55,57 @@ def send_purchase_confirmation(
 </body>
 </html>"""
 
-    msg = MIMEMultipart("alternative")
-    msg["Subject"] = f"Purchase Confirmed – {product_name}"
-    msg["From"] = f"{settings.SMTP_FROM_NAME} <{settings.SMTP_FROM_EMAIL or settings.SMTP_USER}>"
-    msg["To"] = buyer_email
-    msg.attach(MIMEText(html, "html"))
 
-    print(f"[email] Attempting to send to {buyer_email} via {settings.SMTP_HOST}:{settings.SMTP_PORT}")
+def send_purchase_confirmation(
+    buyer_email: str,
+    buyer_name: str,
+    product_name: str,
+    transaction_id: str,
+    amount: float,
+    view_url: str,
+):
+    html = _build_html(buyer_name, product_name, transaction_id, amount, view_url)
+    subject = f"Purchase Confirmed – {product_name}"
+    from_email = settings.SMTP_FROM_EMAIL or settings.SMTP_USER or "onboarding@resend.dev"
+    from_name = settings.SMTP_FROM_NAME or "Trendify"
+
+    if settings.RESEND_API_KEY:
+        _send_via_resend(settings.RESEND_API_KEY, from_email, from_name, buyer_email, subject, html)
+    elif settings.SMTP_USER and settings.SMTP_PASSWORD:
+        _send_via_smtp(from_email, from_name, buyer_email, subject, html)
+    else:
+        print("[email] No provider configured (set RESEND_API_KEY or SMTP credentials)")
+
+
+def _send_via_resend(api_key: str, from_email: str, from_name: str, to_email: str, subject: str, html: str):
+    try:
+        import resend
+        resend.api_key = api_key
+        resp = resend.Emails.send({
+            "from": f"{from_name} <{from_email}>",
+            "to": [to_email],
+            "subject": subject,
+            "html": html,
+        })
+        print(f"[email] Resend SUCCESS: {resp}")
+    except Exception as e:
+        print(f"[email] Resend ERROR: {e}")
+
+
+def _send_via_smtp(from_email: str, from_name: str, to_email: str, subject: str, html: str):
+    msg = MIMEMultipart("alternative")
+    msg["Subject"] = subject
+    msg["From"] = f"{from_name} <{from_email}>"
+    msg["To"] = to_email
+    msg.attach(MIMEText(html, "html"))
+    print(f"[email] SMTP attempting to send to {to_email}")
     try:
         with smtplib.SMTP(settings.SMTP_HOST, settings.SMTP_PORT) as server:
             server.ehlo()
             server.starttls()
             server.ehlo()
             server.login(settings.SMTP_USER, settings.SMTP_PASSWORD)
-            server.sendmail(settings.SMTP_USER, buyer_email, msg.as_string())
-        print(f"[email] SUCCESS: Sent to {buyer_email}")
-    except smtplib.SMTPAuthenticationError as e:
-        print(f"[email] AUTH FAILED: {e}")
+            server.sendmail(settings.SMTP_USER, to_email, msg.as_string())
+        print(f"[email] SMTP SUCCESS: Sent to {to_email}")
     except Exception as e:
-        print(f"[email] ERROR: {e}")
+        print(f"[email] SMTP ERROR: {e}")
