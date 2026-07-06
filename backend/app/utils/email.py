@@ -16,28 +16,69 @@ def send_purchase_confirmation(
         print("[email] SMTP not configured, skipping email.")
         return
 
-    logo_url = "https://trendifytechnology.vercel.app/assets/logo1.png"
+    logo_url = "https://www.trendifytechnologies.in/assets/logo1.png"
 
     html = f"""
-    <div style="font-family:Arial,sans-serif;max-width:600px;margin:auto;background:#1a1a2e;color:#e0e0e0;border-radius:12px;overflow:hidden;">
-      <div style="background:#0f0f1a;padding:30px;text-align:center;">
-        <img src="{logo_url}" alt="Trendify" style="height:60px;object-fit:contain;" />
-        <p style="color:#a0a0c0;margin:8px 0 0;font-size:13px;">Empowering Digital Creators</p>
-      </div>
-      <div style="padding:32px 36px;">
-        <h2 style="color:#ffffff;margin-top:0;">Hello {buyer_name}!</h2>
-        <p>Thank you for your purchase on <strong>Trendify</strong>.</p>
-        <p>Your purchase has been confirmed and your order is being processed.</p>
-        <p><strong>Your purchase details are:</strong></p>
-        <p>Transaction ID: {transaction_id}</p>
-        <p>Product: {product_name}</p>
-        <p>Amount: ₹{amount}</p>
-        <div style="text-align:center;margin:32px 0;">
-          <a href="{view_url}" style="background:#6c63ff;color:#fff;padding:12px 28px;border-radius:6px;text-decoration:none;font-weight:bold;">View Purchase</a>
-        </div>
-        <p style="color:#888;font-size:12px;text-align:center;">© Trendify Technology. All rights reserved.</p>
-      </div>
-    </div>
+<!DOCTYPE html>
+<html>
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
+<body style="margin:0;padding:0;background:#121212;font-family:Arial,sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:#121212;padding:30px 0;">
+    <tr><td align="center">
+      <table width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;background:#1e1e2e;border-radius:12px;overflow:hidden;">
+
+        <!-- Header / Logo -->
+        <tr>
+          <td style="background:#0d0d1a;padding:30px;text-align:center;">
+            <img src="{logo_url}" alt="Trendify" style="height:55px;object-fit:contain;" />
+            <p style="color:#9090b0;margin:8px 0 0;font-size:13px;letter-spacing:0.5px;">Empowering Digital Creators</p>
+          </td>
+        </tr>
+
+        <!-- Body -->
+        <tr>
+          <td style="padding:36px 40px;color:#d0d0e0;font-size:15px;line-height:1.7;">
+            <h2 style="color:#ffffff;margin:0 0 16px;font-size:22px;">Hello {buyer_name}!</h2>
+            <p style="margin:0 0 12px;">Thank you for your purchase on <strong style="color:#ffffff;">Trendify</strong>.</p>
+            <p style="margin:0 0 12px;">Your purchase has been confirmed and your order is being processed.</p>
+            <p style="margin:0 0 20px;">Your purchase details are:</p>
+
+            <!-- Details Box -->
+            <table width="100%" cellpadding="0" cellspacing="0" style="background:#2a2a3e;border-radius:8px;padding:0;margin-bottom:28px;">
+              <tr><td style="padding:20px 24px;">
+                <p style="margin:0 0 10px;color:#a0a0c0;font-size:13px;">TRANSACTION ID</p>
+                <p style="margin:0 0 18px;color:#ffffff;font-size:14px;word-break:break-all;">{transaction_id}</p>
+                <p style="margin:0 0 10px;color:#a0a0c0;font-size:13px;">PRODUCT</p>
+                <p style="margin:0 0 18px;color:#ffffff;font-size:15px;font-weight:bold;">{product_name}</p>
+                <p style="margin:0 0 10px;color:#a0a0c0;font-size:13px;">AMOUNT PAID</p>
+                <p style="margin:0;color:#7c6fff;font-size:18px;font-weight:bold;">₹{amount}</p>
+              </td></tr>
+            </table>
+
+            <!-- CTA Button -->
+            <table width="100%" cellpadding="0" cellspacing="0">
+              <tr><td align="center" style="padding-bottom:28px;">
+                <a href="{view_url}" style="display:inline-block;background:#6c63ff;color:#ffffff;padding:13px 36px;border-radius:8px;text-decoration:none;font-weight:bold;font-size:15px;letter-spacing:0.3px;">View Purchase</a>
+              </td></tr>
+            </table>
+
+            <p style="margin:0;color:#606080;font-size:12px;">If you have any questions, reply to this email or contact us at <a href="mailto:support@trendifytechnologies.in" style="color:#6c63ff;">support@trendifytechnologies.in</a></p>
+          </td>
+        </tr>
+
+        <!-- Footer -->
+        <tr>
+          <td style="background:#0d0d1a;padding:18px;text-align:center;">
+            <p style="margin:0;color:#505070;font-size:12px;">© 2025 Trendify Technologies. All rights reserved.</p>
+            <p style="margin:4px 0 0;"><a href="https://www.trendifytechnologies.in" style="color:#6c63ff;font-size:12px;text-decoration:none;">www.trendifytechnologies.in</a></p>
+          </td>
+        </tr>
+
+      </table>
+    </td></tr>
+  </table>
+</body>
+</html>
     """
 
     msg = MIMEMultipart("alternative")
