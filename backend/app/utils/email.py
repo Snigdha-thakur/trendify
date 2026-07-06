@@ -9,55 +9,92 @@ def _build_html(buyer_name: str, product_name: str, transaction_id: str, amount:
     return f"""<!DOCTYPE html>
 <html>
 <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
-<body style="margin:0;padding:0;background:#f4f4f8;font-family:Arial,sans-serif;">
-  <table width="100%" cellpadding="0" cellspacing="0" style="background:#f4f4f8;padding:30px 0;">
+<body style="margin:0;padding:0;background:#f0f0f7;font-family:Arial,sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:#f0f0f7;padding:32px 0;">
     <tr><td align="center">
-      <table width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;background:#ffffff;border-radius:12px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.08);">
+      <table width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;background:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(108,99,255,0.13);">
+
+        <!-- BANNER HEADER -->
         <tr>
-          <td style="background:#ffffff;padding:28px 30px;border-bottom:1px solid #ebebf0;">
-            <table cellpadding="0" cellspacing="0" style="margin:0 auto;">
+          <td style="background:linear-gradient(135deg,#6c63ff 0%,#a78bfa 60%,#c4b5fd 100%);padding:36px 30px 28px;">
+            <table width="100%" cellpadding="0" cellspacing="0">
               <tr>
-                <td style="vertical-align:middle;padding-right:12px;">
-                  <img src="{logo_url}" alt="Trendify" style="height:48px;width:auto;display:block;" />
+                <td style="vertical-align:middle;width:64px;">
+                  <img src="{logo_url}" alt="T" width="56" height="56"
+                    style="width:56px;height:56px;border-radius:12px;object-fit:cover;display:block;border:2px solid rgba(255,255,255,0.5);" />
                 </td>
-                <td style="vertical-align:middle;">
-                  <span style="font-size:26px;font-weight:bold;color:#6c63ff;font-family:Arial,sans-serif;letter-spacing:0.5px;">Trendify</span>
+                <td style="vertical-align:middle;padding-left:16px;">
+                  <div style="font-size:30px;font-weight:900;color:#ffffff;letter-spacing:1px;line-height:1;font-family:Georgia,serif;">Trendify</div>
+                  <div style="font-size:12px;color:rgba(255,255,255,0.85);letter-spacing:2px;text-transform:uppercase;margin-top:5px;font-family:Arial,sans-serif;">Empowering Digital Creators</div>
                 </td>
               </tr>
             </table>
-            <p style="color:#888;margin:10px 0 0;font-size:12px;letter-spacing:0.5px;text-align:center;">Empowering Digital Creators</p>
           </td>
         </tr>
+
+        <!-- BODY -->
         <tr>
-          <td style="padding:36px 40px;color:#333;font-size:15px;line-height:1.7;">
-            <h2 style="color:#1a1a2e;margin:0 0 16px;font-size:22px;">Hello {buyer_name}!</h2>
-            <p style="margin:0 0 12px;">Thank you for your purchase on <strong style="color:#6c63ff;">Trendify</strong>.</p>
-            <p style="margin:0 0 12px;">Your purchase has been confirmed and your order is being processed.</p>
-            <p style="margin:0 0 20px;">Your purchase details are:</p>
-            <table width="100%" cellpadding="0" cellspacing="0" style="background:#f8f7ff;border:1px solid #e8e6ff;border-radius:8px;margin-bottom:28px;">
-              <tr><td style="padding:20px 24px;">
-                <p style="margin:0 0 4px;color:#888;font-size:12px;text-transform:uppercase;letter-spacing:0.5px;">Transaction ID</p>
-                <p style="margin:0 0 16px;color:#333;font-size:14px;word-break:break-all;">{transaction_id}</p>
-                <p style="margin:0 0 4px;color:#888;font-size:12px;text-transform:uppercase;letter-spacing:0.5px;">Product</p>
-                <p style="margin:0 0 16px;color:#1a1a2e;font-size:15px;font-weight:bold;">{product_name}</p>
-                <p style="margin:0 0 4px;color:#888;font-size:12px;text-transform:uppercase;letter-spacing:0.5px;">Amount Paid</p>
-                <p style="margin:0;color:#6c63ff;font-size:20px;font-weight:bold;">&#8377;{amount}</p>
-              </td></tr>
+          <td style="padding:36px 40px 28px;color:#333;font-size:15px;line-height:1.75;">
+            <h2 style="color:#1a1a2e;margin:0 0 14px;font-size:22px;font-weight:800;">Hello {buyer_name}! &#127881;</h2>
+            <p style="margin:0 0 10px;">Thank you for your purchase on <strong style="color:#6c63ff;">Trendify</strong>. Your order has been confirmed and is being processed.</p>
+
+            <!-- ORDER CARD -->
+            <table width="100%" cellpadding="0" cellspacing="0" style="margin:24px 0;border-radius:12px;overflow:hidden;border:1px solid #e8e6ff;">
+              <tr>
+                <td style="background:linear-gradient(135deg,#6c63ff,#a78bfa);padding:12px 20px;">
+                  <span style="color:#fff;font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;">Order Summary</span>
+                </td>
+              </tr>
+              <tr>
+                <td style="background:#faf9ff;padding:20px 20px 4px;">
+                  <table width="100%" cellpadding="0" cellspacing="0">
+                    <tr>
+                      <td style="padding:8px 0;border-bottom:1px solid #ede9ff;">
+                        <span style="color:#888;font-size:12px;text-transform:uppercase;letter-spacing:0.5px;">Transaction ID</span><br/>
+                        <span style="color:#333;font-size:13px;word-break:break-all;">{transaction_id}</span>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td style="padding:8px 0;border-bottom:1px solid #ede9ff;">
+                        <span style="color:#888;font-size:12px;text-transform:uppercase;letter-spacing:0.5px;">Product</span><br/>
+                        <span style="color:#1a1a2e;font-size:15px;font-weight:700;">{product_name}</span>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td style="padding:8px 0 16px;">
+                        <span style="color:#888;font-size:12px;text-transform:uppercase;letter-spacing:0.5px;">Amount Paid</span><br/>
+                        <span style="color:#6c63ff;font-size:22px;font-weight:900;">&#8377;{amount}</span>
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
             </table>
+
+            <!-- CTA BUTTON -->
             <table width="100%" cellpadding="0" cellspacing="0">
-              <tr><td align="center" style="padding-bottom:28px;">
-                <a href="{view_url}" style="display:inline-block;background:#6c63ff;color:#ffffff;padding:13px 36px;border-radius:8px;text-decoration:none;font-weight:bold;font-size:15px;">View Purchase</a>
-              </td></tr>
+              <tr>
+                <td align="center" style="padding:8px 0 24px;">
+                  <a href="{view_url}"
+                    style="display:inline-block;background:linear-gradient(135deg,#6c63ff,#a78bfa);color:#ffffff;padding:14px 40px;border-radius:50px;text-decoration:none;font-weight:700;font-size:15px;letter-spacing:0.5px;box-shadow:0 4px 15px rgba(108,99,255,0.4);">
+                    &#128279; View Your Purchase
+                  </a>
+                </td>
+              </tr>
             </table>
-            <p style="margin:0;color:#999;font-size:12px;">Questions? Contact us at <a href="mailto:trendifytechnologies@gmail.com" style="color:#6c63ff;">trendifytechnologies@gmail.com</a></p>
+
+            <p style="margin:0;color:#aaa;font-size:12px;text-align:center;">Questions? <a href="mailto:trendifytechnologies@gmail.com" style="color:#6c63ff;text-decoration:none;">trendifytechnologies@gmail.com</a></p>
           </td>
         </tr>
+
+        <!-- FOOTER -->
         <tr>
-          <td style="background:#f8f7ff;padding:18px;text-align:center;border-top:1px solid #ebebf0;">
-            <p style="margin:0;color:#aaa;font-size:12px;">&copy; 2025 Trendify Technologies. All rights reserved.</p>
-            <p style="margin:4px 0 0;"><a href="https://www.trendifytechnologies.in" style="color:#6c63ff;font-size:12px;text-decoration:none;">www.trendifytechnologies.in</a></p>
+          <td style="background:#f5f3ff;padding:16px 20px;text-align:center;border-top:1px solid #ede9ff;">
+            <p style="margin:0;color:#bbb;font-size:11px;">&copy; 2025 Trendify Technologies. All rights reserved.</p>
+            <p style="margin:4px 0 0;"><a href="https://www.trendifytechnologies.in" style="color:#6c63ff;font-size:11px;text-decoration:none;">www.trendifytechnologies.in</a></p>
           </td>
         </tr>
+
       </table>
     </td></tr>
   </table>
