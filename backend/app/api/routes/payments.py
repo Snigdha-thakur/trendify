@@ -310,13 +310,16 @@ def _send_confirmation_email(txn: Transaction, product_name: str = None):
             product_name = txn.product.name if txn.product else str(txn.product_id)
         except Exception:
             product_name = str(txn.product_id)
-    view_url = f"{settings.FRONTEND_URL}/payment-success.html?txn={txn.id}"
+    # Use Cashfree transaction ID if available, else internal ID
+    display_txn_id = str(txn.cf_payment_id) if txn.cf_payment_id else str(txn.id)
+    # View Purchase → product page
+    view_url = f"{settings.FRONTEND_URL}/product.html?id={txn.product_id}"
     print(f"[email] Sending to {txn.buyer_email} for product {product_name}")
     send_purchase_confirmation(
         buyer_email=txn.buyer_email,
         buyer_name=txn.buyer_name or "Customer",
         product_name=product_name,
-        transaction_id=str(txn.id),
+        transaction_id=display_txn_id,
         amount=float(txn.amount or 0),
         view_url=view_url,
     )

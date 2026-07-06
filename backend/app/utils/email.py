@@ -15,7 +15,7 @@ def _build_html(buyer_name: str, product_name: str, transaction_id: str, amount:
       <table width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;background:#1e1e2e;border-radius:12px;overflow:hidden;">
         <tr>
           <td style="background:#0d0d1a;padding:30px;text-align:center;">
-            <img src="{logo_url}" alt="Trendify" style="height:55px;object-fit:contain;" />
+            <img src="{logo_url}" alt="Trendify" style="height:55px;object-fit:contain;display:block;margin:0 auto;" />
             <p style="color:#9090b0;margin:8px 0 0;font-size:13px;letter-spacing:0.5px;">Empowering Digital Creators</p>
           </td>
         </tr>
