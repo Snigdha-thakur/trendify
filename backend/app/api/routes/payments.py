@@ -135,7 +135,10 @@ async def cashfree_webhook(request: Request, db: Session = Depends(get_db)):
             _credit_wallets(txn, db)
             db.commit()
             await _broadcast_wallet_update(txn)
-        _send_confirmation_email(txn, product_name=product_name)
+        try:
+            _send_confirmation_email(txn, product_name=product_name)
+        except Exception as e:
+            print(f"[email] EXCEPTION in webhook: {e}")
         return {"status": "ok"}
     elif payment_status in ("FAILED", "CANCELLED", "VOID"):
         txn.status = "Failed"
@@ -223,7 +226,10 @@ async def payment_return(order_id: str, product_id: str = None, db: Session = De
 
     # If already marked Success (by webhook), trust it and send email
     if txn.status == "Success":
-        _send_confirmation_email(txn)
+        try:
+            _send_confirmation_email(txn)
+        except Exception as e:
+            print(f"[email] EXCEPTION in return: {e}")
         dest = f"{settings.FRONTEND_URL}/payment-success.html?product_id={pid}&order_id={txn.id}&amount={float(txn.amount or 0)}&product_name={pname}"
     elif paid:
         if txn.status != "Success":
