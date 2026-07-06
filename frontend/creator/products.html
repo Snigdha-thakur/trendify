@@ -507,7 +507,7 @@ function renderTable(){
   empty.style.display='none';
   tbody.innerHTML=slice.map(function(r){
     var statusBadge=r.status==='Active'?'<span class="b-success">Active</span>':'<span class="b-pending">'+(r.status||'Under review')+'</span>';
-    var actions='<div class="row-actions"><button class="action-toggle" type="button" onclick="toggleActionMenu(event,\''+r.id+'\')"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="4" cy="8" r="1.3"/><circle cx="8" cy="8" r="1.3"/><circle cx="12" cy="8" r="1.3"/></svg></button><button class="copy-icon-btn" type="button" onclick="copyProductLink(\''+r.id+'\')">Copy</button></div>';
+    var actions='<div class="row-actions"><button class="action-toggle" type="button" onclick="toggleActionMenu(event,\''+r.id+'\')"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><circle cx="4" cy="8" r="1.3"/><circle cx="8" cy="8" r="1.3"/><circle cx="12" cy="8" r="1.3"/></svg></button><button class="copy-icon-btn" type="button" onclick="copyProductLink(\''+r.id+'\')"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5" y="5" width="9" height="9" rx="1"/><path d="M3 11H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v1"/></svg> Copy</button></div>';
     return '<tr><td style="font-weight:600;color:var(--text)">'+r.name+'</td><td style="color:var(--muted)">'+r.price_type+'</td><td style="font-weight:700">₹'+parseFloat(r.amount||0).toLocaleString('en-IN')+'</td><td>'+statusBadge+'</td><td style="font-size:12px;color:var(--faint)">'+new Date(r.created_at).toLocaleDateString('en-IN')+'</td><td>'+actions+'</td></tr>';
   }).join('');
   renderPag(total);
@@ -804,7 +804,7 @@ function toggleActionMenu(event,productId){
   event.stopPropagation();closeActionMenus();
   var btn=event.currentTarget;var rect=btn.getBoundingClientRect();
   var menu=document.createElement('div');menu.id='floatingActionMenu';menu.className='action-menu action-menu-floating';
-  menu.innerHTML='<button class="action-item" onclick="viewProduct(\''+productId+'\')">View</button><button class="action-item" onclick="editProduct(\''+productId+'\')">Edit</button><button class="action-item" onclick="deleteProduct(\''+productId+'\')">Delete</button>';
+  menu.innerHTML='<button class="action-item" onclick="viewProduct(\''+productId+'\')"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1 8s3-5 7-5 7 5 7 5-3 5-7 5-7-5-7-5z"/><circle cx="8" cy="8" r="2"/></svg> View</button><button class="action-item" onclick="editProduct(\''+productId+'\')"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M11 2l3 3-9 9H2v-3l9-9z"/></svg> Edit</button><button class="action-item action-item-danger" onclick="deleteProduct(\''+productId+'\')"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M5 4V2h6v2M6 7v5M10 7v5M3 4l1 10h8l1-10"/></svg> Delete</button>';
   document.body.appendChild(menu);
   var top=rect.bottom+6;var left=Math.max(8,rect.right-140);
   menu.style.cssText='position:fixed;top:'+top+'px;left:'+left+'px;z-index:9999;';menu.classList.add('open');

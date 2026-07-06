@@ -424,3 +424,21 @@ body.light-theme .logo-text {
 body.light-theme .c-nav-title { color: #4a4a6a !important; }
 body.light-theme .c-nav-title .current { color: #1a1a2e !important; }
 body.light-theme .c-sidebar-toggle { background: rgba(100,70,200,.06) !important; border-color: rgba(100,70,200,.2) !important; color: #4a4a6a !important; }
+
+/* ── Product Table Action Buttons ── */
+.row-actions{display:flex;align-items:center;gap:6px;}
+
+.action-toggle{display:flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:8px;border:1px solid rgba(167,124,255,.2);background:rgba(167,124,255,.08);color:#a67cff;cursor:pointer;transition:all .15s;}
+.action-toggle:hover{background:rgba(167,124,255,.18);border-color:rgba(167,124,255,.4);}
+
+.copy-icon-btn{display:inline-flex;align-items:center;gap:5px;padding:5px 12px;border-radius:8px;border:1px solid rgba(167,124,255,.2);background:rgba(167,124,255,.08);color:#a67cff;font-size:12px;font-weight:600;cursor:pointer;transition:all .15s;white-space:nowrap;}
+.copy-icon-btn:hover{background:rgba(167,124,255,.18);border-color:rgba(167,124,255,.4);}
+
+.action-menu-floating{background:#0e0e1f;border:1px solid rgba(167,124,255,.2);border-radius:10px;padding:6px;min-width:140px;box-shadow:0 8px 32px rgba(0,0,0,.5);display:none;}
+.action-menu-floating.open{display:block;}
+
+.action-item{display:flex;align-items:center;gap:8px;width:100%;padding:8px 12px;border:none;background:transparent;color:#d0d0e0;font-size:13px;font-weight:500;border-radius:7px;cursor:pointer;transition:all .12s;text-align:left;}
+.action-item:hover{background:rgba(167,124,255,.12);color:#f2f0ff;}
+.action-item svg{opacity:.7;flex-shrink:0;}
+.action-item-danger{color:#f87171;}
+.action-item-danger:hover{background:rgba(248,113,113,.1);color:#f87171;}
