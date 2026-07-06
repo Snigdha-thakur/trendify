@@ -50,6 +50,8 @@ class CashfreeService:
             "x-api-version": "2023-08-01",
         }
 
+        print(f"[cashfree] return_url: {payload['order_meta']['return_url']}")
+        print(f"[cashfree] notify_url: {payload['order_meta']['notify_url']}")
         async with httpx.AsyncClient(timeout=15) as client:
             response = await client.post(url, json=payload, headers=headers)
 

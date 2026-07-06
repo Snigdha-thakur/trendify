@@ -35,6 +35,8 @@ class Settings(BaseSettings):
     SMTP_FROM_NAME: str = "Trendify"
     SMTP_FROM_EMAIL: Optional[str] = None
 
+
+
     class Config:
         env_file = ".env.local"
         case_sensitive = True
