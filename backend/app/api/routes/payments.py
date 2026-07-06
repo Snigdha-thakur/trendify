@@ -128,7 +128,7 @@ async def cashfree_webhook(request: Request, db: Session = Depends(get_db)):
             _credit_wallets(txn, db)
             db.commit()
             await _broadcast_wallet_update(txn)
-            _send_confirmation_email(txn)
+        _send_confirmation_email(txn)  # always send email on success
         return {"status": "ok"}
     elif payment_status in ("FAILED", "CANCELLED", "VOID"):
         txn.status = "Failed"
@@ -196,19 +196,29 @@ async def payment_return(order_id: str, product_id: str = None, db: Session = De
         "x-api-version": "2023-08-01",
     }
 
-    try:
-        async with httpx.AsyncClient(timeout=15) as client:
-            resp = await client.get(f"{base}/pg/orders/{cf_order_id}/payments", headers=headers)
-        payments = resp.json() if resp.is_success else []
-        paid = any(p.get("payment_status") in ("SUCCESS", "PAID") for p in (payments if isinstance(payments, list) else []))
-    except Exception:
-        paid = False
+    paid = False
+    for _ in range(3):  # retry up to 3 times with delay (Cashfree may lag)
+        try:
+            import asyncio
+            await asyncio.sleep(2)
+            async with httpx.AsyncClient(timeout=15) as client:
+                resp = await client.get(f"{base}/pg/orders/{cf_order_id}/payments", headers=headers)
+            payments = resp.json() if resp.is_success else []
+            paid = any(p.get("payment_status") in ("SUCCESS", "PAID") for p in (payments if isinstance(payments, list) else []))
+            if paid:
+                break
+        except Exception:
+            pass
 
     pid = txn.product_id
     product = txn.product
     pname = encodeURIComponent_py(product.name if product else "")
 
-    if paid:
+    # If already marked Success (by webhook), trust it and send email
+    if txn.status == "Success":
+        _send_confirmation_email(txn)
+        dest = f"{settings.FRONTEND_URL}/payment-success.html?product_id={pid}&order_id={txn.id}&amount={float(txn.amount or 0)}&product_name={pname}"
+    elif paid:
         if txn.status != "Success":
             txn.status = "Success"
             _credit_wallets(txn, db)
