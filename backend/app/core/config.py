@@ -25,7 +25,7 @@ class Settings(BaseSettings):
 
     GOOGLE_CLIENT_ID: Optional[str] = None
 
-    FRONTEND_URL: str = "https://trendifytechnology.vercel.app"
+    FRONTEND_URL: str = "https://www.trendifytechnologies.in"
     BACKEND_URL: str = "https://trendify-pxkx.onrender.com"
 
     SMTP_HOST: str = "smtp.gmail.com"
