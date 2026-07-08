@@ -651,7 +651,7 @@ function initUser(){
 
 
 
-  var navAv=document.getElementById('navAv');if(navAv)navAv.textContent=ini; if(localStorage.getItem('_from_admin'))document.getElementById('backBtn').style.display='inline-flex';
+  var navAv=document.getElementById('navAv');if(navAv)navAv.textContent=ini; if(localStorage.getItem('_from_admin')&&(function(){try{var u=JSON.parse(localStorage.getItem('trendify_user'));return u&&u.role==='admin';}catch(e){return false;}})())document.getElementById('backBtn').style.display='inline-flex';
 
 
 

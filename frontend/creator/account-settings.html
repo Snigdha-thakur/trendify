@@ -253,7 +253,7 @@ function initUser(){
   document.getElementById('sbAv2').textContent=ini;
   document.getElementById('sbName2').textContent=u.name||'Creator';
   document.getElementById('sbEmail2').textContent=id;
-  if(localStorage.getItem('_from_admin')) document.getElementById('backBtn').style.display='inline-flex';
+  if(localStorage.getItem('_from_admin')&&(function(){try{var u=JSON.parse(localStorage.getItem('trendify_user'));return u&&u.role==='admin';}catch(e){return false;}})())document.getElementById('backBtn').style.display='inline-flex';
 }
 
 async function loadProfile(){

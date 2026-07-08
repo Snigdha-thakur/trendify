@@ -491,7 +491,7 @@ function initUser(){
 
 
 
-  if(localStorage.getItem('_from_admin')) document.getElementById('backBtn').style.display='inline-flex';
+  if(localStorage.getItem('_from_admin') && u && u.role === 'admin') document.getElementById('backBtn').style.display='inline-flex';
 
 
 
