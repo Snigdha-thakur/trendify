@@ -1,5 +1,5 @@
 (function(){
-  var SESSION_DURATION = 30 * 60 * 1000; // 30 minutes
+  var SESSION_DURATION = 7 * 24 * 60 * 60 * 1000; // 7 days
   var SESSION_KEY = 'trendify_login_time';
   function checkSession(){
     var loginTime = parseInt(localStorage.getItem(SESSION_KEY)||'0');
