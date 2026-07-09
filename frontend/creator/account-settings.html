@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/><link rel="icon" href="/favicon.svg" type="image/svg+xml"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<script>(function(){var t=localStorage.getItem('trendify_access_token');if(!t){location.replace('../signin.html');return;}try{var u=JSON.parse(localStorage.getItem('trendify_user'));if(!u||!['creator','admin'].includes(u.role))location.replace('../signin.html');}catch(e){location.replace('../signin.html');}})();</script>
+<title>Account Settings — Creator Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,600;1,300;1,600&family=Syne:wght@400;700;800&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="creator.css"/>
+
+<script src="/js/theme.js"></script></head>
+<body>
+<link rel="stylesheet" href="../css/loader.css"/>
+<div id="tfy-loader"><div class="tfy-ring"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div><span class="tfy-label">Please wait...</span></div>
+<script>(function(){var _p=0,_h=null,_f=window.fetch;function _show(){clearTimeout(_h);var l=document.getElementById('tfy-loader');if(l){l.classList.remove('tfy-done');}}function _hide(){_h=setTimeout(function(){if(_p<=0){var l=document.getElementById('tfy-loader');if(l){var lb=l.querySelector('.tfy-label');if(lb)lb.textContent='Please wait...';l.classList.add('tfy-done');}setTimeout(function(){var l2=document.getElementById('tfy-loader');if(l2&&l2.parentNode)l2.parentNode.removeChild(l2);},450);}},120);}window.fetch=function(){_p++;_show();return _f.apply(this,arguments).finally(function(){_p=Math.max(0,_p-1);if(_p===0)_hide();});};window.addEventListener('load',function(){if(_p===0)_hide();});})();</script>
+<!-- NAV -->
+<nav class="c-nav">
+  <div class="c-nav-left">
+    <button class="c-sidebar-toggle" onclick="toggleSidebar()"><svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="3" width="14" height="1.5" rx=".75"/><rect x="1" y="7.25" width="14" height="1.5" rx=".75"/><rect x="1" y="11.5" width="14" height="1.5" rx=".75"/></svg></button>
+    <span class="c-nav-title">Creator Dashboard <span class="sep">›</span><span class="current">Account Settings</span></span>
+  </div>
+  <div class="c-nav-right">
+    <button class="c-back-btn" id="backBtn" style="display:none" onclick="backToAdmin()">
+      <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10 3l5 5-5 5M3 8h12"/></svg>Back to Admin
+    </button>
+    <button class="c-theme-btn" onclick="toggleTheme()">☾</button><div class="c-av c-nav-av" id="navAv" onclick="toggleUserMenu(event)" style="cursor:pointer;">CR</div>
+  </div>
+</nav>
+<div class="c-shell">
+  <!-- SIDEBAR -->
+  <aside class="c-sidebar" id="sidebar">
+    <a class="c-sidebar-link" href="dashboard.html" title="Dashboard"><svg viewBox="0 0 16 16" fill="currentColor"><rect x="1" y="1" width="6" height="6" rx="1"/><rect x="9" y="1" width="6" height="6" rx="1"/><rect x="1" y="9" width="6" height="6" rx="1"/><rect x="9" y="9" width="6" height="6" rx="1"/></svg><span class="c-sidebar-label">Dashboard</span></a>
+    <a class="c-sidebar-link" href="payments.html" title="Payments"><svg viewBox="0 0 16 16" fill="currentColor"><rect x="1" y="4" width="14" height="9" rx="1" fill="none" stroke="currentColor" stroke-width="1.3"/><path d="M1 7h14" stroke="currentColor" stroke-width="1.3"/></svg><span class="c-sidebar-label">Payments</span></a>
+    <a class="c-sidebar-link" href="purchases.html" title="Purchases"><svg viewBox="0 0 16 16" fill="currentColor"><rect x="2" y="2" width="12" height="12" rx="1" fill="none" stroke="currentColor" stroke-width="1.3"/><path d="M5 8h6M8 5v6" stroke="currentColor" stroke-width="1.3"/></svg><span class="c-sidebar-label">Purchases</span></a>
+    <a class="c-sidebar-link" href="wallet.html" title="Wallet"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M2 3h12a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z" fill="none" stroke="currentColor" stroke-width="1.3"/><circle cx="11.5" cy="8" r="1.5"/></svg><span class="c-sidebar-label">Wallet</span></a>
+    <a class="c-sidebar-link" href="payout-history.html" title="Payout History"><svg viewBox="0 0 16 16" fill="currentColor"><circle cx="8" cy="8" r="6" fill="none" stroke="currentColor" stroke-width="1.3"/><path d="M8 5v3l2 2" stroke="currentColor" stroke-width="1.3"/></svg><span class="c-sidebar-label">Payout History</span></a>
+    <a class="c-sidebar-link" href="paid-earnings.html" title="Paid Earnings"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M1 12L4 7l3 3 3-4 4 5H1z"/></svg><span class="c-sidebar-label">Paid Earnings</span></a>
+    <div class="c-sidebar-divider"></div>
+    <a class="c-sidebar-link" href="refer-earn.html" title="Refer &amp; Earn"><svg viewBox="0 0 16 16" fill="currentColor"><circle cx="5" cy="5" r="2.5" fill="none" stroke="currentColor" stroke-width="1.3"/><circle cx="11" cy="5" r="2.5" fill="none" stroke="currentColor" stroke-width="1.3"/><circle cx="8" cy="12" r="2.5" fill="none" stroke="currentColor" stroke-width="1.3"/><path d="M7.5 7.5l-2 3M8.5 7.5l2 3" stroke="currentColor" stroke-width="1.1"/></svg><span class="c-sidebar-label">Refer &amp; Earn</span></a>
+    <a class="c-sidebar-link" href="audience.html" title="Audience"><svg viewBox="0 0 16 16" fill="currentColor"><circle cx="6" cy="5" r="3"/><path d="M1 14c0-2.8 2.2-5 5-5M10 9a3 3 0 0 1 0 6M13 10a3 3 0 0 1 0 5" fill="none" stroke="currentColor" stroke-width="1.2"/></svg><span class="c-sidebar-label">Audience</span></a>
+    <a class="c-sidebar-link" href="coupons.html" title="Coupons"><svg viewBox="0 0 16 16" fill="currentColor"><rect x="1" y="5" width="14" height="6" rx="1" fill="none" stroke="currentColor" stroke-width="1.3"/><path d="M6 5v6M4 8h.01M8 8h4" stroke="currentColor" stroke-width="1.3"/></svg><span class="c-sidebar-label">Coupons</span></a>
+    <a class="c-sidebar-link" href="products.html" title="Products"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 1l2 1v3l-2 1-2-1V2l2-1zM3 4l2 1v3L3 9 1 8V5l2-1zM13 4l2 1v3l-2 1-2-1V5l2-1z" fill="none" stroke="currentColor" stroke-width="1.2"/></svg><span class="c-sidebar-label">Products</span></a>
+    <div class="c-sidebar-divider"></div>
+    <div class="c-sidebar-bottom">
+      <div class="c-sb-user" id="sbUser" onclick="toggleUserMenu(event)">
+        <div class="c-av" id="sbAv">CR</div>
+        <div style="display:flex;flex-direction:column;">
+          <span class="c-sidebar-label" id="sbName" style="font-size:12px;font-weight:600;"></span>
+          <span class="c-sb-email" id="sbEmail" style="font-size:11px;"></span>
+          </div>
+        <svg style="margin-left:auto;opacity:.5;flex-shrink:0" width="12" height="12" viewBox="0 0 16 16" fill="currentColor"><path d="M4 6l4 4 4-4"/></svg>
+      </div>
+      <div class="c-user-popup" id="userPopup">
+        <div class="c-user-popup-head"><div class="c-av" id="sbAv2">CR</div><div><div style="font-size:12px;font-weight:700;color:#f2f0ff" id="sbName2"></div><div style="font-family:'DM Mono',monospace;font-size:10px;color:#9d99bb" id="sbEmail2"></div></div>
+        </div>
+        <div class="c-user-popup-divider"></div>
+        <a class="c-user-popup-item active" href="account-settings.html">
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><circle cx="8" cy="5" r="3"/><path d="M2 14c0-3.3 2.7-6 6-6s6 2.7 6 6H2z"/></svg>
+          Account Settings
+        </a>
+        <button class="c-user-popup-item" id="signOutBtn">
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M6 2H3a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3M10 11l3-3-3-3M13 8H6"/></svg>
+          Sign Out
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="c-main">
+    <div class="c-page-header" style="margin-bottom:28px;">
+      <h1 class="c-page-title">Account Settings</h1>
+    </div>
+
+    <!-- Tabs -->
+    <div class="c-tabs" style="margin-bottom:28px;">
+      <button class="c-tab active" id="tabProfile" onclick="switchTab('profile')">Profile</button>
+      <button class="c-tab" id="tabKyc" onclick="switchTab('kyc')">KYC Details</button>
+      <button class="c-tab" id="tabBank" onclick="switchTab('bank')">Bank Details</button>
+    </div>
+
+    <div id="profileError" style="display:none;margin-bottom:16px;padding:12px;border-radius:6px;background:rgba(232,103,74,.1);border:1px solid rgba(232,103,74,.25);color:#e8674a;font-size:13px;"></div>
+    <div id="profileSuccess" style="display:none;margin-bottom:16px;padding:12px;border-radius:6px;background:rgba(34,212,122,.08);border:1px solid rgba(34,212,122,.25);color:#22d47a;font-size:13px;"></div>
+
+    <!-- PROFILE TAB -->
+    <div id="panelProfile">
+      <div class="c-stat-card" style="max-width:680px;">
+        <div style="padding:0 0 20px;">
+          <div style="font-size:16px;font-weight:700;color:#f2f0ff;margin-bottom:4px;">Profile Information</div>
+          <div style="font-size:13px;color:#9d99bb;">Update your name and contact details.</div>
+        </div>
+        <div class="c-field">
+          <label class="c-field-label">Name</label>
+          <div class="c-input-wrap">
+            <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" style="opacity:.45;flex-shrink:0"><circle cx="8" cy="5" r="3"/><path d="M2 14c0-3.3 2.7-6 6-6s6 2.7 6 6"/></svg>
+            <input class="c-input" type="text" id="profileName" placeholder="Your name"/>
+          </div>
+        </div>
+        <div class="c-field">
+          <label class="c-field-label">Email</label>
+          <div class="c-input-wrap" style="opacity:.6;">
+            <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" style="opacity:.45;flex-shrink:0"><rect x="1" y="4" width="14" height="9" rx="1"/><path d="M1 4l7 5 7-5"/></svg>
+            <input class="c-input" type="email" id="profileEmail" readonly style="cursor:not-allowed"/>
+          </div>
+        </div>
+        <div class="c-field">
+          <label class="c-field-label">Phone</label>
+          <div class="c-input-wrap" style="opacity:.6;">
+            <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" style="opacity:.45;flex-shrink:0"><path d="M3 2h3l1.5 3.5-2 1.2a9 9 0 0 0 3.8 3.8l1.2-2L14 10v3a1 1 0 0 1-1 1A11 11 0 0 1 2 3a1 1 0 0 1 1-1z"/></svg>
+            <input class="c-input" type="text" id="profilePhone" readonly style="cursor:not-allowed"/>
+          </div>
+        </div>
+        <div class="c-field">
+          <label class="c-field-label">Address</label>
+          <textarea class="c-input" id="profileAddress" rows="3" style="resize:vertical;padding:10px;border:1px solid rgba(167,124,255,.15);border-radius:6px;background:#04040f;font-family:'Syne',sans-serif;font-size:13px;width:100%;outline:none;" placeholder="Your address"></textarea>
+        </div>
+        <div style="display:flex;justify-content:flex-end;margin-top:8px;">
+          <button class="c-btn-primary" id="saveProfileBtn" onclick="updateProfile()">
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 8l4 4 8-8"/></svg>
+            Update Profile
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- KYC TAB -->
+    <div id="panelKyc" style="display:none;">
+      <div class="c-stat-card" style="max-width:680px;">
+        <div style="padding:0 0 20px;">
+          <div style="font-size:16px;font-weight:700;color:#f2f0ff;margin-bottom:4px;">KYC Details</div>
+          <div style="font-size:13px;color:#9d99bb;">Submit your KYC information. Admin will review and approve.</div>
+        </div>
+        <div id="kycStatus" style="display:none;margin-bottom:16px;padding:10px 14px;border-radius:6px;font-size:13px;font-weight:600;"></div>
+        <div class="c-field">
+          <label class="c-field-label">Aadhaar Number</label>
+          <div class="c-input-wrap">
+            <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" style="opacity:.45;flex-shrink:0"><rect x="1" y="3" width="14" height="10" rx="1"/><path d="M1 7h14"/></svg>
+            <input class="c-input" type="text" id="kycAadhar" placeholder="12-digit Aadhaar number" maxlength="12"/>
+          </div>
+        </div>
+        <div class="c-field">
+          <label class="c-field-label">PAN Number</label>
+          <div class="c-input-wrap">
+            <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" style="opacity:.45;flex-shrink:0"><rect x="1" y="3" width="14" height="10" rx="1"/><path d="M5 8h6"/></svg>
+            <input class="c-input" type="text" id="kycPan" placeholder="10-character PAN" maxlength="10" style="text-transform:uppercase"/>
+          </div>
+        </div>
+        <div class="c-field">
+          <label class="c-field-label">GST Number</label>
+          <div class="c-input-wrap">
+            <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" style="opacity:.45;flex-shrink:0"><rect x="1" y="3" width="14" height="10" rx="1"/><path d="M5 6h6M5 8h6M5 10h4"/></svg>
+            <input class="c-input" type="text" id="kycGst" placeholder="15-character GST number" maxlength="15" style="text-transform:uppercase"/>
+          </div>
+        </div>
+        <div class="c-field">
+          <label class="c-field-label">UDYAM Number</label>
+          <div class="c-input-wrap">
+            <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" style="opacity:.45;flex-shrink:0"><rect x="1" y="3" width="14" height="10" rx="1"/><path d="M3 6h10M3 9h10M3 12h7"/></svg>
+            <input class="c-input" type="text" id="kycUdyam" placeholder="UDYAM registration number" maxlength="12"/>
+          </div>
+        </div>
+        <div class="c-field">
+          <label class="c-field-label">Website URL</label>
+          <div class="c-input-wrap">
+            <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" style="opacity:.45;flex-shrink:0"><circle cx="8" cy="8" r="6"/><path d="M2 8h12M8 2a10 10 0 0 1 0 12M8 2a10 10 0 0 0 0 12"/></svg>
+            <input class="c-input" type="url" id="kycWebsite" placeholder="https://yourwebsite.com" required/>
+          </div>
+        </div>
+        <div class="c-field">
+          <label class="c-field-label">Phone Number</label>
+          <div class="c-input-wrap">
+            <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" style="opacity:.45;flex-shrink:0"><path d="M3 2h3l1.5 3.5-2 1.2a9 9 0 0 0 3.8 3.8l1.2-2L14 10v3a1 1 0 0 1-1 1A11 11 0 0 1 2 3a1 1 0 0 1 1-1z"/></svg>
+            <input class="c-input" type="text" id="kycPhone" placeholder="Phone number"/>
+          </div>
+        </div>
+        <div class="c-field">
+          <label class="c-field-label">Email Address</label>
+          <div class="c-input-wrap">
+            <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" style="opacity:.45;flex-shrink:0"><rect x="1" y="4" width="14" height="9" rx="1"/><path d="M1 4l7 5 7-5"/></svg>
+            <input class="c-input" type="email" id="kycEmail" placeholder="Email for KYC"/>
+          </div>
+        </div>
+        <div style="display:flex;justify-content:flex-end;margin-top:8px;">
+          <button class="c-btn-primary" id="saveKycBtn" onclick="submitKyc()">
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 8l4 4 8-8"/></svg>
+            Submit KYC
+          </button>
+        </div>
+      </div>
+    </div>
+    <!-- BANK DETAILS TAB -->
+    <div id="panelBank" style="display:none;">
+      <div class="c-stat-card" style="max-width:680px;">
+        <div style="padding:0 0 20px;">
+          <div style="font-size:16px;font-weight:700;color:#f2f0ff;margin-bottom:4px;">Bank Details</div>
+          <div style="font-size:13px;color:#9d99bb;">Add your bank account for payouts. Details are encrypted and secure.</div>
+        </div>
+        <div id="bankStatus" style="display:none;margin-bottom:16px;padding:10px 14px;border-radius:6px;font-size:13px;font-weight:600;"></div>
+        <div class="c-field">
+          <label class="c-field-label">Bank Name</label>
+          <div class="c-input-wrap">
+            <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" style="opacity:.45;flex-shrink:0"><rect x="1" y="6" width="14" height="8" rx="1"/><path d="M1 6l7-4 7 4"/><path d="M6 10v4M10 10v4"/></svg>
+            <input class="c-input" type="text" id="bankName" placeholder="e.g. State Bank of India"/>
+          </div>
+        </div>
+        <div class="c-field">
+          <label class="c-field-label">Account Holder Name</label>
+          <div class="c-input-wrap">
+            <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" style="opacity:.45;flex-shrink:0"><circle cx="8" cy="5" r="3"/><path d="M2 14c0-3.3 2.7-6 6-6s6 2.7 6 6"/></svg>
+            <input class="c-input" type="text" id="bankHolderName" placeholder="Name as per bank account"/>
+          </div>
+        </div>
+        <div class="c-field">
+          <label class="c-field-label">Account Number</label>
+          <div class="c-input-wrap">
+            <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" style="opacity:.45;flex-shrink:0"><rect x="1" y="4" width="14" height="9" rx="1"/><path d="M1 7h14"/></svg>
+            <input class="c-input" type="text" id="bankAccountNumber" placeholder="Enter account number" maxlength="18"/>
+          </div>
+        </div>
+        <div class="c-field">
+          <label class="c-field-label">IFSC Code</label>
+          <div class="c-input-wrap">
+            <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" style="opacity:.45;flex-shrink:0"><rect x="1" y="3" width="14" height="10" rx="1"/><path d="M5 8h6M8 5v6"/></svg>
+            <input class="c-input" type="text" id="bankIfsc" placeholder="e.g. SBIN0001234" maxlength="11" style="text-transform:uppercase"/>
+          </div>
+        </div>
+        <div style="display:flex;justify-content:flex-end;margin-top:8px;">
+          <button class="c-btn-primary" id="saveBankBtn" onclick="submitBank()">
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 8l4 4 8-8"/></svg>
+            Save Bank Details
+          </button>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script src="creator-api.js"></script>
+<script>
+var API_BASE = (location.hostname==='localhost'||location.hostname==='127.0.0.1')
+  ? 'http://localhost:8000/api' : '/api';
+
+function getToken(){ return localStorage.getItem('trendify_access_token'); }
+
+function initUser(){
+  var u=null; try{u=JSON.parse(localStorage.getItem('trendify_user'));}catch(e){}
+  if(!u) return;
+  var ini=(u.name||'CR').split(' ').map(function(w){return w[0];}).join('').toUpperCase().slice(0,2);
+  document.getElementById('sbAv').textContent=ini;
+  document.getElementById('sbName').textContent=u.name||'Creator';
+  var id=(u.email&&u.email.trim())||(u.username&&u.username.trim())||u.id||u._id||'';
+  document.getElementById('sbEmail').textContent=id;
+  document.getElementById('sbAv2').textContent=ini;
+  document.getElementById('sbName2').textContent=u.name||'Creator';
+  document.getElementById('sbEmail2').textContent=id;
+  if(localStorage.getItem('_from_admin')&&(function(){try{var u=JSON.parse(localStorage.getItem('trendify_user'));return u&&u.role==='admin';}catch(e){return false;}})())document.getElementById('backBtn').style.display='inline-flex';
+}
+
+async function loadProfile(){
+  try{
+    var res=await fetch(API_BASE+'/auth/me',{headers:{'Authorization':'Bearer '+getToken()}});
+    if(!res.ok) throw new Error(res.statusText);
+    var u=await res.json();
+    localStorage.setItem('trendify_user',JSON.stringify(u));
+    document.getElementById('profileName').value=u.name||'';
+    document.getElementById('profileEmail').value=u.email||'';
+    document.getElementById('profilePhone').value=u.phone||'';
+    document.getElementById('profileAddress').value=u.address||'';
+    var ini=(u.name||'CR').split(' ').map(function(w){return w[0];}).join('').toUpperCase().slice(0,2);
+    document.getElementById('sbAv').textContent=ini;
+    document.getElementById('sbAv2').textContent=ini;
+    document.getElementById('sbName').textContent=u.name||'Creator';
+    document.getElementById('sbName2').textContent=u.name||'Creator';
+    var id=(u.email&&u.email.trim())||(u.username&&u.username.trim())||u.id||u._id||'';
+    document.getElementById('sbEmail').textContent=id;
+    document.getElementById('sbEmail2').textContent=id;
+  }catch(e){
+    showMsg('error','Could not load profile from server. Using cached data.');
+    var u=null; try{u=JSON.parse(localStorage.getItem('trendify_user'));}catch(ex){}
+    if(u){
+      document.getElementById('profileName').value=u.name||'';
+      document.getElementById('profileEmail').value=u.email||'';
+      document.getElementById('profilePhone').value=u.phone||'';
+      document.getElementById('profileAddress').value=u.address||'';
+    }
+  }
+}
+
+function showMsg(type,msg){
+  var el=document.getElementById(type==='error'?'profileError':'profileSuccess');
+  var hide=document.getElementById(type==='error'?'profileSuccess':'profileError');
+  hide.style.display='none';
+  el.textContent=msg;
+  el.style.display='block';
+  setTimeout(function(){el.style.display='none';},4000);
+}
+
+async function updateProfile(){
+  var name=document.getElementById('profileName').value.trim();
+  if(!name){showMsg('error','Name is required.');return;}
+  var btn=document.getElementById('saveProfileBtn');
+  btn.textContent='Saving…'; btn.disabled=true;
+  try{
+    var res=await fetch(API_BASE+'/auth/me',{
+      method:'PATCH',
+      headers:{'Authorization':'Bearer '+getToken(),'Content-Type':'application/json'},
+      body:JSON.stringify({name:name,address:document.getElementById('profileAddress').value.trim()})
+    });
+    if(!res.ok) throw new Error(await res.text());
+    var u=await res.json();
+    localStorage.setItem('trendify_user',JSON.stringify(u));
+    if (window.updateCreatorSidebar) {
+      window.updateCreatorSidebar(u);
+    }
+    var ini=name.split(' ').map(function(w){return w[0];}).join('').toUpperCase().slice(0,2);
+    document.getElementById('sbAv').textContent=ini;
+    document.getElementById('sbAv2').textContent=ini;
+    document.getElementById('sbName').textContent=name;
+    document.getElementById('sbName2').textContent=name;
+    showMsg('success','Profile updated successfully.');
+  }catch(e){ showMsg('error','Failed to update profile: '+e.message); }
+  btn.textContent='Update Profile'; btn.disabled=false;
+}
+
+async function updateCreatorSettings(){}
+
+async function loadKyc(){
+  try{
+    var res=await fetch(API_BASE+'/wallets/kyc',{headers:{'Authorization':'Bearer '+getToken()}});
+    if(res.status===404){
+      document.getElementById('kycStatus').style.display='none';
+      document.getElementById('kycAadhar').value='';
+      document.getElementById('kycPan').value='';
+      document.getElementById('kycGst').value='';
+      document.getElementById('kycUdyam').value='';
+      document.getElementById('kycWebsite').value='';
+      document.getElementById('kycPhone').value='';
+      document.getElementById('kycEmail').value='';
+      return;
+    }
+    if(!res.ok) throw new Error(res.statusText);
+    var k=await res.json();
+    document.getElementById('kycAadhar').value=k.aadhar||'';
+    document.getElementById('kycPan').value=k.pan||'';
+    document.getElementById('kycGst').value=k.gst||'';
+    document.getElementById('kycUdyam').value=k.udyam||'';
+    document.getElementById('kycWebsite').value=k.website||'';
+    document.getElementById('kycPhone').value=k.phone||'';
+    document.getElementById('kycEmail').value=k.email||'';
+    var statusEl=document.getElementById('kycStatus');
+    if(k.status){
+      var badgeClass=k.status==='Approved'?'badge-kyc-approved':k.status==='Rejected'?'badge-failed':'badge-pending';
+      statusEl.innerHTML='<span class="'+badgeClass+'">Status: '+k.status+'</span>';
+      statusEl.style.display='block';
+    }else{
+      statusEl.style.display='none';
+    }
+  }catch(e){
+    console.error('Error loading KYC:',e);
+  }
+}
+
+async function submitKyc(){
+  var aadhar=document.getElementById('kycAadhar').value.trim();
+  var pan=document.getElementById('kycPan').value.trim();
+  var gst=document.getElementById('kycGst').value.trim();
+  var udyam=document.getElementById('kycUdyam').value.trim();
+  var website=document.getElementById('kycWebsite').value.trim();
+  var phone=document.getElementById('kycPhone').value.trim();
+  var email=document.getElementById('kycEmail').value.trim();
+  if(!aadhar||!pan||!website||!phone||!email){showMsg('error','Please fill all required fields.');return;}
+  var btn=document.getElementById('saveKycBtn');
+  btn.textContent='Submitting…'; btn.disabled=true;
+  try{
+    var res=await fetch(API_BASE+'/wallets/kyc',{
+      method:'POST',
+      headers:{'Authorization':'Bearer '+getToken(),'Content-Type':'application/json'},
+      body:JSON.stringify({aadhar:aadhar,pan:pan,gst:gst,udyam:udyam,website:website,phone:phone,email:email})
+    });
+    if(!res.ok) throw new Error(await res.text());
+    var k=await res.json();
+    document.getElementById('kycAadhar').value=k.aadhar||'';
+    document.getElementById('kycPan').value=k.pan||'';
+    document.getElementById('kycGst').value=k.gst||'';
+    document.getElementById('kycUdyam').value=k.udyam||'';
+    document.getElementById('kycWebsite').value=k.website||'';
+    document.getElementById('kycPhone').value=k.phone||'';
+    document.getElementById('kycEmail').value=k.email||'';
+    var statusEl=document.getElementById('kycStatus');
+    statusEl.innerHTML='<span class="badge-pending">Status: Pending</span>';
+    statusEl.style.display='block';
+    showMsg('success','KYC submitted successfully. Awaiting admin approval.');
+  }catch(e){ showMsg('error','Failed to submit KYC: '+e.message); }
+  btn.textContent='Submit KYC'; btn.disabled=false;
+}
+
+function switchTab(tab){
+  ['profile','kyc','bank'].forEach(function(t){
+    document.getElementById('tab'+t.charAt(0).toUpperCase()+t.slice(1)).classList.toggle('active',t===tab);
+    document.getElementById('panel'+t.charAt(0).toUpperCase()+t.slice(1)).style.display=t===tab?'':'none';
+  });
+  if(tab==='kyc') loadKyc();
+  if(tab==='bank') loadBank();
+}
+
+function toggleUserMenu(e){e.stopPropagation();e.preventDefault();var p=document.getElementById('userPopup');if(p)p.classList.toggle('open');}
+document.addEventListener('DOMContentLoaded',function(){
+  var btn=document.getElementById('signOutBtn');
+  if(btn) btn.addEventListener('click',function(){
+    localStorage.removeItem('trendify_access_token');
+    localStorage.removeItem('trendify_user');
+    window.location.href='../signin.html';
+  });
+});
+
+function backToAdmin(){
+  var tok=localStorage.getItem('_admin_token_backup');
+  var usr=localStorage.getItem('_admin_user_backup');
+  if(tok){localStorage.setItem('trendify_access_token',tok);localStorage.setItem('trendify_user',usr||'');}
+  localStorage.removeItem('_from_admin');
+  localStorage.removeItem('_admin_token_backup');
+  localStorage.removeItem('_admin_user_backup');
+  window.location.href='../admin/overview.html';
+}
+window.backToAdmin=backToAdmin;
+function toggleSidebar(){ document.getElementById('sidebar').classList.toggle('expanded'); }
+async function loadBank(){
+  try{
+    var res=await fetch(API_BASE+'/wallets/bank',{headers:{'Authorization':'Bearer '+getToken()}});
+    if(res.status===404){return;}
+    if(!res.ok) throw new Error(res.statusText);
+    var b=await res.json();
+    document.getElementById('bankName').value=b.bank_name||'';
+    document.getElementById('bankHolderName').value=b.account_holder_name||'';
+    document.getElementById('bankAccountNumber').value=b.account_number||'';
+    document.getElementById('bankIfsc').value=b.ifsc_code||'';
+    if(b.bank_name){
+      var s=document.getElementById('bankStatus');
+      s.innerHTML='<span class="badge-kyc-approved">Bank details saved</span>';
+      s.style.display='block';
+    }
+  }catch(e){console.error('Error loading bank:',e);}
+}
+
+async function submitBank(){
+  var bankName=document.getElementById('bankName').value.trim();
+  var holderName=document.getElementById('bankHolderName').value.trim();
+  var accountNumber=document.getElementById('bankAccountNumber').value.trim();
+  var ifsc=document.getElementById('bankIfsc').value.trim().toUpperCase();
+  if(!bankName||!holderName||!accountNumber||!ifsc){showMsg('error','Please fill all bank details.');return;}
+  if(!/^[A-Z]{4}0[A-Z0-9]{6}$/.test(ifsc)){showMsg('error','Invalid IFSC code format.');return;}
+  var btn=document.getElementById('saveBankBtn');
+  btn.textContent='Saving…';btn.disabled=true;
+  try{
+    var res=await fetch(API_BASE+'/wallets/bank',{
+      method:'POST',
+      headers:{'Authorization':'Bearer '+getToken(),'Content-Type':'application/json'},
+      body:JSON.stringify({bank_name:bankName,account_holder_name:holderName,account_number:accountNumber,ifsc_code:ifsc})
+    });
+    if(!res.ok) throw new Error(await res.text());
+    var s=document.getElementById('bankStatus');
+    s.innerHTML='<span class="badge-kyc-approved">Bank details saved</span>';
+    s.style.display='block';
+    showMsg('success','Bank details saved successfully.');
+  }catch(e){showMsg('error','Failed to save bank details: '+e.message);}
+  btn.textContent='Save Bank Details';btn.disabled=false;
+}
+
+initUser();
+loadProfile();
+</script>
+
+</body>
+</html>
+
+
