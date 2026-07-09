@@ -83,8 +83,7 @@
 
 
 
-    <button class="c-theme-btn" onclick="toggleTheme()">☾</button><a href="../signin.html" style="background:none;border:1px solid rgba(167,124,255,.2);color:#a67cff;padding:5px 12px;border-radius:6px;cursor:pointer;font-size:12px;font-family:inherit;text-decoration:none;display:inline-flex;align-items:center;margin-right:6px;">Back to Login</a>
-    <div class="c-av c-nav-av" id="navAv" onclick="toggleUserMenu(event)" style="cursor:pointer;">CR</div>
+    <button class="c-theme-btn" onclick="toggleTheme()">☾</button><div class="c-av c-nav-av" id="navAv" onclick="toggleUserMenu(event)" style="cursor:pointer;">CR</div>
 
 
 
@@ -380,7 +379,7 @@ function copy(t,b){navigator.clipboard.writeText(t).then(function(){b.textConten
 
 
 
-function initUser(){var u=null;try{u=JSON.parse(localStorage.getItem('trendify_user'));}catch(e){}if(!u)return;var ini=(u.name||'CR').split(' ').map(function(w){return w[0];}).join('').toUpperCase().slice(0,2);document.getElementById('sbAv').textContent=ini;document.getElementById('sbName').textContent=u.name||'Creator';var idDisplay=(u.email&&u.email.trim())||(u.username&&u.username.trim())||u.id||u._id||'';document.getElementById('sbEmail').textContent=idDisplay;document.getElementById('sbAv2').textContent=ini;document.getElementById('sbName2').textContent=u.name||'Creator';document.getElementById('sbEmail2').textContent=idDisplay;var navAv=document.getElementById('navAv');if(navAv)navAv.textContent=ini; if(localStorage.getItem('_from_admin')&&(function(){try{var u=JSON.parse(localStorage.getItem('trendify_user'));return u&&u.role==='admin';}catch(e){return false;}})())document.getElementById('backBtn').style.display='inline-flex';}
+function initUser(){var u=null;try{u=JSON.parse(localStorage.getItem('trendify_user'));}catch(e){}if(!u)return;var ini=(u.name||'CR').split(' ').map(function(w){return w[0];}).join('').toUpperCase().slice(0,2);document.getElementById('sbAv').textContent=ini;document.getElementById('sbName').textContent=u.name||'Creator';var idDisplay=(u.email&&u.email.trim())||(u.username&&u.username.trim())||u.id||u._id||'';document.getElementById('sbEmail').textContent=idDisplay;document.getElementById('sbAv2').textContent=ini;document.getElementById('sbName2').textContent=u.name||'Creator';document.getElementById('sbEmail2').textContent=idDisplay;var navAv=document.getElementById('navAv');if(navAv)navAv.textContent=ini; if(localStorage.getItem('_from_admin'))document.getElementById('backBtn').style.display='inline-flex';}
 
 
 
