@@ -141,7 +141,14 @@ async def cashfree_webhook(request: Request, db: Session = Depends(get_db)):
             print(f"[email] EXCEPTION in webhook: {e}")
         return {"status": "ok"}
     elif payment_status in ("FAILED", "CANCELLED", "VOID"):
-        txn.status = "Failed"
+        # Never downgrade to Failed if wallet was already credited
+        already_credited = db.query(WalletLog).filter(
+            WalletLog.transaction_id == txn.id,
+            WalletLog.wallet_type == "Main Wallet",
+            WalletLog.type == "Credit",
+        ).first()
+        if not already_credited:
+            txn.status = "Failed"
 
     db.commit()
     return {"status": "ok"}
@@ -153,9 +160,23 @@ def get_my_transactions(
     db: Session = Depends(get_db),
 ):
     import json
+    # Also include transactions credited to this user's wallet (handles creator_id mismatch)
+    wallet_txn_ids = (
+        db.query(WalletLog.transaction_id)
+        .filter(
+            WalletLog.user_id == current_user.id,
+            WalletLog.transaction_id.isnot(None),
+            WalletLog.wallet_type == "Main Wallet",
+            WalletLog.type == "Credit",
+        )
+        .subquery()
+    )
     txns = (
         db.query(Transaction)
-        .filter(Transaction.creator_id == current_user.id)
+        .filter(
+            (Transaction.creator_id == current_user.id) |
+            (Transaction.id.in_(wallet_txn_ids))
+        )
         .order_by(Transaction.created_at.desc())
         .all()
     )
