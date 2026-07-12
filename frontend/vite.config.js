@@ -78,7 +78,9 @@ export default defineConfig(({ mode }) => {
         'terms': './terms.html',
         'refunds': './refunds.html',
         'product': './product.html',
-        'product-preview': './product-preview.html'
+        'product-preview': './product-preview.html',
+        'payment-success': './payment-success.html',
+        'payment-failed': './payment-failed.html'
       }
     }
   },

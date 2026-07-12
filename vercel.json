@@ -27,6 +27,10 @@
     {
       "source": "/api/:path*",
       "destination": "https://trendify-pxkx.onrender.com/api/:path*"
+    },
+    {
+      "source": "/:path*",
+      "destination": "/:path*"
     }
   ]
 }
