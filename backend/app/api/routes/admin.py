@@ -144,7 +144,7 @@ def delete_user(
 
 
 @router.put("/users/{user_id}/wallet", response_model=UserResponse)
-def update_user_wallet(
+async def update_user_wallet(
     user_id: UUID, data: dict,
     db: Session = Depends(get_db), _: User = Depends(require_admin),
 ):
@@ -152,12 +152,33 @@ def update_user_wallet(
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
     amount = Decimal(str(data.get('amount', 0)))
-    if data.get('type') == 'debit':
-        user.wallet_balance = max(Decimal('0'), (user.wallet_balance or Decimal('0')) - amount)
+    old_bal = user.wallet_balance or Decimal('0')
+    is_debit = data.get('type') == 'debit'
+    if is_debit:
+        user.wallet_balance = max(Decimal('0'), old_bal - amount)
     else:
-        user.wallet_balance = (user.wallet_balance or Decimal('0')) + amount
+        user.wallet_balance = old_bal + amount
+    new_bal = user.wallet_balance
+    db.add(WalletLog(
+        user_id=user.id,
+        wallet_type="Main Wallet",
+        type="Debit" if is_debit else "Credit",
+        existing_balance=old_bal,
+        amount=amount,
+        new_balance=new_bal,
+    ))
     db.commit()
     db.refresh(user)
+    # Broadcast so creator wallet page updates in real-time
+    try:
+        from app.api.routes.realtime import manager
+        await manager.broadcast_to_all({
+            "type": "wallet_update",
+            "creator_id": str(user.id),
+            "amount": float(new_bal),
+        })
+    except Exception:
+        pass
     return user
 
 
