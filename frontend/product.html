@@ -195,6 +195,12 @@ body{background:#04040f;color:#f2f0ff;font-family:'DM Sans',sans-serif;min-heigh
 
 <script src="https://sdk.cashfree.com/js/v3/cashfree.js"></script>
 <script>
+function ensureAbsoluteUrl(url){
+  if(!url)return url;
+  url=url.trim();
+  if(/^https?:\/\//i.test(url))return url;
+  return 'https://'+url;
+}
 function goBack(){
   if(productId)window.location.href=location.origin+'/product-preview.html?id='+encodeURIComponent(productId);
   else history.back();
@@ -220,12 +226,12 @@ if(returnStatus&&productId){
         var verifyPromise = returnOrderId
           ? fetch('https://trendify-pxkx.onrender.com/api/payments/transactions/'+encodeURIComponent(returnOrderId)+'/verify',{method:'POST'}).catch(function(){})
           : Promise.resolve();
-        var dest=p&&p.success_redirect?p.success_redirect
+        var dest=p&&p.success_redirect?ensureAbsoluteUrl(p.success_redirect)
           :(location.origin+'/payment-success.html?product_id='+encodeURIComponent(productId)+'&product_name='+name+(returnOrderId?'&order_id='+returnOrderId:'')+(amt?'&amount='+amt:''));
         verifyPromise.finally(function(){ window.location.replace(dest); });
       }else{
         var reason=params.get('reason')||'';
-        var dest=p&&p.failed_redirect?p.failed_redirect
+        var dest=p&&p.failed_redirect?ensureAbsoluteUrl(p.failed_redirect)
           :(location.origin+'/payment-failed.html?product_id='+encodeURIComponent(productId)+(reason?'&reason='+encodeURIComponent(reason):''));
         window.location.replace(dest);
       }
