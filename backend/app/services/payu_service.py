@@ -1,6 +1,4 @@
 import hashlib
-import hmac
-import json
 from app.core.config import settings
 
 
@@ -14,32 +12,34 @@ class PayUService:
         return PayUService.PROD_URL if env == "PROD" else PayUService.TEST_URL
 
     @staticmethod
-    def _build_hash(hash_seq: str) -> str:
-        """Salt V2: returns JSON {"v1": sha512, "v2": hmac-sha256}"""
-        v1 = hashlib.sha512(hash_seq.encode()).hexdigest()
-        v2 = hmac.new(settings.PAYU_SALT.encode(), hash_seq.encode(), hashlib.sha256).hexdigest()
-        return json.dumps({"v1": v1, "v2": v2})
-
-    @staticmethod
     def generate_hash(params: dict) -> str:
+        """sha512(key|txnid|amount|productinfo|firstname|email|udf1|udf2|udf3|udf4|udf5||||||SALT)"""
         hash_seq = (
             f"{params['key']}|{params['txnid']}|{params['amount']}|"
             f"{params['productinfo']}|{params['firstname']}|{params['email']}|"
             f"||||||||||{settings.PAYU_SALT}"
         )
-        return PayUService._build_hash(hash_seq)
+        return hashlib.sha512(hash_seq.encode("utf-8")).hexdigest()
 
     @staticmethod
     def verify_webhook_hash(payload: dict) -> bool:
-        status = payload.get("status", "")
+        """Reverse: sha512(SALT|status|||||||||||email|firstname|productinfo|amount|txnid|key)"""
         hash_seq = (
-            f"{settings.PAYU_SALT}|{status}|||||||||||"
+            f"{settings.PAYU_SALT}|{payload.get('status','')}|||||||||||"
             f"{payload.get('email','')}|{payload.get('firstname','')}|"
             f"{payload.get('productinfo','')}|{payload.get('amount','')}|"
             f"{payload.get('txnid','')}|{settings.PAYU_KEY}"
         )
-        expected = PayUService._build_hash(hash_seq)
-        return expected == payload.get("hash", "")
+        expected = hashlib.sha512(hash_seq.encode("utf-8")).hexdigest()
+        received = payload.get("hash", "")
+        # Accept both plain hash and v1 inside JSON
+        if isinstance(received, str) and received.startswith("{"):
+            import json
+            try:
+                received = json.loads(received).get("v1", "")
+            except Exception:
+                pass
+        return expected == received
 
     @staticmethod
     def create_payment_params(
