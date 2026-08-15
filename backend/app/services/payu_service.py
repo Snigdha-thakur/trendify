@@ -1,5 +1,6 @@
 import hashlib
-import httpx
+import hmac
+import json
 from app.core.config import settings
 
 
@@ -13,26 +14,31 @@ class PayUService:
         return PayUService.PROD_URL if env == "PROD" else PayUService.TEST_URL
 
     @staticmethod
+    def _build_hash(hash_seq: str) -> str:
+        """Salt V2: returns JSON {"v1": sha512, "v2": hmac-sha256}"""
+        v1 = hashlib.sha512(hash_seq.encode()).hexdigest()
+        v2 = hmac.new(settings.PAYU_SALT.encode(), hash_seq.encode(), hashlib.sha256).hexdigest()
+        return json.dumps({"v1": v1, "v2": v2})
+
+    @staticmethod
     def generate_hash(params: dict) -> str:
-        """Hash: key|txnid|amount|productinfo|firstname|email|||||||||||salt"""
-        hash_str = (
+        hash_seq = (
             f"{params['key']}|{params['txnid']}|{params['amount']}|"
             f"{params['productinfo']}|{params['firstname']}|{params['email']}|"
             f"||||||||||{settings.PAYU_SALT}"
         )
-        return hashlib.sha512(hash_str.encode()).hexdigest()
+        return PayUService._build_hash(hash_seq)
 
     @staticmethod
     def verify_webhook_hash(payload: dict) -> bool:
-        """Reverse hash: salt|status|||||||||||email|firstname|productinfo|amount|txnid|key"""
         status = payload.get("status", "")
-        hash_str = (
+        hash_seq = (
             f"{settings.PAYU_SALT}|{status}|||||||||||"
             f"{payload.get('email','')}|{payload.get('firstname','')}|"
             f"{payload.get('productinfo','')}|{payload.get('amount','')}|"
             f"{payload.get('txnid','')}|{settings.PAYU_KEY}"
         )
-        expected = hashlib.sha512(hash_str.encode()).hexdigest()
+        expected = PayUService._build_hash(hash_seq)
         return expected == payload.get("hash", "")
 
     @staticmethod
