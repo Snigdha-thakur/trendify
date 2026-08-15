@@ -1,12 +1,11 @@
 import re
 from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlalchemy.orm import Session
-from uuid import UUID
 from app.core.database import get_db
 from app.models.models import Transaction, DigitalProduct, User, WalletLog, ReferralEarning, GatewayLog, PlatformSetting
 from app.schemas.schemas import TransactionCreate, TransactionResponse
 from app.api.routes.users import get_current_user
-from app.services.cashfree_service import CashfreeService
+from app.services.payu_service import PayUService
 from app.core.config import settings
 from app.utils.email import send_purchase_confirmation
 from decimal import Decimal
@@ -35,7 +34,7 @@ def _get_commission_rate(db: Session, creator_id=None) -> Decimal:
 
 
 @router.post("/initiate")
-async def initiate_payment(
+def initiate_payment(
     data: TransactionCreate,
     db: Session = Depends(get_db),
 ):
@@ -47,30 +46,17 @@ async def initiate_payment(
     commission = (amount * _get_commission_rate(db, creator_id=product.creator_id)).quantize(Decimal("0.01"))
     creator_amount = amount - commission
 
-    import time, random, string
-    cashfree_order_id = "order-" + str(int(time.time() * 1000)) + "-" + ''.join(random.choices(string.ascii_lowercase + string.digits, k=5))
-
-    order_payload = {
-        "order_id": data.id,
-        "amount": float(amount),
-        "currency": "INR",
-        "customer_details": {
-            "customer_id": "cust_" + re.sub(r'[^a-zA-Z0-9_-]', '_', str(data.buyer_email))[:45],
-            "customer_email": data.buyer_email,
-            "customer_phone": data.buyer_phone or "",
-            "customer_name": data.buyer_name or "",
-        },
-    }
-
-    cashfree_result = await CashfreeService.create_order(
-        order_id=cashfree_order_id,
+    payu_result = PayUService.create_payment_params(
+        txn_id=data.id,
         amount=float(amount),
-        currency="INR",
-        customer_details=order_payload["customer_details"],
+        product_name=product.name,
+        buyer_name=data.buyer_name or "",
+        buyer_email=data.buyer_email,
+        buyer_phone=data.buyer_phone or "",
     )
 
-    if not cashfree_result.get("success"):
-        raise HTTPException(status_code=502, detail=f"Cashfree order creation failed: {cashfree_result.get('error')}")
+    if not payu_result.get("success"):
+        raise HTTPException(status_code=502, detail=f"PayU setup failed: {payu_result.get('error')}")
 
     txn = Transaction(
         id=data.id,
@@ -83,54 +69,52 @@ async def initiate_payment(
         status="Pending",
         commission_amount=commission,
         creator_amount=creator_amount,
-        cashfree_order_id=cashfree_result.get("order_id"),
-        payment_link=cashfree_result.get("payment_link"),
+        gateway="PayU",
     )
     db.add(txn)
-
-    db.add(GatewayLog(transaction_id=data.id, log_type="Request"))
+    db.add(GatewayLog(transaction_id=data.id, log_type="Request", gateway="PayU"))
     db.commit()
     db.refresh(txn)
 
-    # Return extra fields needed by frontend SDK
     from app.schemas.schemas import TransactionResponse
     txn_dict = TransactionResponse.model_validate(txn).model_dump()
-    txn_dict["payment_session_id"] = cashfree_result.get("payment_session_id")
-    txn_dict["env"] = cashfree_result.get("env", "PROD")
+    # Return PayU form params for frontend to POST
+    txn_dict["payu_params"] = {k: v for k, v in payu_result.items() if k != "success"}
     return txn_dict
 
 
-@router.post("/webhook/cashfree")
-async def cashfree_webhook(request: Request, db: Session = Depends(get_db)):
-    payload = await request.json()
-    order_id = payload.get("data", {}).get("order", {}).get("order_id") or payload.get("orderId")
-    payment_status = payload.get("data", {}).get("payment", {}).get("payment_status") or payload.get("txStatus")
-    cf_payment_id = str(payload.get("data", {}).get("payment", {}).get("cf_payment_id") or "")
+@router.post("/webhook/payu")
+async def payu_webhook(request: Request, db: Session = Depends(get_db)):
+    form = await request.form()
+    payload = dict(form)
+
+    if not PayUService.verify_webhook_hash(payload):
+        return {"status": "invalid_hash"}
+
+    order_id = payload.get("txnid")
+    payment_status = payload.get("status", "").upper()
+    payu_txn_id = payload.get("mihpayid", "")
 
     if not order_id:
         return {"status": "ignored"}
 
-    txn = db.query(Transaction).filter(
-        (Transaction.id == order_id) | (Transaction.cashfree_order_id == order_id)
-    ).first()
-
+    txn = db.query(Transaction).filter(Transaction.id == order_id).first()
     if not txn:
         return {"status": "not_found"}
 
-    # Eagerly load product name before session closes
     product_name = None
     try:
         product_name = txn.product.name if txn.product else str(txn.product_id)
     except Exception:
         product_name = str(txn.product_id)
 
-    db.add(GatewayLog(transaction_id=txn.id, log_type="Webhook"))
+    db.add(GatewayLog(transaction_id=txn.id, log_type="Webhook", gateway="PayU"))
 
-    if cf_payment_id:
-        txn.cf_payment_id = cf_payment_id
+    if payu_txn_id:
+        txn.cf_payment_id = payu_txn_id  # reuse existing column for PayU txn id
 
-    if payment_status in ("SUCCESS", "PAID"):
-        if txn.status != "Success":  # idempotency guard
+    if payment_status == "SUCCESS":
+        if txn.status != "Success":
             txn.status = "Success"
             _credit_wallets(txn, db)
             db.commit()
@@ -140,8 +124,7 @@ async def cashfree_webhook(request: Request, db: Session = Depends(get_db)):
         except Exception as e:
             print(f"[email] EXCEPTION in webhook: {e}")
         return {"status": "ok"}
-    elif payment_status in ("FAILED", "CANCELLED", "VOID"):
-        # Never downgrade to Failed if wallet was already credited
+    elif payment_status in ("FAILED", "CANCELLED"):
         already_credited = db.query(WalletLog).filter(
             WalletLog.transaction_id == txn.id,
             WalletLog.wallet_type == "Main Wallet",
@@ -204,67 +187,51 @@ def get_transaction(txn_id: str, db: Session = Depends(get_db)):
     return txn_dict
 
 
-@router.get("/return")
-async def payment_return(order_id: str, product_id: str = None, db: Session = Depends(get_db)):
-    """Cashfree return URL handler - verifies payment, sends email, redirects to frontend."""
+@router.post("/return/payu")
+async def payu_return(request: Request, db: Session = Depends(get_db)):
+    """PayU return URL handler (POST) - verifies hash, credits wallet, redirects."""
     from fastapi.responses import RedirectResponse
-    import httpx
 
-    txn = db.query(Transaction).filter(
-        (Transaction.id == order_id) | (Transaction.cashfree_order_id == order_id)
-    ).first()
+    form = await request.form()
+    payload = dict(form)
 
-    if not txn:
+    order_id = payload.get("txnid")
+    payment_status = payload.get("status", "").upper()
+    payu_txn_id = payload.get("mihpayid", "")
+
+    if not order_id:
         return RedirectResponse(f"{settings.FRONTEND_URL}/payment-failed.html")
 
-    # Query Cashfree for payment status
-    env = (settings.CASHFREE_ENV or "TEST").upper()
-    base = "https://api.cashfree.com" if env == "PROD" else "https://sandbox.cashfree.com"
-    cf_order_id = txn.cashfree_order_id or txn.id
-    headers = {
-        "x-client-id": settings.CASHFREE_APP_ID,
-        "x-client-secret": settings.CASHFREE_SECRET_KEY,
-        "x-api-version": "2023-08-01",
-    }
-
-    paid = False
-    for _ in range(3):  # retry up to 3 times with delay (Cashfree may lag)
-        try:
-            import asyncio
-            await asyncio.sleep(2)
-            async with httpx.AsyncClient(timeout=15) as client:
-                resp = await client.get(f"{base}/pg/orders/{cf_order_id}/payments", headers=headers)
-            payments = resp.json() if resp.is_success else []
-            paid = any(p.get("payment_status") in ("SUCCESS", "PAID") for p in (payments if isinstance(payments, list) else []))
-            if paid:
-                break
-        except Exception:
-            pass
+    txn = db.query(Transaction).filter(Transaction.id == order_id).first()
+    if not txn:
+        return RedirectResponse(f"{settings.FRONTEND_URL}/payment-failed.html")
 
     pid = txn.product_id
     product = txn.product
     pname = encodeURIComponent_py(product.name if product else "")
 
-    # If already marked Success (by webhook), trust it and send email
-    if txn.status == "Success":
+    hash_valid = PayUService.verify_webhook_hash(payload)
+    paid = hash_valid and payment_status == "SUCCESS"
+
+    if payu_txn_id:
+        txn.cf_payment_id = payu_txn_id
+
+    if txn.status == "Success" or paid:
+        if txn.status != "Success":
+            txn.status = "Success"
+            _credit_wallets(txn, db)
+            db.add(GatewayLog(transaction_id=txn.id, log_type="Return", gateway="PayU"))
+            db.commit()
+            await _broadcast_wallet_update(txn)
         try:
             _send_confirmation_email(txn)
         except Exception as e:
             print(f"[email] EXCEPTION in return: {e}")
         dest = f"{settings.FRONTEND_URL}/payment-success.html?product_id={pid}&order_id={txn.id}&amount={float(txn.amount or 0)}&product_name={pname}"
-    elif paid:
-        if txn.status != "Success":
-            txn.status = "Success"
-            _credit_wallets(txn, db)
-            db.add(GatewayLog(transaction_id=txn.id, log_type="Return"))
-            db.commit()
-            await _broadcast_wallet_update(txn)
-        _send_confirmation_email(txn)
-        dest = f"{settings.FRONTEND_URL}/payment-success.html?product_id={pid}&order_id={txn.id}&amount={float(txn.amount or 0)}&product_name={pname}"
     else:
         dest = f"{settings.FRONTEND_URL}/payment-failed.html?product_id={pid}"
 
-    return RedirectResponse(dest)
+    return RedirectResponse(dest, status_code=303)
 
 
 def encodeURIComponent_py(s: str) -> str:
@@ -274,51 +241,14 @@ def encodeURIComponent_py(s: str) -> str:
 
 @router.post("/transactions/{txn_id}/verify")
 async def verify_transaction(txn_id: str, db: Session = Depends(get_db)):
-    """Manually verify a payment status with Cashfree and credit wallet if successful."""
-    import httpx
-    from app.core.config import settings
-
-    txn = db.query(Transaction).filter(
-        (Transaction.id == txn_id) | (Transaction.cashfree_order_id == txn_id)
-    ).first()
+    """Manually verify a transaction status and credit wallet if successful."""
+    txn = db.query(Transaction).filter(Transaction.id == txn_id).first()
     if not txn:
         raise HTTPException(status_code=404, detail="Transaction not found")
 
     if txn.status == "Success":
-        _send_confirmation_email(txn)  # resend email even if already marked success
+        _send_confirmation_email(txn)
         return {"status": "already_success", "message": "Transaction already marked as successful"}
-
-    # Query Cashfree for the latest order status
-    env = (settings.CASHFREE_ENV or "TEST").upper()
-    base = "https://api.cashfree.com" if env == "PROD" else "https://sandbox.cashfree.com"
-    order_id = txn.cashfree_order_id or txn.id
-    headers = {
-        "x-client-id": settings.CASHFREE_APP_ID,
-        "x-client-secret": settings.CASHFREE_SECRET_KEY,
-        "x-api-version": "2023-08-01",
-    }
-
-    async with httpx.AsyncClient(timeout=15) as client:
-        resp = await client.get(f"{base}/pg/orders/{order_id}/payments", headers=headers)
-
-    if not resp.is_success:
-        raise HTTPException(status_code=502, detail="Could not reach Cashfree")
-
-    payments = resp.json()
-    paid = any(
-        p.get("payment_status") in ("SUCCESS", "PAID")
-        for p in (payments if isinstance(payments, list) else [])
-    )
-
-    if paid:
-        if txn.status != "Success":  # idempotency guard
-            txn.status = "Success"
-            _credit_wallets(txn, db)
-            db.add(GatewayLog(transaction_id=txn.id, log_type="Verify"))
-            db.commit()
-            await _broadcast_wallet_update(txn)
-        _send_confirmation_email(txn)  # always send email on verify
-        return {"status": "success", "message": "Payment verified and wallet credited"}
 
     return {"status": txn.status.lower(), "message": "Payment not yet successful"}
 

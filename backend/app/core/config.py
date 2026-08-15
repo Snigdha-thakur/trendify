@@ -17,9 +17,9 @@ class Settings(BaseSettings):
     ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 7  # 7 days
 
-    CASHFREE_APP_ID: Optional[str] = None
-    CASHFREE_SECRET_KEY: Optional[str] = None
-    CASHFREE_ENV: str = "TEST"
+    PAYU_KEY: Optional[str] = None
+    PAYU_SALT: Optional[str] = None
+    PAYU_ENV: str = "TEST"
 
     REFRESH_TOKEN_EXPIRE_DAYS: int = 30
 
