@@ -66,4 +66,12 @@ class PayUService:
         }
         params["hash"] = PayUService.generate_hash(params)
         params["payment_url"] = PayUService.get_payment_url()
+        hash_seq = (
+            f"{params['key']}|{params['txnid']}|{params['amount']}|"
+            f"{params['productinfo']}|{params['firstname']}|{params['email']}|"
+            f"||||||||||{settings.PAYU_SALT}"
+        )
+        print(f"[payu] key={settings.PAYU_KEY!r} salt={settings.PAYU_SALT!r}")
+        print(f"[payu] hash_seq={hash_seq!r}")
+        print(f"[payu] hash={params['hash']}")
         return {"success": True, **params}
