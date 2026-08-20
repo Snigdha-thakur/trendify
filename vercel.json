@@ -18,6 +18,26 @@
     {
       "source": "/api/:path*",
       "destination": "https://trendify-pxkx.onrender.com/api/:path*"
+    },
+    {
+      "source": "/user/dashboard",
+      "destination": "/user-dashboard.html"
+    },
+    {
+      "source": "/user/dashboard.html",
+      "destination": "/user-dashboard.html"
+    },
+    {
+      "source": "/admin/:path*",
+      "destination": "/admin-:path*.html"
+    },
+    {
+      "source": "/creator/:path*",
+      "destination": "/creator-:path*.html"
+    },
+    {
+      "source": "/user/:path*",
+      "destination": "/user-:path*.html"
     }
   ]
 }
