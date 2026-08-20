@@ -1,93 +1,121 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"/><link rel="icon" href="/favicon.svg" type="image/svg+xml"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<script>(function(){var t=localStorage.getItem('trendify_access_token');if(!t){location.replace('../signin.html');return;}try{var u=JSON.parse(localStorage.getItem('trendify_user'));if(!u||u.role!=='user')location.replace('../signin.html');}catch(e){location.replace('../signin.html');}})();</script>
-<title>User Dashboard</title>
+<meta charset="UTF-8"/><link rel="icon" href="/favicon.svg" type="image/svg+xml"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Dashboard — Trendify</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,600;1,300;1,600&family=Syne:wght@400;700;800&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet"/>
-<link rel="stylesheet" href="../creator/creator.css"/>
-<script src="/js/theme.js"></script>
+<link rel="stylesheet" href="../css/styles.css"/>
+<link rel="stylesheet" href="user.css"/>
 </head>
 <body>
 <link rel="stylesheet" href="../css/loader.css"/>
 <div id="tfy-loader"><div class="tfy-ring"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div><span class="tfy-label">Please wait...</span></div>
 <script>(function(){var _p=0,_h=null,_f=window.fetch;function _show(){clearTimeout(_h);var l=document.getElementById('tfy-loader');if(l){l.classList.remove('tfy-done');}}function _hide(){_h=setTimeout(function(){if(_p<=0){var l=document.getElementById('tfy-loader');if(l){var lb=l.querySelector('.tfy-label');if(lb)lb.textContent='Please wait...';l.classList.add('tfy-done');}setTimeout(function(){var l2=document.getElementById('tfy-loader');if(l2&&l2.parentNode)l2.parentNode.removeChild(l2);},450);}},120);}window.fetch=function(){_p++;_show();return _f.apply(this,arguments).finally(function(){_p=Math.max(0,_p-1);if(_p===0)_hide();});};window.addEventListener('load',function(){if(_p===0)_hide();});})();</script>
 
-<!-- NAV -->
-<nav class="c-nav">
-  <div class="c-nav-left">
-    <button class="c-sidebar-toggle" onclick="toggleSidebar()"><svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="3" width="14" height="1.5" rx=".75"/><rect x="1" y="7.25" width="14" height="1.5" rx=".75"/><rect x="1" y="11.5" width="14" height="1.5" rx=".75"/></svg></button>
-    <span class="c-nav-title">User Dashboard</span>
-  </div>
-  <div class="c-nav-right">
-    <button class="c-theme-btn" onclick="toggleTheme()">☾</button>
-    <div class="c-av c-nav-av" id="navAv" onclick="toggleUserMenu(event)" style="cursor:pointer;">US</div>
+<div id="c"></div>
+<div class="cr" id="cr"></div>
+
+<nav id="nav" class="s user-nav">
+  <a href="../index.html" class="logo">Trendify</a>
+  <div class="na"><button class="theme-toggle-btn">&#9790;</button>
+    <a href="../signin.html" class="btn-nav-ghost">Sign out</a>
   </div>
 </nav>
 
-<div class="c-shell">
-  <!-- SIDEBAR -->
-  <aside class="c-sidebar" id="sidebar">
-    <a class="c-sidebar-link active" href="dashboard.html" title="Dashboard"><svg viewBox="0 0 16 16" fill="currentColor"><rect x="1" y="1" width="6" height="6" rx="1"/><rect x="9" y="1" width="6" height="6" rx="1"/><rect x="1" y="9" width="6" height="6" rx="1"/><rect x="9" y="9" width="6" height="6" rx="1"/></svg><span class="c-sidebar-label">Dashboard</span></a>
-    <a class="c-sidebar-link" href="my-orders.html" title="My Orders"><svg viewBox="0 0 16 16" fill="currentColor"><rect x="2" y="2" width="12" height="12" rx="1" fill="none" stroke="currentColor" stroke-width="1.3"/><path d="M5 8h6M8 5v6" stroke="currentColor" stroke-width="1.3"/></svg><span class="c-sidebar-label">My Orders</span></a>
-    <a class="c-sidebar-link" href="digital-training.html" title="Training"><svg viewBox="0 0 16 16" fill="currentColor"><rect x="1" y="2" width="14" height="10" rx="1" fill="none" stroke="currentColor" stroke-width="1.3"/><path d="M6 6l4 2-4 2z" stroke="currentColor" stroke-width="1.3"/></svg><span class="c-sidebar-label">Training</span></a>
-    <a class="c-sidebar-link" href="digital-tools.html" title="Tools"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M2 6l6-4 6 4v6a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V6z" fill="none" stroke="currentColor" stroke-width="1.2"/><path d="M6 12V8h4v4"/></svg><span class="c-sidebar-label">Tools</span></a>
-    <a class="c-sidebar-link" href="hosting-services.html" title="Hosting"><svg viewBox="0 0 16 16" fill="currentColor"><rect x="2" y="3" width="12" height="3" rx="1" fill="none" stroke="currentColor" stroke-width="1.2"/><rect x="2" y="7" width="12" height="3" rx="1" fill="none" stroke="currentColor" stroke-width="1.2"/><rect x="2" y="11" width="12" height="3" rx="1" fill="none" stroke="currentColor" stroke-width="1.2"/></svg><span class="c-sidebar-label">Hosting</span></a>
-    <a class="c-sidebar-link" href="website-design.html" title="Design"><svg viewBox="0 0 16 16" fill="currentColor"><rect x="1" y="2" width="14" height="11" rx="1" fill="none" stroke="currentColor" stroke-width="1.2"/><path d="M1 5h14"/><circle cx="3.5" cy="3.5" r=".8"/><circle cx="5.5" cy="3.5" r=".8"/></svg><span class="c-sidebar-label">Design</span></a>
-    <div class="c-sidebar-divider"></div>
-    <div class="c-sidebar-bottom">
-      <div class="c-sb-user" id="sbUser" onclick="toggleUserMenu(event)">
-        <div class="c-av" id="sbAv">US</div>
-        <div style="display:flex;flex-direction:column;">
-          <span class="c-sidebar-label" id="sbName" style="font-size:12px;font-weight:600;"></span>
-        </div>
+<div class="admin-shell">
+  <aside class="admin-sidebar" id="adminSidebar">
+    <div class="sb-section">
+      <span class="sb-label">Platform</span>
+      <a class="sb-link active" href="dashboard.html"><svg class="sb-icon" viewBox="0 0 16 16" fill="currentColor"><rect x="1" y="1" width="6" height="6" rx="1"/><rect x="9" y="1" width="6" height="6" rx="1"/><rect x="1" y="9" width="6" height="6" rx="1"/><rect x="9" y="9" width="6" height="6" rx="1"/></svg>Dashboard</a>
+      <a class="sb-link" href="my-orders.html"><svg class="sb-icon" viewBox="0 0 16 16" fill="currentColor"><rect x="2" y="3" width="12" height="10" rx="1" fill="none" stroke="currentColor" stroke-width="1.2"/><path d="M5 7h6M5 10h4"/></svg>My Orders</a>
+      <a class="sb-link" href="digital-training.html"><svg class="sb-icon" viewBox="0 0 16 16" fill="currentColor"><rect x="1" y="2" width="14" height="10" rx="1" fill="none" stroke="currentColor" stroke-width="1.2"/><path d="M6 6l4 2-4 2z"/></svg>Digital Training Services</a>
+      <a class="sb-link" href="digital-tools.html"><svg class="sb-icon" viewBox="0 0 16 16" fill="currentColor"><path d="M2 6l6-4 6 4v6a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V6z" fill="none" stroke="currentColor" stroke-width="1.2"/><path d="M6 12V8h4v4"/></svg>Digital Tools</a>
+      <a class="sb-link" href="hosting-services.html"><svg class="sb-icon" viewBox="0 0 16 16" fill="currentColor"><rect x="2" y="3" width="12" height="3" rx="1" fill="none" stroke="currentColor" stroke-width="1.2"/><rect x="2" y="7" width="12" height="3" rx="1" fill="none" stroke="currentColor" stroke-width="1.2"/><rect x="2" y="11" width="12" height="3" rx="1" fill="none" stroke="currentColor" stroke-width="1.2"/></svg>Hosting Services</a>
+      <a class="sb-link" href="website-design.html"><svg class="sb-icon" viewBox="0 0 16 16" fill="currentColor"><rect x="1" y="2" width="14" height="11" rx="1" fill="none" stroke="currentColor" stroke-width="1.2"/><path d="M1 5h14"/><circle cx="3.5" cy="3.5" r=".8"/><circle cx="5.5" cy="3.5" r=".8"/></svg>Website Design Services</a>
+      <a class="sb-link" href="landing-page.html"><svg class="sb-icon" viewBox="0 0 16 16" fill="currentColor"><rect x="2" y="2" width="12" height="12" rx="1" fill="none" stroke="currentColor" stroke-width="1.2"/><path d="M5 6h6M5 9h4"/></svg>Landing Page Services</a>
+    </div>
+
+    <div class="sb-bottom">
+      <div class="sb-user" id="sbUser" onclick="toggleUserMenu()">
+        <div class="sb-av">US</div>
+        <div><div class="sb-name">User</div><div class="sb-plan">user@example.com</div></div>
         <svg style="margin-left:auto;opacity:.5;flex-shrink:0" width="12" height="12" viewBox="0 0 16 16" fill="currentColor"><path d="M4 6l4 4 4-4"/></svg>
       </div>
-      <div class="c-user-popup" id="userPopup">
-        <div class="c-user-popup-head"><div class="c-av" id="sbAv2">US</div><div><div class="c-user-popup-name" id="sbName2"></div><div class="c-user-popup-email" id="sbEmail2"></div></div></div>
-        <div class="c-user-popup-divider"></div>
-        <button class="c-user-popup-item" id="signOutBtn">
-          <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M6 2H3a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3M10 11l3-3-3-3M13 8H6"/></svg>
-          Sign Out
-        </button>
+      <div class="user-popup" id="userPopup">
+        <div class="user-popup-head"><div class="sb-av">US</div><div><div class="sb-name">User</div><div class="sb-plan">user@example.com</div></div></div>
+        <div class="user-popup-divider"></div>
+        <a class="user-popup-item" href="../signin.html"><svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M6 2H3a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3M10 11l3-3-3-3M13 8H6"/></svg>Sign out</a>
       </div>
     </div>
   </aside>
 
-  <!-- MAIN -->
-  <main class="c-main">
-    <div class="c-page-header">
-      <h1 class="c-page-title">Available Products</h1>
+  <main class="admin-main">
+    <div class="admin-breadcrumb">
+      <button class="sb-toggle-btn" onclick="toggleSidebar()"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><rect x="1" y="2" width="14" height="2" rx="1"/><rect x="1" y="7" width="14" height="2" rx="1"/><rect x="1" y="12" width="14" height="2" rx="1"/></svg></button>
+      <span class="bc-parent">Dashboard</span>
     </div>
 
-    <!-- Products Grid -->
-    <div id="productsContainer" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;"></div>
+    <div class="admin-page-body">
+      <div class="order-table-wrap">
+        <div class="order-search">
+          <input type="text" placeholder="Search by product name, category, or price..."/>
+        </div>
+        <table class="order-table">
+          <thead>
+            <tr>
+              <th>Product</th>
+              <th>Category</th>
+              <th>Price</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="productsTableBody">
+            <tr>
+              <td colspan="4" style="text-align:center;padding:40px;color:var(--smoke);">Loading products...</td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="pagination" id="paginationInfo">
+          <span>No products available</span>
+        </div>
+      </div>
+    </div>
   </main>
 </div>
 
+<script type="module" src="../js/auth-api.js"></script>
+<script type="module" src="../js/cursor.js"></script>
 <script>
-function initUser(){
-  var u=null;try{u=JSON.parse(localStorage.getItem('trendify_user'));}catch(e){}
-  if(!u) return;
-  var ini=(u.name||'US').split(' ').map(function(w){return w[0];}).join('').toUpperCase().slice(0,2);
-  document.getElementById('sbAv').textContent=ini;
-  document.getElementById('sbName').textContent=u.name||'User';
-  document.getElementById('sbAv2').textContent=ini;
-  document.getElementById('sbName2').textContent=u.name||'User';
-  document.getElementById('sbEmail2').textContent=(u.email&&u.email.trim())||(u.username&&u.username.trim())||u.id||u._id||'';
-  var navAv=document.getElementById('navAv');if(navAv)navAv.textContent=ini;
-}
+(function() {
+  var user = TrendifyAuth.requireAuth('../signin.html');
+  if (!user) return;
+  if (user.role !== 'user') {
+    alert('Access denied. User account required.');
+    window.location.href = '../signin.html';
+    return;
+  }
+  var ini = (user.name || 'U').split(' ').map(function(w) { return w[0]; }).join('').toUpperCase().slice(0, 2);
+  document.querySelectorAll('.sb-av').forEach(function(el) { el.textContent = ini; });
+  document.querySelectorAll('.sb-name').forEach(function(el) { el.textContent = user.name || 'User'; });
+  document.querySelectorAll('.sb-plan').forEach(function(el) { el.textContent = (user.email&&user.email.trim())||(user.username&&user.username.trim())||user.id||user._id||''; });
+})();
 
-function toggleUserMenu(e){e.stopPropagation();e.preventDefault();var p=document.getElementById('userPopup');if(p)p.classList.toggle('open');}
+document.querySelectorAll('a[href="../signin.html"]').forEach(function(el) {
+  el.addEventListener('click', async function(e) { e.preventDefault(); await TrendifyAuth.logout(); window.location.href = '../signin.html'; });
+});
 
-document.addEventListener('DOMContentLoaded',function(){var btn=document.getElementById('signOutBtn');if(btn)btn.addEventListener('click',function(){localStorage.removeItem('trendify_access_token');localStorage.removeItem('trendify_user');window.location.href='../signin.html';});});
+function toggleSidebar() { document.getElementById('adminSidebar').classList.toggle('collapsed'); }
+function toggleUserMenu() { event.stopPropagation(); document.getElementById('userPopup').classList.toggle('open'); }
 
-function toggleSidebar(){document.getElementById('sidebar').classList.toggle('expanded');}
-
-initUser();
+document.addEventListener('click', function(e) {
+  var popup = document.getElementById('userPopup'), user = document.getElementById('sbUser');
+  if (popup && !popup.contains(e.target) && !user.contains(e.target)) popup.classList.remove('open');
+});
 </script>
 
 <script src="user-dashboard.js"></script>
+<script src="/js/theme.js"></script>
 </body>
 </html>
