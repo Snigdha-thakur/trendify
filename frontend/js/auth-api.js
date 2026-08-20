@@ -12,7 +12,6 @@ function normalizeApiUrl(url) {
 // Automatically detect local development
 let baseAPI = '/api';
 if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-  // Default to local backend for development
   baseAPI = 'http://localhost:8000/api';
 } else if (typeof __API_URL__ !== 'undefined' && __API_URL__) {
   baseAPI = normalizeApiUrl(__API_URL__);
@@ -36,17 +35,22 @@ window.TrendifyAuth = {
   },
 
   async login(email, password) {
-    const res = await fetch(`${API}/login`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password }),
-    });
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.detail || 'Login failed');
-    localStorage.setItem(TOKEN_KEY, data.access_token);
-    localStorage.setItem(USER_KEY, JSON.stringify(data.user));
-    localStorage.setItem('trendify_login_time', Date.now().toString());
-    return data.user;
+    try {
+      const res = await fetch(`${API}/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.detail || 'Login failed');
+      localStorage.setItem(TOKEN_KEY, data.access_token);
+      localStorage.setItem(USER_KEY, JSON.stringify(data.user));
+      localStorage.setItem('trendify_login_time', Date.now().toString());
+      return data.user;
+    } catch (err) {
+      console.error('Login error:', err);
+      throw err;
+    }
   },
 
   async register(email, password, name, phone, role = 'user', referralCode = '') {
@@ -87,7 +91,7 @@ window.TrendifyAuth = {
 
   requireAuth(redirectTo) {
     if (!this.isLoggedIn()) {
-      window.location.href = redirectTo || '../signin.html';
+      window.location.href = redirectTo || '/signin.html';
       return null;
     }
     return this.getUser();
@@ -95,8 +99,8 @@ window.TrendifyAuth = {
 
   redirectByRole(user) {
     const role = (user && user.role) || 'user';
-    if (role === 'admin') window.location.href = 'admin/overview.html';
-    else if (role === 'creator') window.location.href = 'creator/dashboard.html';
-    else window.location.href = 'index.html';
+    if (role === 'admin') window.location.href = '/admin/overview.html';
+    else if (role === 'creator') window.location.href = '/creator/dashboard.html';
+    else window.location.href = '/user/dashboard.html';
   },
 };
