@@ -207,9 +207,9 @@ async def payu_return(request: Request, db: Session = Depends(get_db)):
     if not txn:
         return RedirectResponse(f"{settings.FRONTEND_URL}/payment-failed.html")
 
-    pid = txn.product_id
     product = txn.product
-    pname = encodeURIComponent_py(product.name if product else "")
+    success_redirect = product.success_redirect if product else None
+    failed_redirect = product.failed_redirect if product else None
 
     hash_valid = PayUService.verify_webhook_hash(payload)
     paid = hash_valid and payment_status == "SUCCESS"
@@ -221,7 +221,7 @@ async def payu_return(request: Request, db: Session = Depends(get_db)):
     if url_status == "failed":
         db.add(GatewayLog(transaction_id=txn.id, log_type="Return", gateway="PayU"))
         db.commit()
-        dest = f"{settings.FRONTEND_URL}/payment-failed.html?product_id={pid}"
+        dest = failed_redirect if failed_redirect else f"{settings.FRONTEND_URL}/payment-failed.html?product_id={txn.product_id}"
     elif txn.status == "Success" or paid:
         if txn.status != "Success":
             txn.status = "Success"
@@ -233,11 +233,11 @@ async def payu_return(request: Request, db: Session = Depends(get_db)):
             _send_confirmation_email(txn)
         except Exception as e:
             print(f"[email] EXCEPTION in return: {e}")
-        dest = f"{settings.FRONTEND_URL}/payment-success.html?product_id={pid}&order_id={txn.id}&amount={float(txn.amount or 0)}&product_name={pname}"
+        dest = success_redirect if success_redirect else f"{settings.FRONTEND_URL}/payment-success.html?product_id={txn.product_id}&order_id={txn.id}&amount={float(txn.amount or 0)}"
     else:
         db.add(GatewayLog(transaction_id=txn.id, log_type="Return", gateway="PayU"))
         db.commit()
-        dest = f"{settings.FRONTEND_URL}/payment-failed.html?product_id={pid}"
+        dest = failed_redirect if failed_redirect else f"{settings.FRONTEND_URL}/payment-failed.html?product_id={txn.product_id}"
 
     return RedirectResponse(dest, status_code=303)
 
