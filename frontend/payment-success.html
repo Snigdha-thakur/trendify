@@ -57,6 +57,7 @@ var orderId=params.get('order_id')||params.get('txn');
 var amount=params.get('amount');
 var productId=params.get('product_id');
 var productName=params.get('product_name');
+var redirectUrl=params.get('redirect_url');
 
 if(orderId||amount||productName){
   document.getElementById('orderBox').style.display='block';
@@ -65,7 +66,9 @@ if(orderId||amount||productName){
   if(productName)document.getElementById('orderProduct').textContent=decodeURIComponent(productName);
 }
 
-if(productId){
+if(redirectUrl){
+  document.getElementById('backBtn').href=decodeURIComponent(redirectUrl);
+}else if(productId){
   document.getElementById('backBtn').href='/product-preview.html?id='+encodeURIComponent(productId);
 }
 

@@ -50,6 +50,7 @@ body{background:#04040f;color:#f2f0ff;font-family:'Syne',sans-serif;min-height:1
 var params=new URLSearchParams(location.search);
 var productId=params.get('product_id');
 var reason=params.get('reason');
+var redirectUrl=params.get('redirect_url');
 
 if(reason){
   var rb=document.getElementById('reasonBox');
@@ -57,7 +58,9 @@ if(reason){
   rb.style.display='block';
 }
 
-if(productId){
+if(redirectUrl){
+  document.getElementById('homeBtn').href=decodeURIComponent(redirectUrl);
+}else if(productId){
   document.getElementById('retryBtn').href='/product.html?id='+encodeURIComponent(productId);
   document.getElementById('homeBtn').href='/product-preview.html?id='+encodeURIComponent(productId);
 }
