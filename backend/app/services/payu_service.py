@@ -53,6 +53,7 @@ class PayUService:
         if not settings.PAYU_KEY or not settings.PAYU_SALT:
             return {"success": False, "error": "PayU credentials are not configured"}
 
+        from urllib.parse import quote
         params = {
             "key": settings.PAYU_KEY,
             "txnid": txn_id,
@@ -61,8 +62,8 @@ class PayUService:
             "firstname": buyer_name,
             "email": buyer_email,
             "phone": buyer_phone or "9999999999",
-            "surl": f"{settings.BACKEND_URL}/api/payments/return/payu?txn_id={txn_id}",
-            "furl": f"{settings.BACKEND_URL}/api/payments/return/payu?txn_id={txn_id}",
+            "surl": f"{settings.BACKEND_URL}/api/payments/return/payu",
+            "furl": f"{settings.BACKEND_URL}/api/payments/return/payu",
         }
         params["hash"] = PayUService.generate_hash(params)
         params["payment_url"] = PayUService.get_payment_url()
