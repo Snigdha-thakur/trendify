@@ -248,7 +248,7 @@ async def redirect_endpoint(url: str):
 
 @router.post("/return/payu/{rest_of_path:path}")
 async def payu_return_catchall(rest_of_path: str, request: Request, db: Session = Depends(get_db)):
-    """Catch-all for PayU redirects that append paths. Extracts txnid from form data."""
+    """Catch-all for PayU redirects that append paths. Processes payment and redirects to appended URL."""
     from fastapi.responses import RedirectResponse
 
     form = await request.form()
@@ -265,23 +265,17 @@ async def payu_return_catchall(rest_of_path: str, request: Request, db: Session 
     if not txn:
         return RedirectResponse(f"{settings.FRONTEND_URL}/payment-failed.html", status_code=303)
 
-    product = txn.product
-    success_redirect = product.success_redirect if product else None
-    failed_redirect = product.failed_redirect if product else None
-
     hash_valid = PayUService.verify_webhook_hash(payload)
     paid = hash_valid and payment_status == "SUCCESS"
 
     if payu_txn_id:
         txn.cf_payment_id = payu_txn_id
 
+    # Process payment
     if payment_status in ("FAILED", "CANCELLED"):
         db.add(GatewayLog(transaction_id=txn.id, log_type="Return", gateway="PayU"))
         db.commit()
-        dest = failed_redirect or f"{settings.FRONTEND_URL}/payment-failed.html?product_id={txn.product_id}"
-        return RedirectResponse(dest, status_code=303)
-    
-    if txn.status == "Success" or paid:
+    elif txn.status == "Success" or paid:
         if txn.status != "Success":
             txn.status = "Success"
             _credit_wallets(txn, db)
@@ -292,12 +286,27 @@ async def payu_return_catchall(rest_of_path: str, request: Request, db: Session 
             _send_confirmation_email(txn)
         except Exception as e:
             print(f"[email] EXCEPTION in return: {e}")
-        dest = success_redirect or f"{settings.FRONTEND_URL}/payment-success.html?product_id={txn.product_id}&order_id={txn.id}&amount={float(txn.amount or 0)}"
-        return RedirectResponse(dest, status_code=303)
+    else:
+        db.add(GatewayLog(transaction_id=txn.id, log_type="Return", gateway="PayU"))
+        db.commit()
     
-    db.add(GatewayLog(transaction_id=txn.id, log_type="Return", gateway="PayU"))
-    db.commit()
-    dest = failed_redirect or f"{settings.FRONTEND_URL}/payment-failed.html?product_id={txn.product_id}"
+    # Redirect to the appended URL (e.g., adyvision.org)
+    if rest_of_path:
+        redirect_url = f"https://{rest_of_path}" if not rest_of_path.startswith("http") else rest_of_path
+        return RedirectResponse(redirect_url, status_code=303)
+    
+    # Fallback to database URLs if no path appended
+    product = txn.product
+    success_redirect = product.success_redirect if product else None
+    failed_redirect = product.failed_redirect if product else None
+    
+    if payment_status in ("FAILED", "CANCELLED"):
+        dest = failed_redirect or f"{settings.FRONTEND_URL}/payment-failed.html?product_id={txn.product_id}"
+    elif txn.status == "Success" or paid:
+        dest = success_redirect or f"{settings.FRONTEND_URL}/payment-success.html?product_id={txn.product_id}&order_id={txn.id}&amount={float(txn.amount or 0)}"
+    else:
+        dest = failed_redirect or f"{settings.FRONTEND_URL}/payment-failed.html?product_id={txn.product_id}"
+    
     return RedirectResponse(dest, status_code=303)
 
 
