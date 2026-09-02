@@ -67,12 +67,15 @@ if(orderId||amount||productName){
 }
 
 if(redirectUrl){
-  document.getElementById('backBtn').href=decodeURIComponent(redirectUrl);
+  var url=decodeURIComponent(redirectUrl);
+  if(!url.startsWith('http://') && !url.startsWith('https://')){
+    url='https://'+url;
+  }
+  document.getElementById('backBtn').href=url;
 }else if(productId){
   document.getElementById('backBtn').href='/product-preview.html?id='+encodeURIComponent(productId);
 }
 
-// Trigger verify so email is sent
 if(orderId){
   fetch('https://trendify-pxkx.onrender.com/api/payments/transactions/'+encodeURIComponent(orderId)+'/verify',{method:'POST'}).catch(function(){});
 }

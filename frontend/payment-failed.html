@@ -59,7 +59,11 @@ if(reason){
 }
 
 if(redirectUrl){
-  document.getElementById('homeBtn').href=decodeURIComponent(redirectUrl);
+  var url=decodeURIComponent(redirectUrl);
+  if(!url.startsWith('http://') && !url.startsWith('https://')){
+    url='https://'+url;
+  }
+  document.getElementById('homeBtn').href=url;
 }else if(productId){
   document.getElementById('retryBtn').href='/product.html?id='+encodeURIComponent(productId);
   document.getElementById('homeBtn').href='/product-preview.html?id='+encodeURIComponent(productId);
