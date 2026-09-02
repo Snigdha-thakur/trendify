@@ -198,7 +198,6 @@ async def payu_return(request: Request, db: Session = Depends(get_db)):
     order_id = payload.get("txnid")
     payment_status = payload.get("status", "").upper()
     payu_txn_id = payload.get("mihpayid", "")
-    url_status = request.query_params.get("status", "").lower()
 
     if not order_id:
         return RedirectResponse(f"{settings.FRONTEND_URL}/payment-failed.html")
@@ -217,8 +216,8 @@ async def payu_return(request: Request, db: Session = Depends(get_db)):
     if payu_txn_id:
         txn.cf_payment_id = payu_txn_id
 
-    # If URL status is "failed", always redirect to failure page
-    if url_status == "failed":
+    # If payment status is FAILED or CANCELLED, redirect to failure page
+    if payment_status in ("FAILED", "CANCELLED"):
         db.add(GatewayLog(transaction_id=txn.id, log_type="Return", gateway="PayU"))
         db.commit()
         dest = failed_redirect if failed_redirect else f"{settings.FRONTEND_URL}/payment-failed.html?product_id={txn.product_id}"
