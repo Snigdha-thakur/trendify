@@ -14,7 +14,6 @@ router = APIRouter(prefix="/api/payments", tags=["Payments"])
 
 
 def _get_commission_rate(db: Session, creator_id=None) -> Decimal:
-    # If a creator-specific fee is configured, use it first.
     if creator_id:
         creator = db.query(User).filter(User.id == creator_id).first()
         if creator is not None:
@@ -78,7 +77,6 @@ def initiate_payment(
 
     from app.schemas.schemas import TransactionResponse
     txn_dict = TransactionResponse.model_validate(txn).model_dump()
-    # Return PayU form params for frontend to POST
     txn_dict["payu_params"] = {k: v for k, v in payu_result.items() if k != "success"}
     return txn_dict
 
@@ -111,7 +109,7 @@ async def payu_webhook(request: Request, db: Session = Depends(get_db)):
     db.add(GatewayLog(transaction_id=txn.id, log_type="Webhook", gateway="PayU"))
 
     if payu_txn_id:
-        txn.cf_payment_id = payu_txn_id  # reuse existing column for PayU txn id
+        txn.cf_payment_id = payu_txn_id
 
     if payment_status == "SUCCESS":
         if txn.status != "Success":
@@ -143,7 +141,6 @@ def get_my_transactions(
     db: Session = Depends(get_db),
 ):
     import json
-    # Also include transactions credited to this user's wallet (handles creator_id mismatch)
     wallet_txn_ids = (
         db.query(WalletLog.transaction_id)
         .filter(
@@ -189,7 +186,7 @@ def get_transaction(txn_id: str, db: Session = Depends(get_db)):
 
 @router.post("/return/payu")
 async def payu_return(request: Request, db: Session = Depends(get_db)):
-    """PayU return URL handler (POST) - verifies hash, credits wallet, redirects."""
+    """PayU return URL handler - processes payment and redirects to custom URL."""
     from fastapi.responses import RedirectResponse
 
     form = await request.form()
@@ -216,14 +213,12 @@ async def payu_return(request: Request, db: Session = Depends(get_db)):
     if payu_txn_id:
         txn.cf_payment_id = payu_txn_id
 
-    # Determine destination based on payment status
     if payment_status in ("FAILED", "CANCELLED"):
         db.add(GatewayLog(transaction_id=txn.id, log_type="Return", gateway="PayU"))
         db.commit()
-        dest = success_redirect or f"{settings.FRONTEND_URL}/payment-failed.html?product_id={txn.product_id}"
-        return RedirectResponse(url=dest, status_code=303)
+        dest = failed_redirect or f"{settings.FRONTEND_URL}/payment-failed.html?product_id={txn.product_id}"
+        return RedirectResponse(dest, status_code=303)
     
-    # Handle successful payment
     if txn.status == "Success" or paid:
         if txn.status != "Success":
             txn.status = "Success"
@@ -236,18 +231,17 @@ async def payu_return(request: Request, db: Session = Depends(get_db)):
         except Exception as e:
             print(f"[email] EXCEPTION in return: {e}")
         dest = success_redirect or f"{settings.FRONTEND_URL}/payment-success.html?product_id={txn.product_id}&order_id={txn.id}&amount={float(txn.amount or 0)}"
-        return RedirectResponse(url=dest, status_code=303)
+        return RedirectResponse(dest, status_code=303)
     
-    # Payment not successful
     db.add(GatewayLog(transaction_id=txn.id, log_type="Return", gateway="PayU"))
     db.commit()
     dest = failed_redirect or f"{settings.FRONTEND_URL}/payment-failed.html?product_id={txn.product_id}"
-    return RedirectResponse(url=dest, status_code=303)
+    return RedirectResponse(dest, status_code=303)
 
 
 @router.get("/redirect")
 async def redirect_endpoint(url: str):
-    """Simple redirect endpoint that redirects to the provided URL."""
+    """Redirect endpoint that takes URL as query parameter."""
     from fastapi.responses import RedirectResponse
     return RedirectResponse(url=url, status_code=303)
 
@@ -271,17 +265,13 @@ async def verify_transaction(txn_id: str, db: Session = Depends(get_db)):
     return {"status": txn.status.lower(), "message": "Payment not yet successful"}
 
 
-# ---------- internal helpers ----------
-
 def _send_confirmation_email(txn: Transaction, product_name: str = None):
     if not product_name:
         try:
             product_name = txn.product.name if txn.product else str(txn.product_id)
         except Exception:
             product_name = str(txn.product_id)
-    # Use Cashfree transaction ID if available, else internal ID
     display_txn_id = str(txn.cf_payment_id) if txn.cf_payment_id else str(txn.id)
-    # View Purchase → product's success_redirect (e.g. skillinspire login) or fallback to product page
     product = txn.product
     view_url = (product.success_redirect if product and product.success_redirect else f"{settings.FRONTEND_URL}/product.html?id={txn.product_id}")
     print(f"[email] Sending to {txn.buyer_email} for product {product_name}")
@@ -311,7 +301,6 @@ async def _broadcast_wallet_update(txn: Transaction):
 
 def _credit_wallets(txn: Transaction, db: Session):
     """Credit creator wallet and referral wallet on successful payment."""
-    # Idempotency: skip if already credited for this transaction
     already = db.query(WalletLog).filter(
         WalletLog.transaction_id == txn.id,
         WalletLog.wallet_type == "Main Wallet",
@@ -336,7 +325,6 @@ def _credit_wallets(txn: Transaction, db: Session):
         new_balance=creator.wallet_balance,
     ))
 
-    # Referral payout
     if creator.referred_by:
         referrer = db.query(User).filter(User.id == creator.referred_by).first()
         if referrer:
