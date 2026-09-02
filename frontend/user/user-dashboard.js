@@ -24,12 +24,17 @@ async function loadUserOrders() {
     });
     
     if (!res.ok) {
+      if (res.status === 401) {
+        console.error('Unauthorized - redirecting to login');
+        window.location.href = '../signin.html';
+        return [];
+      }
       console.error('Failed to load orders:', res.status);
       return [];
     }
     
     const orders = await res.json();
-    return orders;
+    return Array.isArray(orders) ? orders : [];
   } catch (err) {
     console.error('Error loading orders:', err);
     return [];
@@ -49,7 +54,7 @@ function renderOrders(orders) {
   }
   
   let html = '';
-  orders.forEach((order, index) => {
+  orders.forEach((order) => {
     const date = new Date(order.created_at).toLocaleDateString('en-IN');
     const status = order.status || 'Pending';
     const statusClass = status === 'Success' ? 'badge-success' : status === 'Failed' ? 'badge-failed' : 'badge-pending';
@@ -85,7 +90,6 @@ function viewOrder(orderId, productId, status) {
 }
 
 function downloadReceipt(orderId, productName, amount) {
-  // Generate and download receipt
   const receipt = `
 Order Receipt
 =============
@@ -106,7 +110,6 @@ Thank you for your purchase!
   window.URL.revokeObjectURL(url);
 }
 
-// Refresh orders every 5 seconds for real-time updates
 let refreshInterval;
 
 async function startRealTimeUpdates() {
@@ -116,15 +119,13 @@ async function startRealTimeUpdates() {
   refreshInterval = setInterval(async () => {
     const updatedOrders = await loadUserOrders();
     renderOrders(updatedOrders);
-  }, 5000);
+  }, 3000);
 }
 
-// Load orders on page load
 document.addEventListener('DOMContentLoaded', async () => {
   await startRealTimeUpdates();
 });
 
-// Clean up interval on page unload
 window.addEventListener('beforeunload', () => {
   if (refreshInterval) clearInterval(refreshInterval);
 });
