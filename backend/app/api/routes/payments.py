@@ -187,6 +187,7 @@ def get_transaction(txn_id: str, db: Session = Depends(get_db)):
 async def _process_payu_return(form_data: dict, db: Session, redirect_url: str = None):
     """Helper to process PayU return and redirect."""
     from fastapi.responses import RedirectResponse
+    from urllib.parse import quote
 
     order_id = form_data.get("txnid")
     payment_status = form_data.get("status", "").upper()
@@ -209,7 +210,8 @@ async def _process_payu_return(form_data: dict, db: Session, redirect_url: str =
         db.add(GatewayLog(transaction_id=txn.id, log_type="Return", gateway="PayU"))
         db.commit()
         if redirect_url:
-            return RedirectResponse(redirect_url, status_code=303)
+            encoded_url = quote(redirect_url, safe=":/?#[]@!$&'()*+,;=")
+            return RedirectResponse(f"{settings.BACKEND_URL}/api/payments/redirect?url={encoded_url}", status_code=303)
         product = txn.product
         failed_redirect = product.failed_redirect if product else None
         dest = failed_redirect or f"{settings.FRONTEND_URL}/payment-failed.html?product_id={txn.product_id}"
@@ -227,7 +229,8 @@ async def _process_payu_return(form_data: dict, db: Session, redirect_url: str =
         except Exception as e:
             print(f"[email] EXCEPTION in return: {e}")
         if redirect_url:
-            return RedirectResponse(redirect_url, status_code=303)
+            encoded_url = quote(redirect_url, safe=":/?#[]@!$&'()*+,;=")
+            return RedirectResponse(f"{settings.BACKEND_URL}/api/payments/redirect?url={encoded_url}", status_code=303)
         product = txn.product
         success_redirect = product.success_redirect if product else None
         dest = success_redirect or f"{settings.FRONTEND_URL}/payment-success.html?product_id={txn.product_id}&order_id={txn.id}&amount={float(txn.amount or 0)}"
@@ -236,7 +239,8 @@ async def _process_payu_return(form_data: dict, db: Session, redirect_url: str =
     db.add(GatewayLog(transaction_id=txn.id, log_type="Return", gateway="PayU"))
     db.commit()
     if redirect_url:
-        return RedirectResponse(redirect_url, status_code=303)
+        encoded_url = quote(redirect_url, safe=":/?#[]@!$&'()*+,;=")
+        return RedirectResponse(f"{settings.BACKEND_URL}/api/payments/redirect?url={encoded_url}", status_code=303)
     product = txn.product
     failed_redirect = product.failed_redirect if product else None
     dest = failed_redirect or f"{settings.FRONTEND_URL}/payment-failed.html?product_id={txn.product_id}"
