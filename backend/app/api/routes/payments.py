@@ -184,71 +184,91 @@ def get_transaction(txn_id: str, db: Session = Depends(get_db)):
     return txn_dict
 
 
-@router.post("/return/payu")
-async def payu_return(request: Request, db: Session = Depends(get_db)):
-    """PayU return URL handler - processes payment and redirects to custom URL."""
+async def _handle_payu_return(form_data: dict, db: Session):
+    """Helper function to handle PayU return logic."""
     from fastapi.responses import RedirectResponse
     from urllib.parse import quote
 
-    try:
-        form = await request.form()
-        payload = dict(form)
+    order_id = form_data.get("txnid")
+    payment_status = form_data.get("status", "").upper()
+    payu_txn_id = form_data.get("mihpayid", "")
 
-        order_id = payload.get("txnid")
-        payment_status = payload.get("status", "").upper()
-        payu_txn_id = payload.get("mihpayid", "")
+    if not order_id:
+        return RedirectResponse(f"{settings.FRONTEND_URL}/payment-failed.html", status_code=303)
 
-        if not order_id:
-            return RedirectResponse(f"{settings.FRONTEND_URL}/payment-failed.html", status_code=303)
+    txn = db.query(Transaction).filter(Transaction.id == order_id).first()
+    if not txn:
+        return RedirectResponse(f"{settings.FRONTEND_URL}/payment-failed.html", status_code=303)
 
-        txn = db.query(Transaction).filter(Transaction.id == order_id).first()
-        if not txn:
-            return RedirectResponse(f"{settings.FRONTEND_URL}/payment-failed.html", status_code=303)
+    product = txn.product
+    success_redirect = product.success_redirect if product else None
+    failed_redirect = product.failed_redirect if product else None
 
-        product = txn.product
-        success_redirect = product.success_redirect if product else None
-        failed_redirect = product.failed_redirect if product else None
+    hash_valid = PayUService.verify_webhook_hash(form_data)
+    paid = hash_valid and payment_status == "SUCCESS"
 
-        hash_valid = PayUService.verify_webhook_hash(payload)
-        paid = hash_valid and payment_status == "SUCCESS"
+    if payu_txn_id:
+        txn.cf_payment_id = payu_txn_id
 
-        if payu_txn_id:
-            txn.cf_payment_id = payu_txn_id
-
-        if payment_status in ("FAILED", "CANCELLED"):
-            db.add(GatewayLog(transaction_id=txn.id, log_type="Return", gateway="PayU"))
-            db.commit()
-            if failed_redirect:
-                encoded_url = quote(failed_redirect, safe=":/?#[]@!$&'()*+,;=")
-                return RedirectResponse(f"{settings.BACKEND_URL}/api/payments/redirect?url={encoded_url}", status_code=303)
-            return RedirectResponse(f"{settings.FRONTEND_URL}/payment-failed.html?product_id={txn.product_id}", status_code=303)
-        
-        if txn.status == "Success" or paid:
-            if txn.status != "Success":
-                txn.status = "Success"
-                _credit_wallets(txn, db)
-                db.add(GatewayLog(transaction_id=txn.id, log_type="Return", gateway="PayU"))
-                db.commit()
-                await _broadcast_wallet_update(txn)
-            try:
-                _send_confirmation_email(txn)
-            except Exception as e:
-                print(f"[email] EXCEPTION in return: {e}")
-            if success_redirect:
-                encoded_url = quote(success_redirect, safe=":/?#[]@!$&'()*+,;=")
-                return RedirectResponse(f"{settings.BACKEND_URL}/api/payments/redirect?url={encoded_url}", status_code=303)
-            return RedirectResponse(f"{settings.FRONTEND_URL}/payment-success.html?product_id={txn.product_id}&order_id={txn.id}&amount={float(txn.amount or 0)}", status_code=303)
-        
+    if payment_status in ("FAILED", "CANCELLED"):
         db.add(GatewayLog(transaction_id=txn.id, log_type="Return", gateway="PayU"))
         db.commit()
         if failed_redirect:
             encoded_url = quote(failed_redirect, safe=":/?#[]@!$&'()*+,;=")
             return RedirectResponse(f"{settings.BACKEND_URL}/api/payments/redirect?url={encoded_url}", status_code=303)
         return RedirectResponse(f"{settings.FRONTEND_URL}/payment-failed.html?product_id={txn.product_id}", status_code=303)
+    
+    if txn.status == "Success" or paid:
+        if txn.status != "Success":
+            txn.status = "Success"
+            _credit_wallets(txn, db)
+            db.add(GatewayLog(transaction_id=txn.id, log_type="Return", gateway="PayU"))
+            db.commit()
+            await _broadcast_wallet_update(txn)
+        try:
+            _send_confirmation_email(txn)
+        except Exception as e:
+            print(f"[email] EXCEPTION in return: {e}")
+        if success_redirect:
+            encoded_url = quote(success_redirect, safe=":/?#[]@!$&'()*+,;=")
+            return RedirectResponse(f"{settings.BACKEND_URL}/api/payments/redirect?url={encoded_url}", status_code=303)
+        return RedirectResponse(f"{settings.FRONTEND_URL}/payment-success.html?product_id={txn.product_id}&order_id={txn.id}&amount={float(txn.amount or 0)}", status_code=303)
+    
+    db.add(GatewayLog(transaction_id=txn.id, log_type="Return", gateway="PayU"))
+    db.commit()
+    if failed_redirect:
+        encoded_url = quote(failed_redirect, safe=":/?#[]@!$&'()*+,;=")
+        return RedirectResponse(f"{settings.BACKEND_URL}/api/payments/redirect?url={encoded_url}", status_code=303)
+    return RedirectResponse(f"{settings.FRONTEND_URL}/payment-failed.html?product_id={txn.product_id}", status_code=303)
+
+
+@router.post("/return/payu/{path:path}")
+async def payu_return_with_path(path: str, request: Request, db: Session = Depends(get_db)):
+    """Catch-all for PayU redirects with appended paths."""
+    try:
+        form = await request.form()
+        payload = dict(form)
+        return await _handle_payu_return(payload, db)
+    except Exception as e:
+        print(f"[payu_return_with_path] ERROR: {str(e)}")
+        import traceback
+        traceback.print_exc()
+        from fastapi.responses import RedirectResponse
+        return RedirectResponse(f"{settings.FRONTEND_URL}/payment-failed.html", status_code=303)
+
+
+@router.post("/return/payu")
+async def payu_return(request: Request, db: Session = Depends(get_db)):
+    """PayU return URL handler - processes payment and redirects to custom URL."""
+    try:
+        form = await request.form()
+        payload = dict(form)
+        return await _handle_payu_return(payload, db)
     except Exception as e:
         print(f"[payu_return] ERROR: {str(e)}")
         import traceback
         traceback.print_exc()
+        from fastapi.responses import RedirectResponse
         return RedirectResponse(f"{settings.FRONTEND_URL}/payment-failed.html", status_code=303)
 
 
