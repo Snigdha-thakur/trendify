@@ -216,12 +216,18 @@ async def payu_return(request: Request, db: Session = Depends(get_db)):
     if payu_txn_id:
         txn.cf_payment_id = payu_txn_id
 
-    # If payment status is FAILED or CANCELLED, redirect to failure page
+    # Determine destination based on payment status
     if payment_status in ("FAILED", "CANCELLED"):
         db.add(GatewayLog(transaction_id=txn.id, log_type="Return", gateway="PayU"))
         db.commit()
-        dest = failed_redirect if failed_redirect else f"{settings.FRONTEND_URL}/payment-failed.html?product_id={txn.product_id}"
-    elif txn.status == "Success" or paid:
+        # Use custom failed redirect if available, otherwise use generic page
+        if failed_redirect:
+            return RedirectResponse(failed_redirect, status_code=303)
+        else:
+            return RedirectResponse(f"{settings.FRONTEND_URL}/payment-failed.html?product_id={txn.product_id}", status_code=303)
+    
+    # Handle successful payment
+    if txn.status == "Success" or paid:
         if txn.status != "Success":
             txn.status = "Success"
             _credit_wallets(txn, db)
@@ -232,13 +238,19 @@ async def payu_return(request: Request, db: Session = Depends(get_db)):
             _send_confirmation_email(txn)
         except Exception as e:
             print(f"[email] EXCEPTION in return: {e}")
-        dest = success_redirect if success_redirect else f"{settings.FRONTEND_URL}/payment-success.html?product_id={txn.product_id}&order_id={txn.id}&amount={float(txn.amount or 0)}"
+        # Use custom success redirect if available, otherwise use generic page
+        if success_redirect:
+            return RedirectResponse(success_redirect, status_code=303)
+        else:
+            return RedirectResponse(f"{settings.FRONTEND_URL}/payment-success.html?product_id={txn.product_id}&order_id={txn.id}&amount={float(txn.amount or 0)}", status_code=303)
+    
+    # Payment not successful
+    db.add(GatewayLog(transaction_id=txn.id, log_type="Return", gateway="PayU"))
+    db.commit()
+    if failed_redirect:
+        return RedirectResponse(failed_redirect, status_code=303)
     else:
-        db.add(GatewayLog(transaction_id=txn.id, log_type="Return", gateway="PayU"))
-        db.commit()
-        dest = failed_redirect if failed_redirect else f"{settings.FRONTEND_URL}/payment-failed.html?product_id={txn.product_id}"
-
-    return RedirectResponse(dest, status_code=303)
+        return RedirectResponse(f"{settings.FRONTEND_URL}/payment-failed.html?product_id={txn.product_id}", status_code=303)
 
 
 def encodeURIComponent_py(s: str) -> str:
