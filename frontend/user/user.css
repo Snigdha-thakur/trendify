@@ -452,3 +452,80 @@ body.light-theme .theme-toggle-btn {
   cursor: pointer !important;
 }
 body.light-theme .theme-toggle-btn:hover { color: #1a1a2e !important; border-color: rgba(100,70,200,.5) !important; }
+
+
+/* Action Buttons */
+.action-btn {
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: var(--f-sans);
+  transition: all .2s;
+  border: 1px solid;
+  white-space: nowrap;
+}
+
+.action-btn-access {
+  background: rgba(167,124,255,.15);
+  color: #a67cff;
+  border-color: rgba(167,124,255,.3);
+}
+.action-btn-access:hover {
+  background: rgba(167,124,255,.25);
+  border-color: rgba(167,124,255,.5);
+  color: #c9a8ff;
+}
+
+.action-btn-pricing {
+  background: rgba(100,140,255,.15);
+  color: #7eb3ff;
+  border-color: rgba(100,140,255,.3);
+}
+.action-btn-pricing:hover {
+  background: rgba(100,140,255,.25);
+  border-color: rgba(100,140,255,.5);
+  color: #a8d4ff;
+}
+
+.action-btn-purchase {
+  background: var(--iris);
+  color: #fff;
+  border-color: var(--iris);
+}
+.action-btn-purchase:hover {
+  background: var(--violet);
+  border-color: var(--violet);
+  opacity: .9;
+}
+
+body.light-theme .action-btn-access {
+  background: rgba(123,94,167,.1) !important;
+  color: #7b5ea7 !important;
+  border-color: rgba(123,94,167,.25) !important;
+}
+body.light-theme .action-btn-access:hover {
+  background: rgba(123,94,167,.2) !important;
+  border-color: rgba(123,94,167,.5) !important;
+}
+
+body.light-theme .action-btn-pricing {
+  background: rgba(100,140,200,.1) !important;
+  color: #5a7fa8 !important;
+  border-color: rgba(100,140,200,.25) !important;
+}
+body.light-theme .action-btn-pricing:hover {
+  background: rgba(100,140,200,.2) !important;
+  border-color: rgba(100,140,200,.5) !important;
+}
+
+body.light-theme .action-btn-purchase {
+  background: #7b5ea7 !important;
+  color: #fff !important;
+  border-color: #7b5ea7 !important;
+}
+body.light-theme .action-btn-purchase:hover {
+  background: #6a4e96 !important;
+  border-color: #6a4e96 !important;
+}

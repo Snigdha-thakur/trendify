@@ -61,8 +61,8 @@ class PayUService:
             "firstname": buyer_name,
             "email": buyer_email,
             "phone": buyer_phone or "9999999999",
-            "surl": f"{settings.BACKEND_URL}/api/payments/return/payu",
-            "furl": f"{settings.BACKEND_URL}/api/payments/return/payu",
+            "surl": f"{settings.BACKEND_URL}/api/payments/return/payu?status=success",
+            "furl": f"{settings.BACKEND_URL}/api/payments/return/payu?status=failed",
         }
         params["hash"] = PayUService.generate_hash(params)
         params["payment_url"] = PayUService.get_payment_url()

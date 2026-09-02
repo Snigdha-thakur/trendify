@@ -198,6 +198,7 @@ async def payu_return(request: Request, db: Session = Depends(get_db)):
     order_id = payload.get("txnid")
     payment_status = payload.get("status", "").upper()
     payu_txn_id = payload.get("mihpayid", "")
+    url_status = request.query_params.get("status", "").lower()
 
     if not order_id:
         return RedirectResponse(f"{settings.FRONTEND_URL}/payment-failed.html")
@@ -216,7 +217,12 @@ async def payu_return(request: Request, db: Session = Depends(get_db)):
     if payu_txn_id:
         txn.cf_payment_id = payu_txn_id
 
-    if txn.status == "Success" or paid:
+    # If URL status is "failed", always redirect to failure page
+    if url_status == "failed":
+        db.add(GatewayLog(transaction_id=txn.id, log_type="Return", gateway="PayU"))
+        db.commit()
+        dest = f"{settings.FRONTEND_URL}/payment-failed.html?product_id={pid}"
+    elif txn.status == "Success" or paid:
         if txn.status != "Success":
             txn.status = "Success"
             _credit_wallets(txn, db)
@@ -229,6 +235,8 @@ async def payu_return(request: Request, db: Session = Depends(get_db)):
             print(f"[email] EXCEPTION in return: {e}")
         dest = f"{settings.FRONTEND_URL}/payment-success.html?product_id={pid}&order_id={txn.id}&amount={float(txn.amount or 0)}&product_name={pname}"
     else:
+        db.add(GatewayLog(transaction_id=txn.id, log_type="Return", gateway="PayU"))
+        db.commit()
         dest = f"{settings.FRONTEND_URL}/payment-failed.html?product_id={pid}"
 
     return RedirectResponse(dest, status_code=303)
